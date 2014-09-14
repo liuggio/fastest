@@ -1,0 +1,33 @@
+{
+    "name": "liuggio/fastest",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "liuggio",
+            "email": "liuggio@gmail.com"
+        }
+    ],
+    "require": {
+        "phpunit/phpunit": "~4",
+        "symfony/console": "~2.5.4",
+        "symfony/stopwatch": "~2.5.4",
+        "symfony/process": "~2.5.4",
+        "monolog/monolog": "~1.10.0"
+    },
+    "require-dev": {
+        "doctrine/dbal": "~2.4",
+        "predis/predis": "v0.8.0"
+    },
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "bin": [
+        "fastest"
+    ],
+    "autoload": {"psr-4": {"Liuggio\\Fastest\\": "src"}}
+}
