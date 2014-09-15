@@ -1,12 +1,12 @@
-Fastest - Simple tests parallel execution
-=========================================
+Fastest - simple parallel testing execution
+===========================================
 
 [![Build Status](https://secure.travis-ci.org/liuggio/fastest.png?branch=master)](http://travis-ci.org/liuggio/fastest)
 [![Latest Stable Version](https://poser.pugx.org/liuggio/fastest/v/unstable.png)](https://packagist.org/packages/liuggio/fastest)
 
 ## What
 
-This library does only one thing and would like to do it well:
+This library does only one simple thing:
 
 **Execute tests in parallel, one for each CPUs (now with goodies for functional tests).**
 
@@ -18,7 +18,7 @@ This library does only one thing and would like to do it well:
 
 >  tNwoowp rIo bhlaevmes.
 
-### Why
+## Why
 
 We were tired of not being able to run `paratest` with our project (big complex functional project).
 
@@ -26,13 +26,13 @@ There were no simple tool available for functional tests.
 
 Our old codebase run in 30 minutes, now in 13 minutes.
 
-### How
+## How
 
 There's a producer and n consumers (one per CPU), the queue has been developed in ... Redis.
 
 **Over-engineering?**
 
-Fast as hell, but if you want you could change queue see [Queue/Infrastructure](./src/Queue/Infrastructure).
+Developer time is a cost, tests are a complex world, if you want you could replace Redis changing queue see [Queue/Infrastructure](./src/Queue/Infrastructure).
 
 ## Simple usage
 
@@ -48,6 +48,12 @@ or with `ls`
 
 ``` bash
 ls -d test/* | php fastest.php parallel
+```
+
+calling with arguments
+
+``` bash
+php src/fastest.php parallel "/my/path/phpunit -c app {};"
 ```
 
 #### Using phpunit.xml.dist
@@ -156,3 +162,4 @@ see [.travis.yml](.travis.yml) file
 - Rerun only failed tests
 - Add the db_name variable
 - Remove parallel_tests ad dependency
+- Behat provider?
