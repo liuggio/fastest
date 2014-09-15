@@ -24,7 +24,7 @@ We were tired of not being able to run `paratest` with our project (big complex 
 
 There were no simple tool available for functional tests.
 
-Our old codebase run in 30 minutes, now in 4 minutes.
+Our old codebase run in 30 minutes, now in 13 minutes.
 
 ### How
 
