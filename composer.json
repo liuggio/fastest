@@ -29,7 +29,7 @@
         "phpunit/phpunit": "Install it if you want to run test on /bin/phpunit"
     },
     "bin": [
-        "fastest"
+        "fastest.php"
     ],
     "autoload": {"psr-4": {"Liuggio\\Fastest\\": "src"}}
 }
