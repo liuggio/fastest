@@ -31,6 +31,12 @@ class ParallelCommand extends Command
                 'Number of process, default: available CPUs'
             )
             ->addOption(
+                'before',
+                'b',
+                InputOption::VALUE_REQUIRED,
+                'Execute a process before consuming the queue, execute it once per CPU, useful for init schema and fixtures.'
+            )
+            ->addOption(
                 'log-dir',
                 null,
                 InputOption::VALUE_REQUIRED,
@@ -80,12 +86,19 @@ class ParallelCommand extends Command
             return 0;
         }
 
-        $cmd = $this->getApplication()->getService('parallel_command')
-            ->execute(
-                $input->getArgument('execute'),
-                $input->getOption('process'),
-                $input->getOption('log-dir')
-            );
+        if ($input->getOption('before')) {
+            $beforeCommand = $this->prepareBeforeCommand($input->getOption('before'), $input->getOption('process'));
+            $return = (int) $this->executeCommand($beforeCommand, $output);
+
+            if (0 !== $return) {
+                return $return;
+            }
+        }
+
+        $cmd = $this->prepareParallelConsumerCommand(
+            $input->getArgument('execute'),
+            $input->getOption('process')
+        );
 
         putenv('TEST_ENV_ENABLE=1');
         if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
@@ -153,5 +166,25 @@ class ParallelCommand extends Command
         $output->writeln($out);
 
         return $process->getExitCode();
+    }
+
+    private function prepareBeforeCommand($before, $processNumber = null)
+    {
+
+        $cmd = $this->getApplication()->getService('parallel_command')
+            ->execute($before, $processNumber);
+
+        return $cmd;
+    }
+
+    private function prepareParallelConsumerCommand($execute, $processNumber = null)
+    {
+        $singleProcessConsumerCommand = $this->getApplication()->getService('single_command')
+            ->execute($execute);
+
+        $cmd = $this->getApplication()->getService('parallel_command')
+            ->execute($singleProcessConsumerCommand, $processNumber);
+
+        return $cmd;
     }
 }

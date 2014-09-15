@@ -64,6 +64,12 @@ Each CPU has an Env number
 echo getenv('TEST_ENV_NUMBER');
 ```
 
+you can also run one script per CPU **before** the tests, useful for init schema and fixtures loading.
+
+``` bash
+find tests/ -name "*Test.php" | php fastest.php parallel -b"app/console doc:sch:create -e test";
+```
+
 ## Symfony and Doctrine DBAL Adapter
 
 If you want to parallel functional tests, and if you have a machine with 4 CPUs, you should create 4 databases and then running the fixture.
@@ -148,6 +154,5 @@ see [.travis.yml](.travis.yml) file
 ### TODO
 
 - Rerun only failed tests
-- Execute one command per CPU before the loop, like init useful for fixture and db creation
 - Add the db_name variable
 - Remove parallel_tests ad dependency

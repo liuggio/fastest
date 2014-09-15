@@ -34,6 +34,7 @@ class Application extends BaseApp
         $this->services['pipe'] = new Queue\CreateTestSuitesFromPipe();
         $this->services['xml'] = new Queue\CreateTestSuitesFromPhpUnitXML();
         $this->services['parallel_command'] = new Queue\PrepareParallelCommand();
+        $this->services['single_command'] = new Queue\PrepareSingleCommand();
 
         $this->add(new Command\ConsumerCommand($this->services['pop']));
         $this->add(new Command\ParallelCommand());

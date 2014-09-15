@@ -10,9 +10,9 @@ class PrepareParallelCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldCreateACommandUsingParallelTests()
     {
-        $commandUseCase = new PrepareParallelCommand('sub');
-        $command = $commandUseCase->execute();
-        $this->assertEquals('parallel_test  -e "php sub consume  -l"', $command);
+        $commandUseCase = new PrepareParallelCommand();
+        $command = $commandUseCase->execute('sub');
+        $this->assertEquals('parallel_test  -e "sub"', $command);
     }
 
     /**
@@ -20,9 +20,9 @@ class PrepareParallelCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldCreateACommandUsingParallelTestsWithOptions()
     {
-        $commandUseCase = new PrepareParallelCommand('sub');
-        $command = $commandUseCase->execute('sub_sub', 2, '/tmp');
-        $this->assertEquals('parallel_test -n 2 -e "php sub consume \'sub_sub\' -l"', $command);
+        $commandUseCase = new PrepareParallelCommand('para');
+        $command = $commandUseCase->execute('sub_sub', 2);
+        $this->assertEquals('para -n 2 -e "sub_sub"', $command);
     }
 }
  
