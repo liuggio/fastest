@@ -12,11 +12,8 @@
         "symfony/console": "~2.5.4",
         "symfony/stopwatch": "~2.5.4",
         "symfony/process": "~2.5.4",
-        "monolog/monolog": "~1.10.0"
-    },
-    "require-dev": {
-        "doctrine/dbal": "~2.4",
-        "predis/predis": "v0.8.0"
+        "monolog/monolog": "~1.10.0",
+        "predis/predis": "~0.8.0"
     },
     "config": {
         "bin-dir": "bin/"

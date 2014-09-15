@@ -45,7 +45,7 @@ class ConsumerCommand extends Command
     }
 
 
-    private function executeCommand($suite, $command)
+    private function executeCommand($suite, $command, OutputInterface $output)
     {
         $prefix = '['.(int)getenv('TEST_ENV_NUMBER')."]\t";
         $stopwatch = new Stopwatch();
@@ -58,12 +58,9 @@ class ConsumerCommand extends Command
         $this->getApplication()->getService('log')->addInfo($prefix.$suite."\t".$command);
         $process->run();
 
-        $out = "<info>✔";
-        $endTag = '</info>';
+        $out = "<info>✔</info>";
         if (!$process->isSuccessful()) {
-            $out = "<error>✘";
-            $endTag = '</error>';
-
+            $out = "<error>✘</error>";
 
             $this->getApplication()->getService('log')->addError('┏ '.$prefix.$suite."\t".$process->getOutput());
             $this->getApplication()->getService('log')->addError('┃ '.$prefix.$suite."\t".$process->getErrorOutput()."\trunning: ".$command);
@@ -78,9 +75,10 @@ class ConsumerCommand extends Command
         $out .= $event->getDuration()."ms\t";
         $out .= $event->getMemory()."B\t";
         $this->getApplication()->getService('log')->addInfo($prefix.$suite."\t".$out);
-        $out .= $suite. PHP_EOL;
+        $out .= $suite;
+        $output->writeln($prefix.$out);
 
-        return $prefix.$out.$endTag;
+        return $process->getExitCode();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output, $recursive = false)
@@ -112,12 +110,23 @@ class ConsumerCommand extends Command
             $output->writeln($suite.', executing['.$commandToExecute.']');
         }
 
-        $out = $this->executeCommand($suite, $commandToExecute);
-
-        $output->write($out);
+        $return = $this->executeCommand($suite, $commandToExecute, $output);
 
         if ($input->getOption('loop')) {
-            return $this->execute($input, $output, true);
+
+            return $this->returnExitCodeAs($return, $this->execute($input, $output, true));
         }
+
+        return $output;
+    }
+
+    private function returnExitCodeAs($past, $current)
+    {
+        if ((int)$past !=0 || (int)$current != 0) {
+
+            return max((int)$past, (int)$current);
+        }
+
+        return 0;
     }
 }

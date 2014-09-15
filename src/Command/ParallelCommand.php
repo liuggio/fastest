@@ -74,8 +74,10 @@ class ParallelCommand extends Command
         }
 
         if ($input->getOption('only-push')) {
-
-            return true;
+            if (($readFromPipe<=0)) {
+                $output->writeln('Nothing to do.');
+            }
+            return 0;
         }
 
         $cmd = $this->getApplication()->getService('parallel_command')
@@ -150,6 +152,6 @@ class ParallelCommand extends Command
         $out .= $endTag;
         $output->writeln($out);
 
-        return $process->isSuccessful();
+        return $process->getExitCode();
     }
 }
