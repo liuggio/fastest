@@ -1,30 +1,36 @@
-Fastest
-=======
+Fastest - Simple tests parallel execution
+=========================================
 
 [![Build Status](https://secure.travis-ci.org/liuggio/fastest.png?branch=master)](http://travis-ci.org/liuggio/fastest)
-[![Total Downloads](https://poser.pugx.org/liuggio/fastest/downloads.png)](https://packagist.org/packages/liuggio/fastest)
-[![Latest Stable Version](https://poser.pugx.org/liuggio/fastest/v/stable.png)](https://packagist.org/packages/liuggio/fastest)
+[![Latest Stable Version](https://poser.pugx.org/liuggio/fastest/v/unstable.png)](https://packagist.org/packages/liuggio/fastest)
 
-
-### What
+## What
 
 This library does only one thing and would like to do it well:
 
-**Execute tests in parallel, one for each CPUs, giving goodies for functional tests.**
+**Execute tests in parallel, one for each CPUs (now with goodies for functional tests).**
+
+## Motto
+
+> "I had a problem,
+
+>  so I decided to use threads.
+
+>  tNwoowp rIo bhlaevmes.
 
 ### Why
 
-We were tired of not being able to run `paratest` with our project,
-Our old codebase runs in 30 minutes, now in 8 mins.
+We were tired of not being able to run `paratest` with our project (big complex functional project).
+There were no simple tool available for functional tests.
+Our old codebase run in 30 minutes, now in 4 minutes.
 
 ### How
 
-The process is really simple, there are two phases, the first is putting  all the tests in the a queue,
-the other is consuming in parallel one test per CPU.
+There's a producer and n consumers, the queue has been developed in ... Redis.
 
-### Over-engineering
+**Over-engineering?**
 
-It uses redis by default.
+fast as hell, but if you want you could change queue see [Queue/Infrastructure](./src/Queue/Infrastructure).
 
 ## Simple usage
 
@@ -62,14 +68,47 @@ parameters:
     doctrine.dbal.connection_factory.class: Liuggio\Fastest\DbalConnectionFactory
 ```
 
+## Tail the log
+
+This library uses monolog, the command is logged to `sys_get_temp_dir().'/'.fastest.log`
 
 ### Advanced
 
-Consume one test per time
+#### Parameters
+
+if you need to change the redis port or the log directory just use in bash
+the export command, the parameters are:
+
+1. LOG_PATH
+2. LOG_LEVEL
+3. REDIS_HOSTAME
+4. REDIS_PORT
+5. REDIS_QUEUE
+
+eg.
+``` bash
+export LOG_PATH=/tmp/a.log;
+```
+
+#### Only input working as Producer
+
+`find tests/ -name "*Test.php" | php src/fastest.php parallel -i`
+
+#### Run something different
+
+`php src/fastest.php parallel "phpunit -c app {};"`
+
+or
+`php src/fastest.php parallel "echo {};"`
+
+#### Consume one test per time
 
 `php src/fastest.php consume`
+
 is the same as
+
 `php src/fastest.php consume "phpunit {}"`
+
 {} is the value of the queue.
 
 eg:
@@ -93,3 +132,11 @@ sudo gem install parallel_tests
 
 `composer require-dev 'liuggio/fastest' 'dev-master'`
 
+### Run this test
+
+see [.travis.yml](.travis.yml) file
+
+### TODO
+
+- Rerun only failed tests
+- Execute one command per CPU before the loop, like init useful for fixture and db creation.

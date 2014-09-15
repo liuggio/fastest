@@ -21,29 +21,25 @@ class PrepareParallelCommand
         }
     }
 
-    public function execute($subProcess = null, $numberOfProcesses = null, $logDir = '')
+    public function execute($subProcess = null, $numberOfProcesses = null)
     {
         $processOption = '';
         if (null !== $numberOfProcesses && (int)$numberOfProcesses>0) {
             $processOption = '-n '.$numberOfProcesses.'';
         }
 
-        $subProcess = $this->prepareCommand($subProcess, $logDir);
+        $subProcess = $this->prepareCommand($subProcess);
         $command = sprintf('%s %s -e "%s"', $this->parallelCommand, $processOption, $subProcess);
 
         return $command;
     }
 
-    private function prepareCommand($execute = null, $logDir = '')
+    private function prepareCommand($execute = null)
     {
-        if (null !== $logDir && !empty($logDir)) {
-            $logDir = '--log-dir=\''.$logDir.'\'';
-        }
-
         if (null !== $execute) {
             $execute = '\''.$execute.'\'';
         }
 
-        return sprintf('php %s consume %s -l %s', $this->scriptName, $execute, $logDir);
+        return sprintf('php %s consume %s -l', $this->scriptName, $execute);
     }
 } 

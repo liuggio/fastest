@@ -2,8 +2,7 @@
 
 <phpunit bootstrap="tests/bootstrap.php" colors="true">
     <testsuites>
-        <testsuite name="Price Test Suite">
-            <directory>tests/Fastest</directory>
+        <testsuite name="Fastest Test Suite">
             <directory>tests/Fastest</directory>
         </testsuite>
     </testsuites>

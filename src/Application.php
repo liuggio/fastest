@@ -15,16 +15,20 @@ class Application extends BaseApp
     private $redisQueue;
     private $services;
 
-    public function __construct()
+    public function __construct(AppParametersInterface $parameters)
     {
         parent::__construct('fastest', self::VERSION);
 
-        $this->redisQueue = new Queue\Infrastructure\PredisQueue();
+        $this->redisQueue = new Queue\Infrastructure\PredisQueue(
+            $parameters->getRedisQueueName(),
+            $parameters->getRedisHost(),
+            $parameters->getRedisPort()
+        );
 
         $log = new Logger('default');
-        $log->pushHandler(new StreamHandler(sys_get_temp_dir().'/test.log', Logger::WARNING));
-
+        $log->pushHandler(new StreamHandler($parameters->getLogPath(), $parameters->getLogLevel()));
         $this->services['log'] =  $log;
+
         $this->services['pop'] = new Queue\PopATestSuite($this->redisQueue);
         $this->services['push'] = new Queue\PushTestSuites($this->redisQueue);
         $this->services['pipe'] = new Queue\CreateTestSuitesFromPipe();

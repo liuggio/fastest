@@ -14,18 +14,17 @@ class PredisQueue implements PopQueueInterface, PushQueueInterface
     private $options;
     private $queueName;
 
-    public function __construct($queueName = self::DEFAULT_QUEUE_NAME, $parameters = null, $options = null)
+    public function __construct($queueName = self::DEFAULT_QUEUE_NAME, $redisHost = '127.0.0.1', $redisPort = '6379', $redisDB = 1, $options = null)
     {
         $this->queueName = $queueName;
         $this->connection = false;
-        $this->parameters = $parameters;
         $this->options = $options;
 
         if (null == $this->parameters) {
             $this->parameters = array(
-                'host'     => '127.0.0.1',
-                'port'     => 6379,
-                'database' => 1
+                'host'     => $redisHost,
+                'port'     => $redisPort,
+                'database' => $redisDB
             );
         }
     }

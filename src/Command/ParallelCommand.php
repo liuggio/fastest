@@ -46,7 +46,7 @@ class ParallelCommand extends Command
                 'xml',
                 'x',
                 InputOption::VALUE_REQUIRED,
-                'Read input from a phpunit xml file from the \'<testsuites>\' collection.'
+                'Read input from a phpunit xml file from the \'<testsuites>\' collection, it is not used for consuming.'
             )
             ->addOption(
                 'stop-on-error',
@@ -126,7 +126,8 @@ class ParallelCommand extends Command
         $stopwatch->start($command);
 
         $process = new Process($command);
-
+        $process->setTimeout(null);
+        $process->setIdleTimeout(null);
         $process->run(function ($type, $buffer) use ($output) {
             if (Process::ERR === $type) {
                 $output->write('<error>'.$buffer.'</error>');

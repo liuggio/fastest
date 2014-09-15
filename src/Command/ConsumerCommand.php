@@ -52,6 +52,8 @@ class ConsumerCommand extends Command
         $stopwatch->start($command);
 
         $process = new Process($command);
+        $process->setTimeout(null);
+        $process->setIdleTimeout(null);
 
         $this->getApplication()->getService('log')->addInfo($prefix.$suite."\t".$command);
         $process->run();
@@ -62,7 +64,10 @@ class ConsumerCommand extends Command
             $out = "<error>✘";
             $endTag = '</error>';
 
-            $this->getApplication()->getService('log')->addError($prefix.$suite."\t".$process->getErrorOutput()."\trunning: ".$command);
+
+            $this->getApplication()->getService('log')->addError('┏ '.$prefix.$suite."\t".$process->getOutput());
+            $this->getApplication()->getService('log')->addError('┃ '.$prefix.$suite."\t".$process->getErrorOutput()."\trunning: ".$command);
+            $this->getApplication()->getService('log')->addError('┗ '.$prefix.$suite."\t");
         }
 
         $this->getApplication()->getService('log')->addInfo($process->getOutput());
