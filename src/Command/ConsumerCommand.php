@@ -88,12 +88,12 @@ class ConsumerCommand extends Command
         $suite = $this->popATestSuite->execute();
 
         if (!$suite){
-            $out = '['.(int)getenv('TEST_ENV_NUMBER')."]\t Empty queue.";
+            $out = '['.(int)getenv('TEST_ENV_NUMBER')."]\t-\tNothing to do empty queue.";
 
             if (!$recursive) {
                 $this->getApplication()->getService('log')->addWarning($out);
                 $output->writeln($out);
-                return 1;
+                return 0;
             }
 
             $this->getApplication()->getService('log')->addInfo($out);

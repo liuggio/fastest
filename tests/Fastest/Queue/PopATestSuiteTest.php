@@ -16,7 +16,7 @@ class PopATestSuiteTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('pop');
 
-        $q = new PopATestSuite($repositoryMock);
+        $q = new PopATestSuitee($repositoryMock);
         $q->execute();
     }
 }

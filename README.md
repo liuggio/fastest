@@ -21,43 +21,52 @@ This library does only one thing and would like to do it well:
 ### Why
 
 We were tired of not being able to run `paratest` with our project (big complex functional project).
+
 There were no simple tool available for functional tests.
+
 Our old codebase run in 30 minutes, now in 4 minutes.
 
 ### How
 
-There's a producer and n consumers, the queue has been developed in ... Redis.
+There's a producer and n consumers (one per CPU), the queue has been developed in ... Redis.
 
 **Over-engineering?**
 
-fast as hell, but if you want you could change queue see [Queue/Infrastructure](./src/Queue/Infrastructure).
+Fast as hell, but if you want you could change queue see [Queue/Infrastructure](./src/Queue/Infrastructure).
 
 ## Simple usage
 
 #### Piping tests
 
-push into a queue and execute all the tests in your project:
+It pushes into a queue and executes all the tests in your project:
 
 ``` bash
 find tests/ -name "*Test.php" | php fastest.php parallel
 ```
+
+or with `ls`
+
+``` bash
+ls -d test/* | php fastest.php parallel
+```
+
 #### Using phpunit.xml.dist
 
-You can use importing the test suites from the `phpunit.xml.dist`
+You can use the option `-x` and import the test suites from the `phpunit.xml.dist`
 
-`php fastest.php -x phpunit.xml.dist`
+`php fastest.php parallel -x phpunit.xml.dist`
 
 #### Functional test and database
 
 Each CPU has an Env number
 
 ``` php
-$dbName = sprintf("test_%d", getenv('TEST_ENV_NUMBER'));
+echo getenv('TEST_ENV_NUMBER');
 ```
 
 ## Symfony and Doctrine DBAL Adapter
 
-If you want to parallelize functional tests, and if you have a machine with 4 CPUs, you should create 4 databases and then running the fixture.
+If you want to parallel functional tests, and if you have a machine with 4 CPUs, you should create 4 databases and then running the fixture.
 
 Modifying the config_test config file in Symfony, each functional test will look for a database called `test_x` (x is from 1 to CPUs number).
 
@@ -65,7 +74,7 @@ Modifying the config_test config file in Symfony, each functional test will look
 ``` yml
 parameters:
     # Stubs
-    doctrine.dbal.connection_factory.class: Liuggio\Fastest\DbalConnectionFactory
+    doctrine.dbal.connection_factory.class: Liuggio\Fastest\Doctrine\DbalConnectionFactory
 ```
 
 ## Tail the log
@@ -139,4 +148,6 @@ see [.travis.yml](.travis.yml) file
 ### TODO
 
 - Rerun only failed tests
-- Execute one command per CPU before the loop, like init useful for fixture and db creation.
+- Execute one command per CPU before the loop, like init useful for fixture and db creation
+- Add the db_name variable
+- Remove parallel_tests ad dependency
