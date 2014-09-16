@@ -32,6 +32,7 @@ There's a producer and n consumers (one per CPU), the queue has been developed i
 
 **Over-engineering?**
 
+The stable version will not have dependencies like Redis...
 Developer time is a cost, tests are a complex world, if you want you could replace Redis changing queue see [Queue/Infrastructure](./src/Queue/Infrastructure).
 
 ## Simple usage
@@ -162,4 +163,5 @@ see [.travis.yml](.travis.yml) file
 - Rerun only failed tests
 - Add the db_name variable
 - Remove parallel_tests ad dependency
+- Remove redis ad dependency
 - Behat provider?
