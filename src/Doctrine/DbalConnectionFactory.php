@@ -6,7 +6,6 @@ use Doctrine\Bundle\DoctrineBundle\ConnectionFactory;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Configuration;
 
-
 /**
  * Connection
  */
@@ -45,7 +44,6 @@ class DbalConnectionFactory extends ConnectionFactory
         return $max;
     }
 
-
     private static function getEnvValue()
     {
         $envNumber = (int) getenv(self::$envVarName);
@@ -76,7 +74,6 @@ class DbalConnectionFactory extends ConnectionFactory
         }
 
         if (!isset($dbName) || (strpos($dbName, "test") === 0)) {
-
             return 'test_'.self::getEnvValue();
         }
 

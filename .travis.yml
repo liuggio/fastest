@@ -6,13 +6,9 @@ matrix:
   allow_failures:
     - php: hhvm-nightly
 
-services:
-  - redis-server
-
 before_script:
-  - gem install parallel_tests
   - composer selfupdate
   - composer install --prefer-source
 
 script:
-  - find tests/ -name "*Test.php" | php fastest.php parallel
+  - find tests/ -name "*Test.php" | php fastest parallel

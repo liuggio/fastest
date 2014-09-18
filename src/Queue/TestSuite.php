@@ -6,9 +6,14 @@ class TestSuite
 {
     protected $testPath;
 
-    function __construct($testPath)
+    public function __construct($testPath)
     {
-        $this->testPath =(string) $testPath;
+        $checkTestPath = trim((string) $testPath);
+        if (null === $testPath || empty($checkTestPath)) {
+            throw new \Exception('empty value');
+        }
+
+        $this->testPath = $checkTestPath;
     }
 
     public function __toString()

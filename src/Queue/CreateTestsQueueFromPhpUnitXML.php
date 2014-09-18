@@ -2,30 +2,31 @@
 
 namespace Liuggio\Fastest\Queue;
 
-class CreateTestSuitesFromPhpUnitXML
+class CreateTestsQueueFromPhpUnitXML
 {
-    public function execute($xmlFile)
+    public static function execute($xmlFile)
     {
-        $simpleObject = $this->readFromXml($xmlFile);
-        $arrayOfStrings = $this->extractSuitesFromXmlObject($simpleObject);
-        $testSuites = array();
+        $simpleObject = self::readFromXml($xmlFile);
+        $arrayOfStrings = self::extractSuitesFromXmlObject($simpleObject);
+        $testSuites = new TestsQueue();
+
         foreach ($arrayOfStrings as $string) {
-            $testSuites[] = new TestSuite($string);
+            $testSuites->add($string);
         }
 
         return $testSuites;
     }
 
-    private function readFromXml($filename)
+    private static function readFromXml($filename)
     {
         if (file_exists($filename)) {
             return simplexml_load_file($filename);
         }
 
-        exit('Failed to open $filename.');
+        throw new \Exception('Failed to open $filename.');
     }
 
-    private function extractSuitesFromXmlObject(\SimpleXMLElement $simpleObject)
+    private static function extractSuitesFromXmlObject(\SimpleXMLElement $simpleObject)
     {
         $directories = null;
         if (isset($simpleObject->testsuites)
@@ -37,4 +38,4 @@ class CreateTestSuitesFromPhpUnitXML
 
         return $directories;
     }
-} 
+}

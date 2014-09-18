@@ -2,17 +2,33 @@
 
 namespace Liuggio\Fastest\Command;
 
-use Liuggio\Fastest\Queue\PopATestSuite;
+use Liuggio\Fastest\ExecuteACommandInParallel;
+use Liuggio\Fastest\Process\CreateNProcesses;
+use Liuggio\Fastest\Queue\Infrastructure\MsqQueueFactory;
+use Liuggio\Fastest\ReadFromInputAndPushIntoTheQueue;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Stopwatch\Stopwatch;
 
 class ParallelCommand extends Command
 {
+    private $service;
+
+    private function initServices($queuePort)
+    {
+        $this->service = array();
+
+        $queueFactory = new MsqQueueFactory($queuePort);
+        $this->service['input'] = new ReadFromInputAndPushIntoTheQueue($queueFactory);
+
+        $processFactory = new CreateNProcesses();
+        $this->service['executor'] = new ExecuteACommandInParallel($processFactory);
+    }
+
     protected function configure()
     {
         $this
@@ -28,163 +44,116 @@ class ParallelCommand extends Command
                 'process',
                 'p',
                 InputOption::VALUE_REQUIRED,
-                'Number of process, default: available CPUs'
+                'Number of process, default: available CPUs.'
             )
             ->addOption(
                 'before',
                 'b',
                 InputOption::VALUE_REQUIRED,
-                'Execute a process before consuming the queue, execute it once per CPU, useful for init schema and fixtures.'
-            )
-            ->addOption(
-                'log-dir',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'log-dir \''.sys_get_temp_dir().'\' by default'
-            )
-            ->addOption(
-                'only-push',
-                'i',
-                InputOption::VALUE_NONE,
-                'Only from input, push the data into the queue.'
+                'Execute a process before consuming the queue, execute it once per Process, useful for init schema and fixtures.'
             )
             ->addOption(
                 'xml',
                 'x',
                 InputOption::VALUE_REQUIRED,
-                'Read input from a phpunit xml file from the \'<testsuites>\' collection, it is not used for consuming.'
+                'Read input from a phpunit xml file from the \'<testsuites>\' collection. Note: it is not used for consuming.'
             )
             ->addOption(
-                'stop-on-error',
-                'e',
+                'preserve-order',
+                'o',
                 InputOption::VALUE_NONE,
-                'Stop tests on error.'
+                'Queue is randomized by default, with this option the queue is read preserving the order.'
+            )
+            ->addOption(
+                'queue-key',
+                'k',
+                InputOption::VALUE_REQUIRED,
+                'Queue key number.'
             )
         ;
     }
 
-
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // get Input and push Input
-        $readFromPipe = $this->getAndPushInputFromPipe();
-        if ($xmlFile = $input->getOption('xml')) {
-            if ($readFromPipe) {
-                throw new \InvalidArgumentException('Not use the xml as input if you used with pipe.');
-            }
-            $readFromPipe = $this->getAndPushInputFromXML($xmlFile);
+        $queuePort = (int) $input->getOption('queue-key');
+        if ($queuePort <= 0) {
+            $queuePort = rand(100000, 200000);
         }
 
-        if (($readFromPipe>0)) {
-            $output->writeln('Pushed n.'.$readFromPipe.' element in the Queue');
-        }
+        $this->initServices($queuePort);
 
-        if ($input->getOption('only-push')) {
-            if (($readFromPipe<=0)) {
-                $output->writeln('Nothing to do.');
-            }
-            return 0;
-        }
+        $queue = $this->service['input']
+            ->execute(
+                $input->getOption('xml'),
+                $input->getOption('preserve-order')
+            );
+        $queuePort = $queue->getQueuePort();
+        $number = $queue->getNumberOfPushedMessage();
 
-        if ($input->getOption('before')) {
-            $beforeCommand = $this->prepareBeforeCommand($input->getOption('before'), $input->getOption('process'));
-            $return = (int) $this->executeCommand($beforeCommand, $output);
+        $shuffled = $input->getOption('preserve-order')?'':'shuffled';
+        $output->writeln('- Queue has <fg=white;bg=blue>'.$number.'</> '.$shuffled.' elements.');
+        // $output->writeln('- Queue port is at '.$queuePort.'.');
 
-            if (0 !== $return) {
-                return $return;
-            }
-        }
-
-        $cmd = $this->prepareParallelConsumerCommand(
+        $processes = $this->service['executor']->execute(
+            $queuePort,
             $input->getArgument('execute'),
-            $input->getOption('process')
+            $input->getOption('process'),
+            $input->getOption('before')
+        );
+        $output->writeln('- Will be consumed by <fg=white;bg=blue>'.$processes->count().'</> parallel Processes.');
+        ProgressBar::setFormatDefinition(
+            'minimal',
+            '<info>%percent%</info>\033[32m%\033[0m <fg=white;bg=blue>%remaining%</>'
         );
 
-        putenv('TEST_ENV_ENABLE=1');
-        if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
-            $output->writeln('Running in parallel: '.$cmd.'.');
-        }
+        $output->writeln('');
+        $progress = new ProgressBar($output, $number);
+        $progress->setFormat(' %current%/%max% <fg=white;bg=blue>[%bar%]</> %percent:3s%% %elapsed:6s% %memory:6s%');
+        $progress->start();
+        $last = $number;
+        $now = -1;
+        while (($now = $queue->getMessagesInTheQueue()) > 0) {
 
-        return $this->executeCommand($cmd, $output);
-    }
-
-    private function getAndPushInputFromXML($xmlFileName)
-    {
-        $inputGot = $this->getApplication()->getService('xml')->execute($xmlFileName);
-
-        if (is_array($inputGot) && count($inputGot) > 0) {
-            $this->getApplication()->getService('push')->execute($inputGot);
-
-            return count($inputGot);
-        }
-
-        return false;
-    }
-
-    private function getAndPushInputFromPipe()
-    {
-        $inputGot = $this->getApplication()->getService('pipe')->execute();
-
-        if (is_array($inputGot) && count($inputGot) > 0) {
-            $this->getApplication()->getService('push')->execute($inputGot);
-
-            return count($inputGot);
-        }
-
-        return false;
-    }
-
-    private function executeCommand($command,OutputInterface $output)
-    {
-        $out = PHP_EOL."   \t";
-        $stopwatch = new Stopwatch();
-        $stopwatch->start($command);
-
-        $process = new Process($command);
-        $process->setTimeout(null);
-        $process->setIdleTimeout(null);
-        $process->run(function ($type, $buffer) use ($output) {
-            if (Process::ERR === $type) {
-                $output->write('<error>'.$buffer.'</error>');
-            } else {
-                $output->write($buffer);
+            if ($last != $now) {
+                $progress->advance($last-$now);
             }
-        });
+            $last = $now;
+            usleep(10);
+        }
+        $progress->finish();
+        $processes->wait();
+        $queue->close();
+        $value = 0;
+        $output->writeln('');
 
-        $endTag = '</info>';
-        if (!$process->isSuccessful()) {
-            $out .= "<error>✘\t";
-            $endTag = '</error>';
-        } else {
-            $out .= "<info>✔\t";
+        $array = $processes->getProcesses();
+
+        foreach ($array as $process) {
+            $exit = $process->getExitCode();
+            if (0 !== $exit) {
+                $output->writeln('['.$process->getOutput().']');
+                $output->writeln('['.$process->getErrorOutput().']');
+            }
+            $value = $this->returnExitCodeAs($exit, $value);
         }
 
-        $event = $stopwatch->stop($command);
-        $out .= $event->getDuration()."ms\t";
-        $out .= $event->getMemory()."B\t";
-        $out .= $endTag;
-        $output->writeln($out);
+        $out = "    <info>✔</info> You are great!";
+        if (0 !== $value) {
+            $out = "    <error>✘ ehm broken tests...</error>";
+        }
 
-        return $process->getExitCode();
+        $output->writeln(PHP_EOL.$out);
+
+        return $value;
     }
 
-    private function prepareBeforeCommand($before, $processNumber = null)
+    private function returnExitCodeAs($past, $current)
     {
+        if ((int) $past !=0 || (int) $current != 0) {
+            return max((int) $past, (int) $current);
+        }
 
-        $cmd = $this->getApplication()->getService('parallel_command')
-            ->execute($before, $processNumber);
-
-        return $cmd;
+        return 0;
     }
 
-    private function prepareParallelConsumerCommand($execute, $processNumber = null)
-    {
-        $singleProcessConsumerCommand = $this->getApplication()->getService('single_command')
-            ->execute($execute);
-
-        $cmd = $this->getApplication()->getService('parallel_command')
-            ->execute($singleProcessConsumerCommand, $processNumber);
-
-        return $cmd;
-    }
 }

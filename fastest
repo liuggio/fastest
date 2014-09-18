@@ -30,7 +30,5 @@ if (!$found) {
 use Liuggio\Fastest\Application;
 use Liuggio\Fastest\AppParametersFromEnv;
 
-$parameters = new AppParametersFromEnv();
-
-$application = new Application($parameters);
+$application = new Application();
 $application->run();

@@ -2,12 +2,12 @@
 
 namespace Liuggio\Fastest\Queue;
 
-class CreateTestSuitesFromPipe
+class CreateTestsQueueFromSTDIN
 {
     private $stdin;
     private $fstin;
 
-    function __construct($stdin = 'php://stdin')
+    public function __construct($stdin = 'php://stdin')
     {
         $this->stdin = $stdin;
         $this->fstin = null;
@@ -16,13 +16,13 @@ class CreateTestSuitesFromPipe
     public function execute()
     {
         $this->fstin = fopen($this->stdin, 'r');
-        $arrayOfInput = array();
+        $testSuites = new TestsQueue();
         stream_set_blocking($this->fstin , false);
         while (false !== ($line = fgets($this->fstin ))) {
-            $this->addLineIfNotEmpty($arrayOfInput, $line);
+            $this->addLineIfNotEmpty($testSuites, $line);
         }
 
-        return $arrayOfInput;
+        return $testSuites;
     }
 
     public function __destruct()
@@ -32,11 +32,11 @@ class CreateTestSuitesFromPipe
         }
     }
 
-    private function addLineIfNotEmpty(&$arrayOfInput, $line)
+    private function addLineIfNotEmpty(TestsQueue &$testSuites, $line)
     {
         $line = trim($line);
         if (!empty($line)) {
-            $arrayOfInput[] = new TestSuite($line);
+            $testSuites->add($line);
         }
     }
-} 
+}
