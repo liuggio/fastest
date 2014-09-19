@@ -13,10 +13,12 @@ This library does only one simple thing:
 **Execute parallel testing, creating a process for each CPU (and with some goodies for functional tests).**
 
 ``` bash
-find tests/ -name "*Test.php" | php fastest parallel "/my/path/phpunit -c app {};"
+find tests/ -name "*Test.php" | php fastest parallel "bin/phpunit -c app {};"
 ```
 
-This is optimized for functional tests, creates a process for each CPU, giving an easy way to work with n databases in parallel.
+This tool doesn't wrap any testing tool available it just executes it in parallel.
+
+Is is optimized for functional tests, giving an easy way to work with N databases in parallel.
 
 ## Motto
 
@@ -28,27 +30,27 @@ This is optimized for functional tests, creates a process for each CPU, giving a
 
 ## Why
 
-We were tired of not being able to run `paratest` with our project (big complex functional project).
+We were tired of not being able to run [paratest](https://github.com/brianium/paratest) with our project (big complex functional project).
 
-`parallel` is a great tool but for unit tests.
+[Parallel](https://github.com/grosser/parallel) is a great tool but not so nice for functional tests.
 
 There were no simple tool available for functional tests.
 
 Our old codebase run in 30 minutes, now in 13 minutes with 4 CPU.
 
-## How
-
-100% written in PHP, inspired by parallel.
-
-There's a producer and N. consumers (one per CPU), the Queue has been developed with `PHP msg_*` functions.
-
-### Feature
+## Features
 
 1. Functional tests could use a database per processor using the environment variable.
 2. Tests are randomized by default
 3. Is not coupled with PhpUnit you could run any command.
 3. Is developed in PHP with no dependencies.
 4. As input you could use a `phpunit.xml.dist` file or use pipe (see below).
+
+## How
+
+100% written in PHP, inspired by parallel.
+
+There's a producer and N. consumers (one per CPU), the Queue has been developed with `PHP msg_*` functions.
 
 ## Simple usage
 
@@ -127,9 +129,10 @@ Options:
 
 ## Symfony and Doctrine DBAL Adapter
 
-If you want to parallel functional tests, and if you have a machine with 4 CPUs, you should create 4 databases and then running the fixture.
+If you want to parallel functional tests, and if you have a machine with 4 CPUs, the best think you could do is create a db foreach parallel process,
+`fastest` gives you the opportunity to work easily with Symfony.
 
-Modifying the config_test config file in Symfony, each functional test will look for a database called `test_x` (x is from 1 to CPUs number).
+Modifying the config_test config file in Symfony, each functional test will look for a database called `test_x` automatically (x is from 1 to CPUs number).
 
 `config_test.yml`
 ``` yml
@@ -139,7 +142,6 @@ parameters:
 ```
 
 ## Install
-
 
 if you use Composer just run `composer require-dev 'liuggio/fastest' 'dev-master'`
 
