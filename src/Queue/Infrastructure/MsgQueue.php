@@ -38,7 +38,7 @@ class MsgQueue implements QueueInterface
         return false;
     }
 
-    public function getMessagesInTheQueue()
+    public function getMessagesInTheQueue($port = null)
     {
         $queueStatus = msg_stat_queue($this->resource);
 

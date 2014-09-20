@@ -2,8 +2,10 @@
 
 namespace Liuggio\Fastest\Command;
 
+use Liuggio\Fastest\Process\EnvCommandCreator;
 use Liuggio\Fastest\Queue\Consumer;
 use Liuggio\Fastest\Queue\Infrastructure\MsqQueueFactory;
+use Liuggio\Fastest\Queue\Infrastructure\RedisQueueFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,6 +14,8 @@ use Symfony\Component\Process\Process;
 
 class ConsumerCommand extends Command
 {
+    const PREFIX_SUITE_ERROR   = '| x Suite Error ';
+    const PREFIX_SUITE_SUCCESS = '|   Suite OK    ';
 
     protected function configure()
     {
@@ -33,7 +37,7 @@ class ConsumerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output, $recursive = false)
     {
-        $factory = new MsqQueueFactory((int) $input->getArgument('fifo-file'));
+        $factory = new RedisQueueFactory((int) $input->getArgument('fifo-file'));
         $consumer = new Consumer($factory);
 
         return $this->doExecute($consumer, $input, $output, rand());
@@ -48,6 +52,7 @@ class ConsumerCommand extends Command
 
         $execute = $input->getArgument('execute');
         $commandToExecute = str_replace('{}', $suite, $execute);
+        $commandToExecute = str_replace('{p}', getenv(EnvCommandCreator::ENV_TEST_NUMBER), $commandToExecute);
 
         $ret = $this->executeACommand($suite, $commandToExecute, $output);
 
@@ -61,12 +66,22 @@ class ConsumerCommand extends Command
         $process->setIdleTimeout(null);
 
         $process->run();
+//        $process->run(function ($type, $buffer) use (){
+//                if (Process::ERR === $type) {
+//                    echo 'ERR > '.$buffer;
+//                } else {
+//                    echo 'OUT > '.$buffer;
+//                }
+//            });
 
-        if (!$process->isSuccessful()) {
+      if (!$process->isSuccessful()) {
+            $output->writeln(sprintf("%s [%s] %s",self::PREFIX_SUITE_ERROR, getenv(EnvCommandCreator::ENV_TEST_NUMBER), $suite));
             $output->writeln($process->getOutput());
             $output->writeln($process->getErrorOutput());
 
-        }
+        } else {
+          $output->writeln(sprintf("%s [%s] %s",self::PREFIX_SUITE_SUCCESS, getenv(EnvCommandCreator::ENV_TEST_NUMBER), $suite));
+      }
 
         return $process->getExitCode();
     }

@@ -5,17 +5,13 @@ namespace Liuggio\Fastest\Doctrine;
 use Doctrine\Bundle\DoctrineBundle\ConnectionFactory;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Configuration;
+use Liuggio\Fastest\Process\EnvCommandCreator;
 
 /**
- * Connection
+ * Creates a connection taking the db name from the env, this is great if you want to run parallel functional tests.
  */
 class DbalConnectionFactory extends ConnectionFactory
 {
-    public static $envVarName = 'TEST_ENV_NUMBER';
-    public static $envIsAvailable = 'TEST_ENV_ENABLE';
-    public static $envMaxNumber = 'TEST_ENV_MAX_NUMBER';
-    public static $defaultMaxNumber = 4;
-
     /**
      * Create a connection by name.
      *
@@ -28,55 +24,29 @@ class DbalConnectionFactory extends ConnectionFactory
      */
     public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = array())
     {
-        $params['dbname'] = self::modifyDbNameFromEnv($params['dbname']);
+        $params['dbname'] = $this->modifyDbNameFromEnv($params['dbname']);
 
         return parent::createConnection($params, $config, $eventManager, $mappingTypes);
     }
 
-    private static function getMaxNumber()
+    private function modifyDbNameFromEnv($dbName)
     {
-        $max = (int) getenv(self::$envMaxNumber);
-
-        if (0 == $max) {
-            return self::$defaultMaxNumber;
-        }
-
-        return $max;
-    }
-
-    private static function getEnvValue()
-    {
-        $envNumber = (int) getenv(self::$envVarName);
-        if ($envNumber == false || empty($envNumber) || ($envNumber <= 0)) {
-            return '1';
-        }
-        $max = self::getMaxNumber();
-        $envNumber = $envNumber % $max;
-
-        if ($envNumber == 0) {
-            return (string) $max;
-        }
-
-        return $envNumber;
-    }
-
-    private static function isParallelizeEnable()
-    {
-        $boolean = (int) getenv(self::$envIsAvailable);
-
-        return (bool) $boolean;
-    }
-
-    private static function modifyDbNameFromEnv($dbName)
-    {
-        if (!self::isParallelizeEnable()) {
-            return $dbName;
-        }
-
-        if (!isset($dbName) || (strpos($dbName, "test") === 0)) {
-            return 'test_'.self::getEnvValue();
+        if ((!isset($dbName) || (strpos($dbName, "test") === 0)) && $this->issetDbNameEnvValue()) {
+            return $this->getDbNameEnvValue();
         }
 
         return $dbName;
+    }
+
+    private function issetDbNameEnvValue()
+    {
+        $dbName = $this->getDbNameEnvValue();
+
+        return (!empty($dbName));
+    }
+
+    private function getDbNameEnvValue()
+    {
+        return getenv(EnvCommandCreator::ENV_TEST_DB_NAME);
     }
 }

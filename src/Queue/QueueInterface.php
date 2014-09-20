@@ -26,6 +26,15 @@ interface QueueInterface
     public function getNumberOfPushedMessage();
 
     /**
+     * Get the number of the queue.
+     *
+     * @param null $port
+     *
+     * @return int
+     */
+    public function getMessagesInTheQueue($port = null);
+
+    /**
      * @return bool
      */
     public function close();

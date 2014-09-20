@@ -4,7 +4,7 @@ namespace Liuggio\Fastest\Command;
 
 use Liuggio\Fastest\ExecuteACommandInParallel;
 use Liuggio\Fastest\Process\CreateNProcesses;
-use Liuggio\Fastest\Queue\Infrastructure\MsqQueueFactory;
+use Liuggio\Fastest\Queue\Infrastructure\RedisQueueFactory;
 use Liuggio\Fastest\ReadFromInputAndPushIntoTheQueue;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -22,7 +22,7 @@ class ParallelCommand extends Command
     {
         $this->service = array();
 
-        $queueFactory = new MsqQueueFactory($queuePort);
+        $queueFactory = new RedisQueueFactory($queuePort);
         $this->service['input'] = new ReadFromInputAndPushIntoTheQueue($queueFactory);
 
         $processFactory = new CreateNProcesses();
@@ -91,8 +91,8 @@ class ParallelCommand extends Command
         $number = $queue->getNumberOfPushedMessage();
 
         $shuffled = $input->getOption('preserve-order')?'':'shuffled';
-        $output->writeln('- Queue has <fg=white;bg=blue>'.$number.'</> '.$shuffled.' elements.');
-        // $output->writeln('- Queue port is at '.$queuePort.'.');
+        $output->writeln('- <fg=white;bg=blue>'.$number.'</> '.$shuffled.' tests into the queue that has '.$queue->getMessagesInTheQueue().' tests.');
+        $output->writeln('- Queue port is at '.$queuePort.'.');
 
         $processes = $this->service['executor']->execute(
             $queuePort,
@@ -101,59 +101,28 @@ class ParallelCommand extends Command
             $input->getOption('before')
         );
         $output->writeln('- Will be consumed by <fg=white;bg=blue>'.$processes->count().'</> parallel Processes.');
-        ProgressBar::setFormatDefinition(
-            'minimal',
-            '<info>%percent%</info>\033[32m%\033[0m <fg=white;bg=blue>%remaining%</>'
-        );
 
         $output->writeln('');
-        $progress = new ProgressBar($output, $number);
-        $progress->setFormat(' %current%/%max% <fg=white;bg=blue>[%bar%]</> %percent:3s%% %elapsed:6s% %memory:6s%');
-        $progress->start();
-        $last = $number;
-        $now = -1;
-        while (($now = $queue->getMessagesInTheQueue()) > 0) {
 
-            if ($last != $now) {
-                $progress->advance($last-$now);
-            }
-            $last = $now;
-            usleep(10);
-        }
-        $progress->finish();
+        $progressBar = new UIProgressBar();
+        $progressBar->render($queue, $output, $processes);
+
         $processes->wait();
         $queue->close();
-        $value = 0;
-        $output->writeln('');
 
-        $array = $processes->getProcesses();
+        $rendererFinalOutput = new RenderFinalOutputInformation();
+        $rendererFinalOutput->render($output, $processes);
 
-        foreach ($array as $process) {
-            $exit = $process->getExitCode();
-            if (0 !== $exit) {
-                $output->writeln('['.$process->getOutput().']');
-                $output->writeln('['.$process->getErrorOutput().']');
-            }
-            $value = $this->returnExitCodeAs($exit, $value);
-        }
 
         $out = "    <info>✔</info> You are great!";
-        if (0 !== $value) {
+        if (!$processes->isSuccessful()) {
             $out = "    <error>✘ ehm broken tests...</error>";
         }
 
         $output->writeln(PHP_EOL.$out);
 
-        return $value;
+        return $processes->getExitCode();
     }
 
-    private function returnExitCodeAs($past, $current)
-    {
-        if ((int) $past !=0 || (int) $current != 0) {
-            return max((int) $past, (int) $current);
-        }
-
-        return 0;
-    }
 
 }
