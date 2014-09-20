@@ -11,4 +11,4 @@ before_script:
   - composer install --prefer-source
 
 script:
-  - find tests/ -name "*Test.php" | php fastest parallel
+  - find tests/ -name "*Test.php" | php fastest -v

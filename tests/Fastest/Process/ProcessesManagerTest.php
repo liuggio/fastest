@@ -15,7 +15,6 @@ class ProcessesManagerTest extends \PHPUnit_Framework_TestCase
     {
         $queue = $this->getMock('Liuggio\Fastest\Queue\QueueInterface');
 
-        $command = 0;
         $factory = $this->getMockBuilder('Liuggio\Fastest\Process\ProcessFactory')
             ->disableOriginalConstructor()
             ->getMock();
@@ -27,8 +26,6 @@ class ProcessesManagerTest extends \PHPUnit_Framework_TestCase
         $manager = new ProcessesManager($factory, 1, 'echo "ciao"');
 
         $processes = null;
-
-        $manager->assertNProcessRunning($queue, $processes);
 
         $this->assertTrue($manager->assertNProcessRunning($queue, $processes));
         $this->assertEquals(1, $processes->count());
@@ -55,8 +52,6 @@ class ProcessesManagerTest extends \PHPUnit_Framework_TestCase
             ->method('getIndexesOfCompleted')
             ->willReturn(range(1,2));
 
-
-        $command = 0;
         $factory = $this->getMockBuilder('Liuggio\Fastest\Process\ProcessFactory')
             ->disableOriginalConstructor()
             ->getMock();

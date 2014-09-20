@@ -75,7 +75,6 @@ class ParallelCommand extends Command
         // header
         $shuffled = $input->getOption('preserve-order')?'':'shuffled ';
         $output->writeln('- <fg=white;bg=blue>'.$queue->count().'</> '.$shuffled.'tests into the queue.');
-
         $output->writeln('- Will be consumed by <fg=white;bg=blue>'.$maxNumberOfParallelProc.'</> parallel Processes.');
 
         // loop

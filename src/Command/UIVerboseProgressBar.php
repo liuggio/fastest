@@ -29,17 +29,25 @@ class UIVerboseProgressBar implements ProgressBarInterface
         $tests = array_slice($log, $this->lastIndex, $count, 1);
 
         foreach ($tests as $report) {
-
+            $this->lastIndex++;
             $flag = "<info>✔</info>";
+
+
+            $processorN = "";
+            if ($this->output->isVeryVerbose()) {
+                $processorN = $report->getProcessorNumber();
+            }
             $err = '';
             if (!$report->isSuccessful()) {
                 $flag = "<error>✘</error>";
-                $err = $report->getErrorBuffer();
+                if ($this->output->isVeryVerbose()) {
+                    $err = $report->getErrorBuffer();
+                }
             }
 
-            $remaining = sprintf('%d/%d', $now, $this->messageInTheQueue);
+            $remaining = sprintf('%d/%d', $this->lastIndex, $this->messageInTheQueue);
 
-            $this->output->writeln($remaining."\t".$flag."\t".$report->getSuite().$err);
+            $this->output->writeln($processorN."\t".$remaining."\t".$flag."\t".$report->getSuite().$err);
 
         }
         $this->lastIndex = $count;
