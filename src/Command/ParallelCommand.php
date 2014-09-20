@@ -68,7 +68,7 @@ class ParallelCommand extends Command
         $queue = $readFromInputAndPushIntoTheQueue
             ->execute($input->getOption('xml'), $input->getOption('preserve-order'));
 
-        $maxNumberOfParallelProc = $this->getMaxNumberOfProcess($input->getOption('preserve-order'));
+        $maxNumberOfParallelProc = $this->getMaxNumberOfProcess($input->getOption('process'));
         $processFactory = new ProcessFactory($maxNumberOfParallelProc, $input->getArgument('execute'));
         $processManager =  new ProcessesManager($processFactory, $maxNumberOfParallelProc, $input->getOption('before'));
 
