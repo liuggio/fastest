@@ -6,19 +6,17 @@ Fastest - simple parallel testing execution
 
 This is not stable, things will change... :)
 
-## What
+## Only one thing
 
-This library does only one simple thing:
-
-**Execute parallel testing, creating a process for each CPU (and with some goodies for functional tests).**
+**Execute parallel testing, creating a process for each Processor (with some goodies for functional tests).**
 
 ``` bash
-find tests/ -name "*Test.php" | php fastest parallel "bin/phpunit -c app {};"
+find tests/ -name "*Test.php" | ./bin/fastest "bin/phpunit -c app {};"
 ```
 
-This tool doesn't wrap any testing tool available it just executes it in parallel.
+This tool works with **any testing tool available**! It just executes it in parallel.
 
-Is is optimized for functional tests, giving an easy way to work with N databases in parallel.
+It is optimized for functional tests, giving an easy way to work with N databases in parallel.
 
 ## Motto
 
@@ -36,21 +34,20 @@ We were tired of not being able to run [paratest](https://github.com/brianium/pa
 
 There were no simple tool available for functional tests.
 
-Our old codebase run in 30 minutes, now in 13 minutes with 4 CPU.
+Our old codebase run in 30 minutes, now in 7 minutes with 4 Processors.
 
 ## Features
 
 1. Functional tests could use a database per processor using the environment variable.
-2. Tests are randomized by default
+2. Tests are randomized by default.
 3. Is not coupled with PhpUnit you could run any command.
 3. Is developed in PHP with no dependencies.
 4. As input you could use a `phpunit.xml.dist` file or use pipe (see below).
+5. Increase Verbosity with -v option.
 
 ## How
 
 100% written in PHP, inspired by parallel.
-
-There's a producer and N. consumers (one per CPU), the Queue has been developed with `PHP msg_*` functions.
 
 ## Simple usage
 
@@ -59,19 +56,19 @@ There's a producer and N. consumers (one per CPU), the Queue has been developed 
 It pushes into a queue and executes all the tests in your project:
 
 ``` bash
-find tests/ -name "*Test.php" | fastest parallel
+find tests/ -name "*Test.php" | ./bin/fastest
 ```
 
 or with `ls`
 
 ``` bash
-ls -d test/* | fastest parallel
+ls -d test/* | ./bin/fastest
 ```
 
-calling with arguments
+calling with placeholders:
 
 ``` bash
-find tests/ -name "*Test.php" | php fastest parallel "/my/path/phpunit -c app {};"
+find tests/ -name "*Test.php" | ./bin/fastest "/my/path/phpunit -c app {};"
 ```
 
 `{}` is the current test file.
@@ -81,18 +78,19 @@ find tests/ -name "*Test.php" | php fastest parallel "/my/path/phpunit -c app {}
 
 You can use the option `-x` and import the test suites from the `phpunit.xml.dist`
 
-`fastest parallel -x phpunit.xml.dist`
+`./bin/fastest -x phpunit.xml.dist`
 
-If you use this option make sure the test-suites are smaller as you can.
+If you use this option make sure the test-suites contains a lot of directory, is not suggested.
 
 ### Functional tests and database
 
-Each Process has an Env number
+Each Process has its Env number
 
 ``` php
 echo getenv('TEST_ENV_NUMBER');        // Current process number eg.2
-echo getenv('ENV_TEST_DB_NAME');       // Name for the database  eg. test_2
+echo getenv('ENV_TEST_DB_NAME');       // Name for the database eg. test_2
 echo getevn('ENV_TEST_MAX_PROCESSES'); // Number of CPUs on the system eg. 4
+echo getevn('ENV_TEST_SUITE_NAME');    // Number of the input file eg. ManagerTest.php
 ```
 
 ### Setup the database `before`
@@ -100,24 +98,23 @@ echo getevn('ENV_TEST_MAX_PROCESSES'); // Number of CPUs on the system eg. 4
 you can also run a script per process **before** the tests, useful for init schema and fixtures loading.
 
 ``` bash
-find tests/ -name "*Test.php" | fastest parallel -b"app/console doc:sch:create -e test";
+find tests/ -name "*Test.php" | ./bin/fastest -b"app/console doc:sch:create -e test";
 ```
 
 ### The arguments:
 
 ```
 Usage:
- parallel [-p|--process="..."] [-b|--before="..."] [-x|--xml="..."] [-o|--preserve-order] [-k|--queue-key="..."] [execute]
+ fastest [-p|--process="..."] [-b|--before="..."] [-x|--xml="..."] [-o|--preserve-order] [execute]
 
 Arguments:
  execute               Optional command to execute.
 
 Options:
- --process (-p)        Number of process, default: available CPUs.
- --before (-b)         Execute a process before consuming the queue, execute it once per Process, useful for init schema and fixtures.
+ --process (-p)        Number of parallel processes, default: available CPUs.
+ --before (-b)         Execute a process before consuming the queue, it executes this command once per process, useful for init schema and load fixtures.
  --xml (-x)            Read input from a phpunit xml file from the '<testsuites>' collection. Note: it is not used for consuming.
  --preserve-order (-o) Queue is randomized by default, with this option the queue is read preserving the order.
- --queue-key (-k)      Queue key number.
  --help (-h)           Display this help message.
  --quiet (-q)          Do not output any message.
  --verbose (-v|vv|vvv) Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
@@ -125,6 +122,7 @@ Options:
  --ansi                Force ANSI output.
  --no-ansi             Disable ANSI output.
  --no-interaction (-n) Do not ask any interactive question.
+
 ```
 
 ## Symfony and Doctrine DBAL Adapter

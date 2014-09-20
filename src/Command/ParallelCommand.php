@@ -2,10 +2,6 @@
 
 namespace Liuggio\Fastest\Command;
 
-use Liuggio\Fastest\ExecuteACommandInParallel;
-use Liuggio\Fastest\Process\CreateNProcesses;
-use Liuggio\Fastest\Queue\Infrastructure\RedisQueueFactory;
-use Liuggio\Fastest\ReadFromInputAndPushIntoTheQueue;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -14,26 +10,20 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
+use Liuggio\Fastest\Process\Processes;
+use Liuggio\Fastest\Process\ProcessesManager;
+use Liuggio\Fastest\Process\ProcessFactory;
+use Liuggio\Fastest\Process\ProcessorCounter;
+use Liuggio\Fastest\Queue\Infrastructure\InMemoryQueueFactory;
+use Liuggio\Fastest\Queue\ReadFromInputAndPushIntoTheQueue;
+use Symfony\Component\Stopwatch\Stopwatch;
+
 class ParallelCommand extends Command
 {
-    private $service;
-
-    private function initServices($queuePort)
-    {
-        $this->service = array();
-
-        $queueFactory = new RedisQueueFactory($queuePort);
-        $this->service['input'] = new ReadFromInputAndPushIntoTheQueue($queueFactory);
-
-        $processFactory = new CreateNProcesses();
-        $this->service['executor'] = new ExecuteACommandInParallel($processFactory);
-    }
-
     protected function configure()
     {
         $this
-            ->setName('parallel')
-            ->setAliases(array('consumer:parallel'))
+            ->setName('fastest')
             ->setDescription('Consume the element parallel.')
             ->addArgument(
                 'execute',
@@ -44,13 +34,13 @@ class ParallelCommand extends Command
                 'process',
                 'p',
                 InputOption::VALUE_REQUIRED,
-                'Number of process, default: available CPUs.'
+                'Number of parallel processes, default: available CPUs.'
             )
             ->addOption(
                 'before',
                 'b',
                 InputOption::VALUE_REQUIRED,
-                'Execute a process before consuming the queue, execute it once per Process, useful for init schema and fixtures.'
+                'Execute a process before consuming the queue, it executes this command once per process, useful for init schema and load fixtures.'
             )
             ->addOption(
                 'xml',
@@ -64,65 +54,73 @@ class ParallelCommand extends Command
                 InputOption::VALUE_NONE,
                 'Queue is randomized by default, with this option the queue is read preserving the order.'
             )
-            ->addOption(
-                'queue-key',
-                'k',
-                InputOption::VALUE_REQUIRED,
-                'Queue key number.'
-            )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $queuePort = (int) $input->getOption('queue-key');
-        if ($queuePort <= 0) {
-            $queuePort = rand(100000, 200000);
+        $stopWatch = new Stopwatch();
+        $stopWatch->start('execute');
+        // init
+        $queueFactory = new InMemoryQueueFactory();
+        $readFromInputAndPushIntoTheQueue = new ReadFromInputAndPushIntoTheQueue($queueFactory);
+
+        $queue = $readFromInputAndPushIntoTheQueue
+            ->execute($input->getOption('xml'), $input->getOption('preserve-order'));
+
+        $maxNumberOfParallelProc = $this->getMaxNumberOfProcess($input->getOption('preserve-order'));
+        $processFactory = new ProcessFactory($maxNumberOfParallelProc, $input->getArgument('execute'));
+        $processManager =  new ProcessesManager($processFactory, $maxNumberOfParallelProc, $input->getOption('before'));
+
+        // header
+        $shuffled = $input->getOption('preserve-order')?'':'shuffled ';
+        $output->writeln('- <fg=white;bg=blue>'.$queue->count().'</> '.$shuffled.'tests into the queue.');
+
+        $output->writeln('- Will be consumed by <fg=white;bg=blue>'.$maxNumberOfParallelProc.'</> parallel Processes.');
+
+        // loop
+        $processes = null;
+
+        if ($output->isVerbose()) {
+            $progressBar = new UIVerboseProgressBar($queue->count(), $output);
+        } else {
+            $progressBar = new UIProgressBar($queue->count(), $output);
         }
 
-        $this->initServices($queuePort);
-
-        $queue = $this->service['input']
-            ->execute(
-                $input->getOption('xml'),
-                $input->getOption('preserve-order')
-            );
-        $queuePort = $queue->getQueuePort();
-        $number = $queue->getNumberOfPushedMessage();
-
-        $shuffled = $input->getOption('preserve-order')?'':'shuffled';
-        $output->writeln('- <fg=white;bg=blue>'.$number.'</> '.$shuffled.' tests into the queue that has '.$queue->getMessagesInTheQueue().' tests.');
-        $output->writeln('- Queue port is at '.$queuePort.'.');
-
-        $processes = $this->service['executor']->execute(
-            $queuePort,
-            $input->getArgument('execute'),
-            $input->getOption('process'),
-            $input->getOption('before')
-        );
-        $output->writeln('- Will be consumed by <fg=white;bg=blue>'.$processes->count().'</> parallel Processes.');
-
-        $output->writeln('');
-
-        $progressBar = new UIProgressBar();
-        $progressBar->render($queue, $output, $processes);
+        while ($processManager->assertNProcessRunning($queue, $processes)) {
+            $progressBar->render($queue, $processes);
+        }
 
         $processes->wait();
-        $queue->close();
-
+        $progressBar->finish($queue, $processes);
+        $output->writeln('');
+        // render footer
         $rendererFinalOutput = new RenderFinalOutputInformation();
         $rendererFinalOutput->render($output, $processes);
-
 
         $out = "    <info>✔</info> You are great!";
         if (!$processes->isSuccessful()) {
             $out = "    <error>✘ ehm broken tests...</error>";
         }
 
+        $event =$stopWatch->stop('execute');
+
+
         $output->writeln(PHP_EOL.$out);
+        $output->writeln( sprintf("    Time: %d ms, Memory: %d b", $event->getDuration(), $event->getMemory()));
 
         return $processes->getExitCode();
     }
 
+    private function getMaxNumberOfProcess($maxNumberOfParallelProc)
+    {
+        if (null !== $maxNumberOfParallelProc && (int) $maxNumberOfParallelProc > 0) {
+            return $maxNumberOfParallelProc;
+        }
+
+        $processorCounter = new ProcessorCounter();
+
+        return $processorCounter->execute();
+    }
 
 }

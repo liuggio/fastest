@@ -1,9 +1,7 @@
 <?php
 
-namespace Liuggio\Fastest;
+namespace Liuggio\Fastest\Queue;
 
-
-use Liuggio\Fastest\Queue\TestsQueue;
 
 class ReadFromInputAndPushIntoTheQueueTest extends \PHPUnit_Framework_TestCase {
 
@@ -24,12 +22,12 @@ class ReadFromInputAndPushIntoTheQueueTest extends \PHPUnit_Framework_TestCase {
             ->getMock();
         $factory
             ->expects($this->once())
-            ->method('createForProducer')
+            ->method('create')
             ->willReturn($queue);
 
         $reader = new ReadFromInputAndPushIntoTheQueue($factory);
 
-        $ret = $reader->execute(__DIR__.'/Queue/Fixture/phpunit.xml.dist', true);
+        $ret = $reader->execute(__DIR__.'/Fixture/phpunit.xml.dist', true);
 
         $this->assertEquals($queue, $ret);
     }

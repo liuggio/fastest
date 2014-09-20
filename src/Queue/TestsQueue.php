@@ -5,17 +5,21 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class TestsQueue extends ArrayCollection
 {
+    private $hasBeenRandomized;
+
     /**
      * Initializes a new ArrayCollection.
      *
      * @param array $elements
+     * @param bool  $hasBeenRandomized
      */
-    public function __construct(array $elements = array())
+    public function __construct(array $elements = array(), $hasBeenRandomized = false)
     {
         parent::__construct();
         foreach ($elements as $element) {
             $this->add($element);
         }
+        $this->hasBeenRandomized = $hasBeenRandomized;
     }
 
     /**
@@ -28,7 +32,7 @@ class TestsQueue extends ArrayCollection
         $array = $this->toArray();
         shuffle($array);
 
-        return new self($array);
+        return new self($array, true);
     }
 
     /**

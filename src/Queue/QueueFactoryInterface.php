@@ -7,7 +7,5 @@ interface QueueFactoryInterface
     /**
      * @return QueueInterface
      */
-    public function createForProducer();
-
-    public function createForConsumer();
+    public function create();
 }

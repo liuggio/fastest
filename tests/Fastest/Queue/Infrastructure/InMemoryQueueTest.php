@@ -17,5 +17,6 @@ class InMemoryQueueTest extends \PHPUnit_Framework_TestCase
         $queue->push($tests);
         $this->assertEquals('b', $queue->pop());
         $this->assertEquals('a', $queue->pop());
+        $this->assertTrue($queue->isEmpty());
     }
 } 

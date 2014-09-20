@@ -26,11 +26,6 @@ class InMemoryQueue implements QueueInterface
         return (count($this->queue)>0);
     }
 
-    public function getMessagesInTheQueue($port = null)
-    {
-        return count($this->queue);
-    }
-
     public function getNumberOfPushedMessage()
     {
         return count($this->queue);
@@ -38,6 +33,20 @@ class InMemoryQueue implements QueueInterface
 
     public function close()
     {
-        unset($this->queue);
+        $this->queue = null;
+    }
+
+    public function count()
+    {
+        if (null !== $this->queue){
+            return count($this->queue);
+        }
+
+        return 0;
+    }
+
+    public function isEmpty()
+    {
+        return ($this->count() == 0);
     }
 }

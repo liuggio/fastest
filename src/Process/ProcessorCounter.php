@@ -9,6 +9,8 @@ class ProcessorCounter
 {
     const PROC_CPUINFO = '/proc/cpuinfo';
 
+    private static $count = null;
+
     private $procCPUInfo;
 
     public function __construct($procCPUInfo = self::PROC_CPUINFO)
@@ -18,7 +20,12 @@ class ProcessorCounter
 
     public function execute()
     {
-        return $this->readFromProcCPUInfo();
+        if (null !== self::$count) {
+            return self::$count;
+        }
+        self::$count = $this->readFromProcCPUInfo();
+
+        return self::$count;
     }
 
     private function readFromProcCPUInfo()

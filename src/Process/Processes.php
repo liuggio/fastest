@@ -7,31 +7,87 @@ use Symfony\Component\Process\Process;
 class Processes
 {
     private $processes;
+    private $finishedProcesses;
+    private $totalBuffer;
+    private $errorBuffer;
+    private $errorCounter;
 
     public function __construct(array $processes)
     {
         $this->processes = $processes;
+        $this->finishedProcesses = array();
+        $this->totalBuffer = array();
+        $this->errorBuffer = array();
+        $this->errorCounter = 0;
     }
 
-    public function start()
+    public function cleanUP()
     {
+        foreach ($this->processes as $key=>$process) {
+            if (null !== $process && $process->isTerminated()) {
+                $this->moveToFinishedProcesses($process);
+                $this->processes[$key] = null;
+            }
+        }
+    }
+
+    public function getIndexesOfCompleted()
+    {
+        $indexes = array();
+        foreach ($this->processes as $index=>$process) {
+            if (null === $process || $process->isTerminated()) {
+                $indexes[] = $index;
+            }
+        }
+
+        return $indexes;
+    }
+
+    public function add($key, Process $process)
+    {
+        $this->cleanUP();
+        if (isset($this->processes[$key]) && null !== $this->processes[$key]) {
+            $this->assertTerminated($key);
+            $this->moveToFinishedProcesses($this->processes[$key]);
+            $this->processes[$key] = null;
+        }
+
+        $this->processes[$key] = $process;
+    }
+
+    public function start($key = null)
+    {
+        if (null !== $key) {
+            $this->processes[$key]->start();
+
+            return true;
+        }
+
         return array_walk($this->processes, function ($item, $key) {
-            $item->start();
+            if (null !== $item) {
+                $item->start();
+            }
         });
     }
 
     public function stop()
     {
         return array_walk($this->processes, function ($item) {
-            $item->stop();
+            if (null !== $item) {
+                $item->stop();
+            }
         });
     }
 
     public function wait()
     {
-        return array_walk($this->processes, function ($item, $key) {
-            $item->wait();
+        $ret = array_walk($this->processes, function ($item, $key) {
+            if (null !== $item) {
+                $item->wait();
+            }
         });
+        $this->cleanUP();
+        return $ret;
     }
 
     public function count()
@@ -49,31 +105,26 @@ class Processes
         $noOneIsRunning = true;
 
         foreach ($this->processes as $process) {
-            $noOneIsRunning = $noOneIsRunning && $process->isTerminated();
+            $noOneIsRunning = $noOneIsRunning && (null===$process || $process->isTerminated());
         }
 
         return !$noOneIsRunning;
     }
 
     /**
-     * Return the biggest exit code among the processes.
+     * Return the number of tests failing, 0 if none :)
      *
      * @return int
      */
     public function getExitCode()
     {
-        $exitCode = 0;
-        foreach ($this->processes as $process) {
-            $exitCode = $this->returnExitCodeAs($process->getExitCode(), $exitCode);
-        }
-
-        return $exitCode;
+        return $this->errorCounter;
     }
 
     /**
      * Checks if the process ended successfully.
      *
-     * @return bool    true if the process ended successfully, false otherwise
+     * @return bool true if the process ended successfully, false otherwise
      *
      * @api
      */
@@ -82,63 +133,52 @@ class Processes
         return 0 === $this->getExitCode();
     }
 
-
-    public function countIncrementalErrors()
+    public function countErrors()
     {
-        $errorNumber = 0;
-        foreach ($this->processes as $process) {
-
-            $output = $process->getIncrementalOutput();
-            $errorOutput = $process->getIncrementalErrorOutput();
-
-            $errorCount = $this->doCountErrors($output);
-
-            if ($errorCount > 0 || strlen($errorOutput) > 0) {
-                if ($errorCount > 0) {
-                    $errorNumber = $errorNumber+$errorCount;
-                } else {
-                    $errorNumber++;
-                }
-            }
-        }
-
-        return $errorNumber;
+        return $this->errorCounter;
     }
 
     public function getErrorOutput()
     {
-        $errorOutputFinal = '';
-        foreach ($this->processes as $process) {
+        return $this->errorBuffer;
+    }
 
-            $output = $process->getOutput();
-            $errorOutput = $process->getErrorOutput();
+    /**
+     * @throws LogicException
+     */
+    private function assertTerminated($key)
+    {
+        if (!$this->processes[$key]->isTerminated()) {
+            throw new LogicException('Process must be terminated before calling');
+        }
+    }
 
-            $errorCount = $this->doCountErrors($output);
+    private function moveToFinishedProcesses(Process $process)
+    {
+        $env = $process->getEnv();
+        $suite = str_replace(EnvCommandCreator::ENV_TEST_SUITE_NAME.'=', '', $env[3]);
+        $number = str_replace(EnvCommandCreator::ENV_TEST_NUMBER.'=', '', $env[0]);
 
-            if ($errorCount > 0 || strlen($errorOutput) > 0) {
-                $errorOutputFinal .= $output.PHP_EOL.$errorOutput;
-            }
+
+
+        if (!$process->isSuccessful()) {
+            $this->errorCounter++;
+
+            $this->errorBuffer[$suite] = sprintf("[%s] %s", $number, $suite);
+            $this->errorBuffer[$suite] .= $process->getOutput();
+            $this->errorBuffer[$suite] .= $process->getErrorOutput();
         }
 
-        return $errorOutputFinal;
+        $this->totalBuffer[] = new Report($suite, $process->isSuccessful(), $number, isset($this->errorBuffer[$suite])?$this->errorBuffer[$suite]:null);
+
+        $this->finishedProcesses[] = $process;
     }
 
-    public function getProcesses()
+    /**
+     * @return Report[]
+     */
+    public function getReport()
     {
-        return $this->processes;
-    }
-
-    private function doCountErrors($output)
-    {
-        return substr_count($output, '| x Suite Error ');
-    }
-
-    private function returnExitCodeAs($past, $current)
-    {
-        if ((int) $past !=0 || (int) $current != 0) {
-            return max((int) $past, (int) $current);
-        }
-
-        return 0;
+        return $this->totalBuffer;
     }
 }

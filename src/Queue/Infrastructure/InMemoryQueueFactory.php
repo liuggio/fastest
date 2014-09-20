@@ -6,24 +6,14 @@ use Liuggio\Fastest\Queue\QueueFactoryInterface;
 
 class InMemoryQueueFactory implements QueueFactoryInterface
 {
-    private static $consumerFIFO = null;
-    private static $producerFIFO = null;
+    private static $queue= null;
 
-    public function createForProducer()
+    public function create()
     {
-        if (null === self::$producerFIFO) {
-            self::$producerFIFO = new InMemoryQueue();
+        if (null === self::$queue) {
+            self::$queue = new InMemoryQueue();
         }
 
-        return self::$producerFIFO;
-    }
-
-    public function createForConsumer()
-    {
-        if (null === self::$consumerFIFO) {
-            self::$consumerFIFO = new InMemoryQueue();
-        }
-
-        return self::$consumerFIFO;
+        return self::$queue;
     }
 }

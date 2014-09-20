@@ -1,11 +1,7 @@
 <?php
-namespace Liuggio\Fastest;
+namespace Liuggio\Fastest\Queue;
 
 use Liuggio\Fastest\Exception\QueueEmptyException;
-use Liuggio\Fastest\Queue\CreateTestsQueueFromPhpUnitXML;
-use Liuggio\Fastest\Queue\CreateTestsQueueFromSTDIN;
-use Liuggio\Fastest\Queue\QueueFactoryInterface;
-use Liuggio\Fastest\Queue\TestsQueue;
 
 class ReadFromInputAndPushIntoTheQueue
 {
@@ -32,7 +28,7 @@ class ReadFromInputAndPushIntoTheQueue
             $testsQueue = $testsQueue->randomize();
         }
 
-        $queue = $this->queueFactory->createForProducer();
+        $queue = $this->queueFactory->create();
 
         $queue->push($testsQueue);
 
@@ -42,7 +38,7 @@ class ReadFromInputAndPushIntoTheQueue
     private function assertTestsQueueIsNotEmpty(TestsQueue $testsQueue)
     {
         if ($testsQueue->isEmpty()) {
-            throw new QueueEmptyException('QueueEmpty');
+            throw new \Exception('Empty input try piping some files.');
         }
     }
 }

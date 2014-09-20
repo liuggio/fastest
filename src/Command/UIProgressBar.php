@@ -2,48 +2,53 @@
 
 namespace Liuggio\Fastest\Command;
 
-
 use Liuggio\Fastest\Process\Processes;
-use Liuggio\Fastest\Queue\QueueInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class UIProgressBar
 {
+    private $bar;
+    private $last;
 
-    public function render(QueueInterface $queue, OutputInterface $output, Processes $processes)
+    public function __construct($messageInTheQueue, OutputInterface $output)
     {
-        $messageInTheQueue = $queue->getMessagesInTheQueue();
-        $progress = new ProgressBar($output, $messageInTheQueue);
-        $progress->setFormat('very_verbose');
-        $progress->setFormat('%current%/%max% <fg=white;bg=blue>[%bar%]</> %percent:3s%% %elapsed:6s% %memory:6s%'.PHP_EOL.PHP_EOL.'    %message%.'.PHP_EOL.PHP_EOL);
-
-        $progress->start();
-        $last = $messageInTheQueue;
-        $now = -1;
-        $progress->setMessage('<info>0</info> failures');
-        $failure = 0;
-
-        while ($processes->isAnyStillRunning()) {
-
-            $now = $queue->getMessagesInTheQueue();
-            $errorCount = $processes->countIncrementalErrors();
-
-            if ($errorCount > 0) {
-                $failure += $errorCount;
-                $progress->setMessage(sprintf("<error>%d</error> failures.", $failure));
-                $progress->setFormat('%current%/%max% <fg=white;bg=blue>[%bar%]</> %percent:3s%% %elapsed:6s% %memory:6s%'.PHP_EOL.PHP_EOL.'     %message%.'.PHP_EOL.PHP_EOL);
-            }
-
-            if ($last != $now) {
-                $progress->advance($last-$now);
-            }
-
-            $last = $now;
-            usleep(600);
-        }
-        $progress->finish();
-
-        return $failure;
+        $output->writeln('');
+        $output->writeln('');
+        $output->writeln('');
+        $output->writeln('');
+        $this->bar = new ProgressBar($output, $messageInTheQueue);
+        $this->bar->setFormat('very_verbose');
+        $this->bar->setFormat("%current%/%max% <fg=white;bg=blue>[%bar%]</> %percent:3s%% %elapsed:6s% %memory:6s% \n\n     %number%");
+        $this->bar->setMessage('<info>0</info> failures', 'number');
+        $this->bar->setMessage('', 'latestA');
+        $this->bar->setMessage('', 'latestB');
+        $this->last = $messageInTheQueue;
+        $this->bar->start();
     }
-} 
+
+    public function render($queue, Processes $processes)
+    {
+        $now = $queue->count();
+        $errorCount = $processes->countErrors();
+
+        if ($errorCount > 0) {
+            $this->bar->setFormat("%current%/%max% <fg=white;bg=blue>[%bar%]</> %percent:3s%% %elapsed:6s% %memory:6s% \n\n     %number%S");
+            $this->bar->setMessage(sprintf("<error>%d</error> failures.", $errorCount), 'number');
+        }
+
+        if ($this->last != $now) {
+            $this->bar->advance($this->last-$now);
+        }
+
+        $this->last = $now;
+
+        return $errorCount;
+    }
+
+    public function finish($queue, Processes $processes)
+    {
+        $this->render($queue, $processes);
+        $this->bar->finish();
+    }
+}
