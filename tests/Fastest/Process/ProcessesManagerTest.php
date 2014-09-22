@@ -19,7 +19,7 @@ class ProcessesManagerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $factory->expects($this->exactly(1))
+        $factory->expects($this->any())
             ->method('createAProcessForACustomCommand')
             ->willReturn(new Process('echo ',rand()));
 

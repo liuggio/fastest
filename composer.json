@@ -8,9 +8,9 @@
         }
     ],
     "require": {
-        "symfony/console": "~2.3",
-        "symfony/stopwatch": "~2.3",
-        "symfony/process": "~2.3",
+        "symfony/console": "~2.2",
+        "symfony/stopwatch": "~2.2",
+        "symfony/process": "~2.2",
         "doctrine/collections" : "~1.2"
     },
     "require-dev": {

@@ -163,7 +163,6 @@ class Processes
 
         if (!$process->isSuccessful()) {
             $this->errorCounter++;
-
             $this->errorBuffer[$suite] = sprintf("[%s] %s", $number, $suite);
             $this->errorBuffer[$suite] .= $process->getOutput();
             $this->errorBuffer[$suite] .= $process->getErrorOutput();

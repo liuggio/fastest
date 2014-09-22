@@ -11,17 +11,19 @@ class UIVerboseProgressBar implements ProgressBarInterface
     private $messageInTheQueue;
     private $lastIndex;
     private $output;
+    private $preProcesses;
 
-    public function __construct($messageInTheQueue, OutputInterface $output)
+    public function __construct($messageInTheQueue, OutputInterface $output, $preProcesses = 0)
     {
-        $this->messageInTheQueue = $messageInTheQueue;
+        $this->messageInTheQueue = $messageInTheQueue+$preProcesses;
         $this->output = $output;
         $this->lastIndex = 0;
+        $this->preProcesses = (int) $preProcesses;
     }
 
     public function render($queue, Processes $processes)
     {
-        $now = $queue->count();
+        $now = $queue->count()+$this->preProcesses;
         $errorCount = $processes->countErrors();
 
         $log = $processes->getReport();
@@ -32,22 +34,22 @@ class UIVerboseProgressBar implements ProgressBarInterface
             $this->lastIndex++;
             $flag = "<info>✔</info>";
 
-
             $processorN = "";
-            if ($this->output->isVeryVerbose()) {
-                $processorN = $report->getProcessorNumber();
+            if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $this->output->getVerbosity()) {
+                $processorN = $report->getProcessorNumber()."\t";
             }
+
             $err = '';
             if (!$report->isSuccessful()) {
                 $flag = "<error>✘</error>";
-                if ($this->output->isVeryVerbose()) {
+                if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $this->output->getVerbosity()) {
                     $err = $report->getErrorBuffer();
                 }
             }
 
             $remaining = sprintf('%d/%d', $this->lastIndex, $this->messageInTheQueue);
 
-            $this->output->writeln($processorN."\t".$remaining."\t".$flag."\t".$report->getSuite().$err);
+            $this->output->writeln($processorN.$remaining."\t".$flag."\t".$report->getSuite().$err);
 
         }
         $this->lastIndex = $count;

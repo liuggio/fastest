@@ -2,6 +2,8 @@
 
 namespace Liuggio\Fastest\Command;
 
+use Liuggio\Fastest\Queue\TestsQueue;
+use Liuggio\Fastest\Queue\TestSuite;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -54,6 +56,12 @@ class ParallelCommand extends Command
                 InputOption::VALUE_NONE,
                 'Queue is randomized by default, with this option the queue is read preserving the order.'
             )
+            ->addOption(
+                'rerun-failed',
+                'r',
+                InputOption::VALUE_NONE,
+                'Re-run failed test with before command if exists.'
+            )
         ;
     }
 
@@ -78,12 +86,44 @@ class ParallelCommand extends Command
         $output->writeln('- Will be consumed by <fg=white;bg=blue>'.$maxNumberOfParallelProc.'</> parallel Processes.');
 
         // loop
+        $processes = $this->doExecute($output, $queue, $processManager);
+
+        $event =$stopWatch->stop('execute');
+        $output->writeln( sprintf("    Time: %d ms, Memory: %d b", $event->getDuration(), $event->getMemory()));
+
+
+        if ($input->getOption('rerun-failed') ) {
+            $processes = $this->executeBeforeCommand($queue, $processes, $output, $processManager);
+        }
+
+        return $processes->getExitCode();
+    }
+
+    private function getMaxNumberOfProcess($maxNumberOfParallelProc)
+    {
+        if (null !== $maxNumberOfParallelProc && (int) $maxNumberOfParallelProc > 0) {
+            return $maxNumberOfParallelProc;
+        }
+
+        $processorCounter = new ProcessorCounter();
+
+        return $processorCounter->execute();
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param $queue
+     * @param $processManager
+     * @return array
+     */
+    private function doExecute(OutputInterface $output, $queue, $processManager)
+    {
         $processes = null;
 
-        if ($output->isVerbose()) {
-            $progressBar = new UIVerboseProgressBar($queue->count(), $output);
+        if ($this->isVerbose($output)) {
+            $progressBar = new UIVerboseProgressBar($queue->count(), $output, $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
         } else {
-            $progressBar = new UIProgressBar($queue->count(), $output);
+            $progressBar = new UIProgressBar($queue->count(), $output, $this->getHelper('progress'), $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
         }
 
         while ($processManager->assertNProcessRunning($queue, $processes)) {
@@ -101,25 +141,29 @@ class ParallelCommand extends Command
         if (!$processes->isSuccessful()) {
             $out = "    <error>✘ ehm broken tests...</error>";
         }
-
-        $event =$stopWatch->stop('execute');
-
-
         $output->writeln(PHP_EOL.$out);
-        $output->writeln( sprintf("    Time: %d ms, Memory: %d b", $event->getDuration(), $event->getMemory()));
 
-        return $processes->getExitCode();
+        return $processes;
     }
 
-    private function getMaxNumberOfProcess($maxNumberOfParallelProc)
+    private function isVerbose($output)
     {
-        if (null !== $maxNumberOfParallelProc && (int) $maxNumberOfParallelProc > 0) {
-            return $maxNumberOfParallelProc;
+        if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
+            return true;
         }
 
-        $processorCounter = new ProcessorCounter();
-
-        return $processorCounter->execute();
+        return false;
     }
 
+    private function executeBeforeCommand($queue, $processes, $output, $processManager)
+    {
+        if (!$processes->isSuccessful()) {
+            $array = $processes->getErrorOutput();
+            $output->writeln(sprintf("Re-Running [%d] elements", count($array)));
+            $queue->push(new TestsQueue(array_keys($array)));
+            $processes = $this->doExecute($output, $queue, $processManager);
+        }
+
+        return $processes;
+    }
 }

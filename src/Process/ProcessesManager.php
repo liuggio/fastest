@@ -22,11 +22,22 @@ class ProcessesManager
         $this->beforeCommand = $beforeCommand;
     }
 
+    public function getNumberOfProcessExecutedByTheBeforeCommand()
+    {
+        if (false !== $this->beforeCommand && null !== $this->beforeCommand) {
+            return $this->maxNumberOfParallelProcess;
+        }
+
+        return 0;
+    }
+
     public function assertNProcessRunning(QueueInterface &$queue, Processes &$processes = null)
     {
+        $parallelProcess = max(1, min($queue->count(), $this->maxNumberOfParallelProcess));
+
         if (null === $processes) {
 
-            $toBeCreated = range(1, $this->maxNumberOfParallelProcess);
+            $toBeCreated = range(1, $parallelProcess);
             $processes =  new Processes(array());
 
             if (false !== $this->beforeCommand && null !== $this->beforeCommand) {
@@ -59,6 +70,7 @@ class ProcessesManager
     private function createProcessesForTheBeforeCommand($range, Processes &$processes = null)
     {
         foreach ($range as $key) {
+
             $process = $this->processFactory->createAProcessForACustomCommand($this->beforeCommand, $key);
             $processes->add($key, $process);
             $processes->start($key);

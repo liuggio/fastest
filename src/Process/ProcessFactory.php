@@ -52,8 +52,13 @@ class ProcessFactory
     private function createProcess($executeCommand, $arrayEnv)
     {
         $process = new Process($executeCommand, null, $arrayEnv);
+
         $process->setTimeout(null);
-        $process->setIdleTimeout(null);
+        // compatibility to SF 2.2
+        if (method_exists($process,'setIdleTimeout')) {
+            $process->setIdleTimeout(null);
+        }
+
 
         return $process;
     }
