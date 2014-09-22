@@ -8,6 +8,7 @@ namespace Liuggio\Fastest\Process;
 class ProcessorCounter
 {
     const PROC_CPUINFO = '/proc/cpuinfo';
+    const PROC_DEFAULT_NUMBER = 4;
 
     private static $count = null;
 
@@ -32,7 +33,8 @@ class ProcessorCounter
     {
         $file = $this->procCPUInfo;
         if (!is_file($file) || !is_readable($file)) {
-            return null;
+
+            return 4;
         }
         $contents = trim(@file_get_contents($file));
 
