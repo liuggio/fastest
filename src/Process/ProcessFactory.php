@@ -25,18 +25,18 @@ class ProcessFactory
         $this->commandToExecuteTemplate = $commandToExecuteTemplate;
     }
 
-    public function createAProcess($suite, $currentProcessNumber)
+    public function createAProcess($suite, $currentProcessorNumber, $currentProcessCounter, $isFirstOnThread = false)
     {
-        $cmd = $this->replaceParameters($this->commandToExecuteTemplate, $suite, $currentProcessNumber);
-        $arrayEnv = $this->envCommandCreator->execute($currentProcessNumber, $this->maxParallelProcessesToExecute, $suite);
+        $cmd = $this->replaceParameters($this->commandToExecuteTemplate, $suite, $currentProcessorNumber);
+        $arrayEnv = $this->envCommandCreator->execute($currentProcessorNumber, $this->maxParallelProcessesToExecute, $suite, $currentProcessCounter, $isFirstOnThread);
 
         return $this->createProcess($cmd, $arrayEnv);
     }
 
-    public function createAProcessForACustomCommand($execute, $currentProcessNumber)
+    public function createAProcessForACustomCommand($execute, $currentProcessorNumber, $currentProcessCounter, $isFirstOnThread = false)
     {
-        $cmd = $this->replaceParameters($execute, '', $currentProcessNumber);
-        $arrayEnv = $this->envCommandCreator->execute($currentProcessNumber, $this->maxParallelProcessesToExecute, $execute);
+        $cmd = $this->replaceParameters($execute, '', $currentProcessorNumber);
+        $arrayEnv = $this->envCommandCreator->execute($currentProcessorNumber, $this->maxParallelProcessesToExecute, $execute, $currentProcessCounter);
 
         return $this->createProcess($cmd, $arrayEnv);
     }
@@ -58,7 +58,6 @@ class ProcessFactory
         if (method_exists($process,'setIdleTimeout')) {
             $process->setIdleTimeout(null);
         }
-
 
         return $process;
     }

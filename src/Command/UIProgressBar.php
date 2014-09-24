@@ -40,7 +40,6 @@ class UIProgressBar
             $this->bar->start($output, $messageInTheQueue+$this->preProcesses );
         }
 
-
         $this->writeMessage('<info>0</info> failures', 'number');
         $this->last = $messageInTheQueue+$this->preProcesses;
 
@@ -71,12 +70,11 @@ class UIProgressBar
         $this->bar->finish();
     }
 
-
-
     private function writeMessage($message, $what)
     {
         if (!$this->degrade) {
             $this->bar->setMessage($what, $message);
+
             return true;
         }
     }

@@ -10,6 +10,8 @@ class ProcessesManager
     private $processFactory;
     private $maxNumberOfParallelProcess;
     private $beforeCommand;
+    private $processCounter;
+    private $isFirstForItsThread;
 
     public function __construct(ProcessFactory $processFactory = null, $maxNumberOfParallelProcess, $beforeCommand = null)
     {
@@ -20,6 +22,8 @@ class ProcessesManager
         $this->processFactory = $processFactory;
         $this->maxNumberOfParallelProcess = $maxNumberOfParallelProcess;
         $this->beforeCommand = $beforeCommand;
+        $this->processCounter = 0;
+        $this->isFirstForItsThread = array();
     }
 
     public function getNumberOfProcessExecutedByTheBeforeCommand()
@@ -50,6 +54,7 @@ class ProcessesManager
 
         if (count($toBeCreated) == 0) {
             usleep(100);
+
             return true;
         }
 
@@ -58,7 +63,9 @@ class ProcessesManager
                 return false;
             }
 
-            $process = $this->processFactory->createAProcess($queue->pop(), $key);
+            $currentThread = $this->getCurrentProcessCounter();
+            $this->incrementForThisThread($key);
+            $process = $this->processFactory->createAProcess($queue->pop(), $key, $currentThread, $this->isFirstForThisThread($key));
             $processes->add($key, $process);
 
             $processes->start($key);
@@ -70,12 +77,34 @@ class ProcessesManager
     private function createProcessesForTheBeforeCommand($range, Processes &$processes = null)
     {
         foreach ($range as $key) {
-
-            $process = $this->processFactory->createAProcessForACustomCommand($this->beforeCommand, $key);
+            $currentThread = $this->getCurrentProcessCounter();
+            //$this->incrementForThisThread($key);
+            $process = $this->processFactory->createAProcessForACustomCommand($this->beforeCommand, $key, $currentThread, $this->isFirstForThisThread($key));
             $processes->add($key, $process);
             $processes->start($key);
         }
 
         return true;
+    }
+
+    private function getCurrentProcessCounter()
+    {
+        ++$this->processCounter;
+
+        return $this->processCounter;
+    }
+
+    private function incrementForThisThread($thread)
+    {
+        if (isset($this->isFirstForItsThread[$thread])) {
+            return $this->isFirstForItsThread[$thread]++;
+        }
+
+        return $this->isFirstForItsThread[$thread] = 1;
+    }
+
+    private function isFirstForThisThread($thread)
+    {
+        return (!isset($this->isFirstForItsThread[$thread]) || $this->isFirstForItsThread[$thread] == 1);
     }
 }

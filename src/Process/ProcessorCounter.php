@@ -33,7 +33,6 @@ class ProcessorCounter
     {
         $file = $this->procCPUInfo;
         if (!is_file($file) || !is_readable($file)) {
-
             return 4;
         }
         $contents = trim(@file_get_contents($file));

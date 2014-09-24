@@ -87,6 +87,7 @@ class Processes
             }
         });
         $this->cleanUP();
+
         return $ret;
     }
 
@@ -158,8 +159,7 @@ class Processes
         $env = $process->getEnv();
         $suite = str_replace(EnvCommandCreator::ENV_TEST_SUITE_NAME.'=', '', $env[3]);
         $number = str_replace(EnvCommandCreator::ENV_TEST_NUMBER.'=', '', $env[0]);
-
-
+        $numberOnThread = (int) str_replace(EnvCommandCreator::ENV_TEST_IS_FIRST_ON_ITS_THREAD.'=', '', $env[5]);
 
         if (!$process->isSuccessful()) {
             $this->errorCounter++;
@@ -168,7 +168,7 @@ class Processes
             $this->errorBuffer[$suite] .= $process->getErrorOutput();
         }
 
-        $this->totalBuffer[] = new Report($suite, $process->isSuccessful(), $number, isset($this->errorBuffer[$suite])?$this->errorBuffer[$suite]:null);
+        $this->totalBuffer[] = new Report($suite, $process->isSuccessful(), $number, isset($this->errorBuffer[$suite])?$this->errorBuffer[$suite]:null, $numberOnThread);
 
         $this->finishedProcesses[] = $process;
     }

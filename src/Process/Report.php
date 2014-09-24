@@ -2,20 +2,21 @@
 
 namespace Liuggio\Fastest\Process;
 
-
 class Report
 {
     private $suite;
     private $isSuccess;
     private $processorNumber;
     private $time;
+    private $isFirstOnThread;
 
-    function __construct($suite, $isSuccess, $processorNumber, $errorBuffer)
+    public function __construct($suite, $isSuccess, $processorNumber, $errorBuffer, $isFirstOnThread)
     {
         $this->isSuccess = $isSuccess;
         $this->processorNumber = $processorNumber;
         $this->suite = $suite;
         $this->errorBuffer = $errorBuffer;
+        $this->isFirstOnThread = $isFirstOnThread;
     }
 
     /**
@@ -32,6 +33,14 @@ class Report
     public function getProcessorNumber()
     {
         return $this->processorNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isFirstOnThread()
+    {
+        return $this->isFirstOnThread;
     }
 
     /**
@@ -58,5 +67,4 @@ class Report
         return $this->errorBuffer;
     }
 
-
-} 
+}

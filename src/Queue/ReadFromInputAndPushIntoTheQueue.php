@@ -1,8 +1,6 @@
 <?php
 namespace Liuggio\Fastest\Queue;
 
-use Liuggio\Fastest\Exception\QueueEmptyException;
-
 class ReadFromInputAndPushIntoTheQueue
 {
     protected $queueFactory;

@@ -3,7 +3,6 @@
 namespace Liuggio\Fastest\Command;
 
 use Liuggio\Fastest\Process\Processes;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class UIVerboseProgressBar implements ProgressBarInterface
@@ -32,13 +31,16 @@ class UIVerboseProgressBar implements ProgressBarInterface
 
         foreach ($tests as $report) {
             $this->lastIndex++;
-            $flag = "<info>✔</info>";
-
             $processorN = "";
             if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $this->output->getVerbosity()) {
-                $processorN = $report->getProcessorNumber()."\t";
+                $str = '%d';
+                if ($report->isFirstOnThread()) {
+                    $str = "<info>%d</info>";
+                }
+                $processorN = sprintf($str."\t", $report->getProcessorNumber());
             }
 
+            $flag = "<info>✔</info>";
             $err = '';
             if (!$report->isSuccessful()) {
                 $flag = "<error>✘</error>";
@@ -48,9 +50,7 @@ class UIVerboseProgressBar implements ProgressBarInterface
             }
 
             $remaining = sprintf('%d/%d', $this->lastIndex, $this->messageInTheQueue);
-
             $this->output->writeln($processorN.$remaining."\t".$flag."\t".$report->getSuite().$err);
-
         }
         $this->lastIndex = $count;
 

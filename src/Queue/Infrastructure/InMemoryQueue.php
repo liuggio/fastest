@@ -38,7 +38,7 @@ class InMemoryQueue implements QueueInterface
 
     public function count()
     {
-        if (null !== $this->queue){
+        if (null !== $this->queue) {
             return count($this->queue);
         }
 

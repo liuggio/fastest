@@ -3,7 +3,6 @@
 namespace Liuggio\Fastest\Command;
 
 use Liuggio\Fastest\Queue\TestsQueue;
-use Liuggio\Fastest\Queue\TestSuite;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -91,7 +90,6 @@ class ParallelCommand extends Command
         $event =$stopWatch->stop('execute');
         $output->writeln( sprintf("    Time: %d ms, Memory: %d b", $event->getDuration(), $event->getMemory()));
 
-
         if ($input->getOption('rerun-failed') ) {
             $processes = $this->executeBeforeCommand($queue, $processes, $output, $processManager);
         }
@@ -111,7 +109,7 @@ class ParallelCommand extends Command
     }
 
     /**
-     * @param OutputInterface $output
+     * @param  OutputInterface $output
      * @param $queue
      * @param $processManager
      * @return array

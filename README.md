@@ -4,11 +4,9 @@ Fastest - simple parallel testing execution
 [![Build Status](https://secure.travis-ci.org/liuggio/fastest.png?branch=master)](http://travis-ci.org/liuggio/fastest)
 [![Latest Stable Version](https://poser.pugx.org/liuggio/fastest/v/unstable.png)](https://packagist.org/packages/liuggio/fastest)
 
-This is not stable, things will change... :)
-
 ## Only one thing
 
-**Execute parallel testing, creating a process for each Processor (with some goodies for functional tests).**
+**Execute parallel testing, creating a Process for each Processor (with some goodies for functional tests).**
 
 ``` bash
 find tests/ -name "*Test.php" | ./bin/fastest "bin/phpunit -c app {};"
@@ -47,13 +45,15 @@ Our old codebase run in 30 minutes, now in 7 minutes with 4 Processors.
 
 ## How
 
-100% written in PHP, inspired by parallel.
+It creates N threads where N is the number of the core in the computer.
+
+100% written in PHP, inspired by [Parallel](https://github.com/grosser/parallel).
 
 ## Simple usage
 
 ### Piping tests
 
-It pushes into a queue and executes all the tests in your project:
+I suggest to use pipe:
 
 ``` bash
 find tests/ -name "*Test.php" | ./bin/fastest
@@ -82,15 +82,23 @@ You can use the option `-x` and import the test suites from the `phpunit.xml.dis
 
 If you use this option make sure the test-suites contains a lot of directory, is not suggested.
 
+This function should be improved help needed.
+
 ### Functional tests and database
 
-Each Process has its Env number
+Inside your tests you could use the env. variables,
+
+Image that you are running tests on a computer that has 4 core, `fastest` will create 4 threads in parallel,
+and inside your test you could use those variables:
 
 ``` php
-echo getenv('TEST_ENV_NUMBER');        // Current process number eg.2
-echo getenv('ENV_TEST_DB_NAME');       // Name for the database eg. test_2
-echo getevn('ENV_TEST_MAX_PROCESSES'); // Number of CPUs on the system eg. 4
-echo getevn('ENV_TEST_SUITE_NAME');    // Number of the input file eg. ManagerTest.php
+echo getevn('TEST_ENV_NUMBER');        // The number of the current thread that is using eg.2
+echo getevn('ENV_TEST_DB_NAME');       // Name for the database, is a readable name eg. test_2
+echo getevn('ENV_TEST_MAX_PROCESSES'); // Max thread on the system eg. 4
+echo getevn('ENV_TEST_SUITE_NAME');    // Name of the current running test eg. tests/UserFunctionalTest.php
+echo getevn('ENV_TEST_INC_NUMBER');    // Unique number of the current test eg. 32
+echo getevn('ENV_TEST_IS_FIRST');      // Is 1 if is the first test on its thread useful for clear cache.
+
 ```
 
 ### Setup the database `before`
@@ -147,7 +155,7 @@ or simply add a dependency on liuggio/fastest to your project's composer.json fi
 
 	{
 	    "require-dev": {
-		"liuggio/fastest": "dev-master"
+		    "liuggio/fastest": "dev-master"
 	    }
 	}
 
@@ -166,10 +174,10 @@ If you want to use it with phpunit you may want to install phpunit/phpunit as de
 
 ### TODO
 
-- Rerun only failed tests
+- ~~Rerun only failed tests~~ Done!
 - ~~Add the db_name variable~~ Done!
 - ~~Remove redis ad dependency~~ Done!
 - ~~Remove parallel_tests ad dependency~~ Done!
 - Behat provider?
 - Develop ProcessorCounter for Windows/Darwin.
-- Improve the Progress bar.
+- Improve the UI and Progress bar.

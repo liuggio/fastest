@@ -31,7 +31,7 @@ class DbalConnectionFactory extends ConnectionFactory
 
     private function modifyDbNameFromEnv($dbName)
     {
-        if ((!isset($dbName) || (strpos($dbName, "test") === 0)) && $this->issetDbNameEnvValue()) {
+        if ($this->issetDbNameEnvValue()) {
             return $this->getDbNameEnvValue();
         }
 
