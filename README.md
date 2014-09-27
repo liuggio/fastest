@@ -92,13 +92,12 @@ Image that you are running tests on a computer that has 4 core, `fastest` will c
 and inside your test you could use those variables:
 
 ``` php
-echo getevn('ENV_TEST_CHANNEL_READABLE');        // The number of the current thread that is using eg.2
-echo getevn('ENV_TEST_CHANNEL_READABLE');       // Name for the database, is a readable name eg. test_2
-echo getevn('ENV_TEST_CHANNELS_NUMBER'); // Max thread on the system eg. 4
-echo getevn('ENV_TEST_ARGUMENT');    // Name of the current running test eg. tests/UserFunctionalTest.php
-echo getevn('ENV_TEST_INC_NUMBER');    // Unique number of the current test eg. 32
-echo getevn('ENV_TEST_IS_FIRST');      // Is 1 if is the first test on its thread useful for clear cache.
-
+echo getevn('ENV_TEST_CHANNEL_READABLE'); // The number of the current channel that is using the current test eg.2
+echo getevn('ENV_TEST_CHANNEL_READABLE'); // Name for the database, is a readable name eg. test_2
+echo getevn('ENV_TEST_CHANNELS_NUMBER');  // Max channel number on a system (the core number) eg. 4
+echo getevn('ENV_TEST_ARGUMENT');         // The current running test eg. tests/UserFunctionalTest.php
+echo getevn('ENV_TEST_INC_NUMBER');       // Unique number of the current test eg. 32
+echo getevn('ENV_TEST_IS_FIRST');         // Is 1 if is the first test on its thread useful for clear cache.
 ```
 
 ### Setup the database `before`
@@ -170,7 +169,7 @@ If you want to use it with phpunit you may want to install phpunit/phpunit as de
 
 ### Run this test with `fastest`
 
-**Easy** see [.travis.yml](.travis.yml) file
+**Easy** see [.travis.yml](.travis.yml#L14) file
 
 ### TODO
 

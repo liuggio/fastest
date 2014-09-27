@@ -70,7 +70,7 @@ class UIProgressBar
         $this->bar->finish();
     }
 
-    private function writeMessage($message, $what)
+    private function writeMessage($what, $message)
     {
         if (!$this->degrade) {
             $this->bar->setMessage($what, $message);

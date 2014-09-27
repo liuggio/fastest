@@ -20,7 +20,7 @@ class ProcessesManager
         }
 
         $this->processFactory = $processFactory;
-        $this->maxNumberOfParallelProcesseses = $maxNumberOfParallelProcesses;
+        $this->maxNumberOfParallelProcesses = $maxNumberOfParallelProcesses;
         $this->beforeCommand = $beforeCommand;
         $this->processCounter = 0;
         $this->isFirstForItsChannel = array();
@@ -29,7 +29,7 @@ class ProcessesManager
     public function getNumberOfProcessExecutedByTheBeforeCommand()
     {
         if (false !== $this->beforeCommand && null !== $this->beforeCommand) {
-            return $this->maxNumberOfParallelProcesseses;
+            return $this->maxNumberOfParallelProcesses;
         }
 
         return 0;
@@ -37,7 +37,7 @@ class ProcessesManager
 
     public function assertNProcessRunning(QueueInterface &$queue, Processes &$processes = null)
     {
-        $parallelProcesses = max(1, min($queue->count(), $this->maxNumberOfParallelProcesses));
+        $parallelProcesses =  max(1, min($queue->count(), $this->maxNumberOfParallelProcesses));
 
         if (null === $processes) {
 
@@ -67,9 +67,8 @@ class ProcessesManager
             $currentProcessNumber = $this->getCurrentProcessCounter();
             $this->incrementForThisChannel($currentChannel);
             $process = $this->processFactory->createAProcess($queue->pop(), $currentChannel, $currentProcessNumber, $this->isFirstForThisChannel($currentChannel));
-           // $processes->add($currentChannel, $process);
-
-         //   $processes->start($currentChannel);
+            $processes->add($currentChannel, $process);
+            $processes->start($currentChannel);
         }
 
         return true;
