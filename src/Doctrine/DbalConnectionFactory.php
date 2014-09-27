@@ -24,12 +24,12 @@ class DbalConnectionFactory extends ConnectionFactory
      */
     public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = array())
     {
-        $params['dbname'] = $this->modifyDbNameFromEnv($params['dbname']);
+        $params['dbname'] = $this->getDbNameFromEnv($params['dbname']);
 
         return parent::createConnection($params, $config, $eventManager, $mappingTypes);
     }
 
-    private function modifyDbNameFromEnv($dbName)
+    private function getDbNameFromEnv($dbName)
     {
         if ($this->issetDbNameEnvValue()) {
             return $this->getDbNameEnvValue();
@@ -47,6 +47,6 @@ class DbalConnectionFactory extends ConnectionFactory
 
     private function getDbNameEnvValue()
     {
-        return getenv(EnvCommandCreator::ENV_TEST_DB_NAME);
+        return getenv(EnvCommandCreator::ENV_TEST_CHANNEL_READABLE);
     }
 }

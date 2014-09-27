@@ -92,10 +92,10 @@ Image that you are running tests on a computer that has 4 core, `fastest` will c
 and inside your test you could use those variables:
 
 ``` php
-echo getevn('TEST_ENV_NUMBER');        // The number of the current thread that is using eg.2
-echo getevn('ENV_TEST_DB_NAME');       // Name for the database, is a readable name eg. test_2
-echo getevn('ENV_TEST_MAX_PROCESSES'); // Max thread on the system eg. 4
-echo getevn('ENV_TEST_SUITE_NAME');    // Name of the current running test eg. tests/UserFunctionalTest.php
+echo getevn('ENV_TEST_CHANNEL_READABLE');        // The number of the current thread that is using eg.2
+echo getevn('ENV_TEST_CHANNEL_READABLE');       // Name for the database, is a readable name eg. test_2
+echo getevn('ENV_TEST_CHANNELS_NUMBER'); // Max thread on the system eg. 4
+echo getevn('ENV_TEST_ARGUMENT');    // Name of the current running test eg. tests/UserFunctionalTest.php
 echo getevn('ENV_TEST_INC_NUMBER');    // Unique number of the current test eg. 32
 echo getevn('ENV_TEST_IS_FIRST');      // Is 1 if is the first test on its thread useful for clear cache.
 

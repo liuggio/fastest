@@ -31,7 +31,7 @@ class Processes
         }
     }
 
-    public function getIndexesOfCompleted()
+    public function getIndexesOfCompletedChannel()
     {
         $indexes = array();
         foreach ($this->processes as $index=>$process) {
@@ -157,9 +157,9 @@ class Processes
     private function moveToFinishedProcesses(Process $process)
     {
         $env = $process->getEnv();
-        $suite = str_replace(EnvCommandCreator::ENV_TEST_SUITE_NAME.'=', '', $env[3]);
-        $number = str_replace(EnvCommandCreator::ENV_TEST_NUMBER.'=', '', $env[0]);
-        $numberOnThread = (int) str_replace(EnvCommandCreator::ENV_TEST_IS_FIRST_ON_ITS_THREAD.'=', '', $env[5]);
+        $suite = str_replace(EnvCommandCreator::ENV_TEST_ARGUMENT.'=', '', $env[3]);
+        $number = str_replace(EnvCommandCreator::ENV_TEST_CHANNEL.'=', '', $env[0]);
+        $numberOnThread = (int) str_replace(EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL.'=', '', $env[5]);
 
         if (!$process->isSuccessful()) {
             $this->errorCounter++;

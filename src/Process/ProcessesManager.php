@@ -8,28 +8,28 @@ use Symfony\Component\Process\Process;
 class ProcessesManager
 {
     private $processFactory;
-    private $maxNumberOfParallelProcess;
+    private $maxNumberOfParallelProcesses;
     private $beforeCommand;
     private $processCounter;
-    private $isFirstForItsThread;
+    private $isFirstForItsChannel;
 
-    public function __construct(ProcessFactory $processFactory = null, $maxNumberOfParallelProcess, $beforeCommand = null)
+    public function __construct(ProcessFactory $processFactory = null, $maxNumberOfParallelProcesses, $beforeCommand = null)
     {
         if (null === $processFactory) {
-            $processFactory = new ProcessFactory($maxNumberOfParallelProcess);
+            $processFactory = new ProcessFactory($maxNumberOfParallelProcesses);
         }
 
         $this->processFactory = $processFactory;
-        $this->maxNumberOfParallelProcess = $maxNumberOfParallelProcess;
+        $this->maxNumberOfParallelProcesseses = $maxNumberOfParallelProcesses;
         $this->beforeCommand = $beforeCommand;
         $this->processCounter = 0;
-        $this->isFirstForItsThread = array();
+        $this->isFirstForItsChannel = array();
     }
 
     public function getNumberOfProcessExecutedByTheBeforeCommand()
     {
         if (false !== $this->beforeCommand && null !== $this->beforeCommand) {
-            return $this->maxNumberOfParallelProcess;
+            return $this->maxNumberOfParallelProcesseses;
         }
 
         return 0;
@@ -37,38 +37,39 @@ class ProcessesManager
 
     public function assertNProcessRunning(QueueInterface &$queue, Processes &$processes = null)
     {
-        $parallelProcess = max(1, min($queue->count(), $this->maxNumberOfParallelProcess));
+        $parallelProcesses = max(1, min($queue->count(), $this->maxNumberOfParallelProcesses));
 
         if (null === $processes) {
 
-            $toBeCreated = range(1, $parallelProcess);
+            $channelsEmpty = range(1, $parallelProcesses);
             $processes =  new Processes(array());
 
             if (false !== $this->beforeCommand && null !== $this->beforeCommand) {
-                return $this->createProcessesForTheBeforeCommand($toBeCreated, $processes);
+                return $this->createProcessesForTheBeforeCommand($channelsEmpty, $processes);
             }
 
         } else {
-            $toBeCreated = $processes->getIndexesOfCompleted();
+            $channelsEmpty = $processes->getIndexesOfCompletedChannel();
+
         }
 
-        if (count($toBeCreated) == 0) {
+        if (count($channelsEmpty) == 0) {
             usleep(100);
 
             return true;
         }
 
-        foreach ($toBeCreated as $key) {
+        foreach ($channelsEmpty as $currentChannel) {
             if ($queue->isEmpty()) {
                 return false;
             }
 
-            $currentThread = $this->getCurrentProcessCounter();
-            $this->incrementForThisThread($key);
-            $process = $this->processFactory->createAProcess($queue->pop(), $key, $currentThread, $this->isFirstForThisThread($key));
-            $processes->add($key, $process);
+            $currentProcessNumber = $this->getCurrentProcessCounter();
+            $this->incrementForThisChannel($currentChannel);
+            $process = $this->processFactory->createAProcess($queue->pop(), $currentChannel, $currentProcessNumber, $this->isFirstForThisChannel($currentChannel));
+           // $processes->add($currentChannel, $process);
 
-            $processes->start($key);
+         //   $processes->start($currentChannel);
         }
 
         return true;
@@ -76,12 +77,12 @@ class ProcessesManager
 
     private function createProcessesForTheBeforeCommand($range, Processes &$processes = null)
     {
-        foreach ($range as $key) {
-            $currentThread = $this->getCurrentProcessCounter();
-            //$this->incrementForThisThread($key);
-            $process = $this->processFactory->createAProcessForACustomCommand($this->beforeCommand, $key, $currentThread, $this->isFirstForThisThread($key));
-            $processes->add($key, $process);
-            $processes->start($key);
+        foreach ($range as $currentChannel) {
+            $currentProcessNumber = $this->getCurrentProcessCounter();
+            $this->incrementForThisChannel($currentChannel);
+            $process = $this->processFactory->createAProcessForACustomCommand($this->beforeCommand, $currentChannel, $currentProcessNumber, $this->isFirstForThisChannel($currentChannel));
+            $processes->add($currentChannel, $process);
+            $processes->start($currentChannel);
         }
 
         return true;
@@ -89,22 +90,22 @@ class ProcessesManager
 
     private function getCurrentProcessCounter()
     {
-        ++$this->processCounter;
-
-        return $this->processCounter;
+        return ++$this->processCounter;
     }
 
-    private function incrementForThisThread($thread)
+    private function incrementForThisChannel($Channel)
     {
-        if (isset($this->isFirstForItsThread[$thread])) {
-            return $this->isFirstForItsThread[$thread]++;
+        if (isset($this->isFirstForItsChannel[$Channel])) {
+            $this->isFirstForItsChannel[$Channel]++;
+
+            return;
         }
 
-        return $this->isFirstForItsThread[$thread] = 1;
+        $this->isFirstForItsChannel[$Channel] = 1;
     }
 
-    private function isFirstForThisThread($thread)
+    private function isFirstForThisChannel($Channel)
     {
-        return (!isset($this->isFirstForItsThread[$thread]) || $this->isFirstForItsThread[$thread] == 1);
+        return (isset($this->isFirstForItsChannel[$Channel]) && $this->isFirstForItsChannel[$Channel] == 1);
     }
 }

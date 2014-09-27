@@ -11,7 +11,7 @@ class ProcessesManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function shouldCreateNProcessRunningGivingNullAsProcesses()
+    public function shouldCreateBeforeProcessesExecutingFactoryWithTheCorrectArguments()
     {
         $queue = $this->getMock('Liuggio\Fastest\Queue\QueueInterface');
 
@@ -19,28 +19,27 @@ class ProcessesManagerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $factory->expects($this->any())
+        $factory->expects($this->once())
             ->method('createAProcessForACustomCommand')
+            ->with($this->anything(), $this->equalTo(1), $this->equalTo(1), $this->equalTo(true))
             ->willReturn(new Process('echo ',rand()));
 
         $manager = new ProcessesManager($factory, 1, 'echo "ciao"');
 
         $processes = null;
-
         $this->assertTrue($manager->assertNProcessRunning($queue, $processes));
-        $this->assertEquals(1, $processes->count());
     }
 
     /**
      * @test
      */
-    public function shouldCreateNProcessRunningGivingProcesses()
+    public function shouldCreateProcessesWithoutBeforeProcessExecutingFactoryWithTheCorrectArguments()
     {
         $queue = $this->getMock('Liuggio\Fastest\Queue\QueueInterface');
-        $queue->expects($this->exactly(2))
+        $queue->expects($this->once())
             ->method('isEmpty')
             ->willReturn(false);
-        $queue->expects($this->exactly(2))
+        $queue->expects($this->once())
             ->method('pop')
             ->willReturn(new TestSuite('path'));
 
@@ -48,19 +47,18 @@ class ProcessesManagerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $processes->expects($this->exactly(1))
-            ->method('getIndexesOfCompleted')
-            ->willReturn(range(1,2));
+        $processes->expects($this->once())
+            ->method('getIndexesOfCompletedChannel')
+            ->willReturn(array(1));
 
         $factory = $this->getMockBuilder('Liuggio\Fastest\Process\ProcessFactory')
             ->disableOriginalConstructor()
             ->getMock();
-        $factory->expects($this->exactly(2))
+        $factory->expects($this->exactly(1))
             ->method('createAProcess')
+            ->with($this->anything(), $this->equalTo(1), $this->equalTo(1), $this->equalTo(true))
             ->willReturn(new Process('echo ',rand()));
-        $factory->expects($this->exactly(0))
-            ->method('createAProcessForACustomCommand')
-            ->willReturn(new Process('echo ',rand()));
+
 
         $manager = new ProcessesManager($factory, 1);
 
@@ -68,5 +66,50 @@ class ProcessesManagerTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    /**
+     * @test
+     */
+    public function shouldCreate6ProcessesGivingThemTheCorrectEnvParameters()
+    {
+        $queue = $this->getMock('Liuggio\Fastest\Queue\QueueInterface');
+        $queue->expects($this->exactly(6))
+            ->method('isEmpty')
+            ->willReturn(false);
+        $queue->expects($this->exactly(6))
+            ->method('pop')
+            ->willReturn(new TestSuite('path'));
+
+        $processes = $this->getMockBuilder('Liuggio\Fastest\Process\Processes')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $processes->expects($this->any())
+            ->method('getIndexesOfCompletedChannel')
+            ->willReturn(range(1,3));
+        $processes->expects($this->any())
+            ->method('add')
+            ->willReturn(true);
+        $processes->expects($this->any())
+        ->method('start')
+        ->willReturn(true);
+
+        $factory = $this->getMockBuilder('Liuggio\Fastest\Process\ProcessFactory')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $array = array([1,1,true], [2,2,true], [3,3,true], [1,4,false], [2,5,false], [3,6,false]);
+
+
+        foreach ($array as $at=>$expectation) {
+            $factory->expects($this->at($at))
+                ->method('createAProcess')
+                ->with($this->anything(), $this->equalTo($expectation[0]), $this->equalTo($expectation[1]), $this->equalTo($expectation[2]))
+                ->willReturn(new Process('echo ',rand()));
+        }
+
+        $manager = new ProcessesManager($factory, 1);
+
+        $this->assertTrue($manager->assertNProcessRunning($queue, $processes));
+        $this->assertTrue($manager->assertNProcessRunning($queue, $processes));
+    }
 }
  
