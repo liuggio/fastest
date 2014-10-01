@@ -6,14 +6,10 @@ use Liuggio\Fastest\Queue\TestsQueue;
 use Liuggio\Fastest\UI\ProgressBarRenderer;
 use Liuggio\Fastest\UI\VerboseRenderer;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
-
-use Liuggio\Fastest\Process\Processes;
 use Liuggio\Fastest\Process\ProcessesManager;
 use Liuggio\Fastest\Process\ProcessFactory;
 use Liuggio\Fastest\Process\ProcessorCounter;

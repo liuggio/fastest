@@ -7,7 +7,6 @@ use Symfony\Component\Process\Process;
 class Processes
 {
     private $processes;
-    private $finishedProcesses;
     private $totalBuffer;
     private $errorBuffer;
     private $errorCounter;
@@ -15,7 +14,6 @@ class Processes
     public function __construct(array $processes)
     {
         $this->processes = $processes;
-        $this->finishedProcesses = array();
         $this->totalBuffer = array();
         $this->errorBuffer = array();
         $this->errorCounter = 0;
@@ -25,7 +23,7 @@ class Processes
     {
         foreach ($this->processes as $key=>$process) {
             if (null !== $process && $process->isTerminated()) {
-                $this->moveToFinishedProcesses($process);
+                $this->moveToCompletedProcesses($process);
                 $this->processes[$key] = null;
             }
         }
@@ -48,7 +46,7 @@ class Processes
         $this->cleanUP();
         if (isset($this->processes[$key]) && null !== $this->processes[$key]) {
             $this->assertTerminated($key);
-            $this->moveToFinishedProcesses($this->processes[$key]);
+            $this->moveToCompletedProcesses($this->processes[$key]);
             $this->processes[$key] = null;
         }
 
@@ -63,7 +61,7 @@ class Processes
             return true;
         }
 
-        return array_walk($this->processes, function ($item, $key) {
+        return array_walk($this->processes, function (Process $item = null) {
             if (null !== $item) {
                 $item->start();
             }
@@ -72,7 +70,7 @@ class Processes
 
     public function stop()
     {
-        return array_walk($this->processes, function ($item) {
+        return array_walk($this->processes, function (Process $item = null) {
             if (null !== $item) {
                 $item->stop();
             }
@@ -81,7 +79,7 @@ class Processes
 
     public function wait()
     {
-        $ret = array_walk($this->processes, function ($item, $key) {
+        $ret = array_walk($this->processes, function (Process $item = null) {
             if (null !== $item) {
                 $item->wait();
             }
@@ -154,7 +152,7 @@ class Processes
         }
     }
 
-    private function moveToFinishedProcesses(Process $process)
+    private function moveToCompletedProcesses(Process $process)
     {
         $env = $process->getEnv();
         $suite = str_replace(EnvCommandCreator::ENV_TEST_ARGUMENT.'=', '', $env[3]);
@@ -169,8 +167,6 @@ class Processes
         }
 
         $this->totalBuffer[] = new Report($suite, $process->isSuccessful(), $number, isset($this->errorBuffer[$suite])?$this->errorBuffer[$suite]:null, $numberOnThread);
-
-        $this->finishedProcesses[] = $process;
     }
 
     /**

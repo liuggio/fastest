@@ -11,14 +11,12 @@ class VerboseRenderer implements RendererInterface
     private $messageInTheQueue;
     private $lastIndex;
     private $output;
-    private $preProcesses;
 
-    public function __construct($messageInTheQueue, OutputInterface $output, $preProcesses = 0)
+    public function __construct($messageInTheQueue, OutputInterface $output)
     {
         $this->messageInTheQueue = $messageInTheQueue+$preProcesses;
         $this->output = $output;
         $this->lastIndex = 0;
-        $this->preProcesses = (int) $preProcesses;
     }
 
     public function renderHeader(QueueInterface $queue)
@@ -41,7 +39,6 @@ class VerboseRenderer implements RendererInterface
 
     public function renderBody(QueueInterface $queue, Processes $processes)
     {
-        $now = $queue->count()+$this->preProcesses;
         $errorCount = $processes->countErrors();
 
         $log = $processes->getReport();

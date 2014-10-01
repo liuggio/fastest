@@ -3,7 +3,6 @@
 namespace Liuggio\Fastest\Process;
 
 use Liuggio\Fastest\Queue\QueueInterface;
-use Symfony\Component\Process\Process;
 
 class ProcessesManager
 {

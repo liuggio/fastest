@@ -14,10 +14,10 @@ class ProcessFactory
 
     public function __construct($maxParallelProcessesToExecute, $commandToExecuteTemplate = null, EnvCommandCreator $envCommandCreator = null)
     {
-        if (null == $envCommandCreator) {
+        if (null === $envCommandCreator) {
             $envCommandCreator = new EnvCommandCreator();
         }
-        if (null == $commandToExecuteTemplate || empty($commandToExecuteTemplate)) {
+        if (null === $commandToExecuteTemplate || empty($commandToExecuteTemplate)) {
             $commandToExecuteTemplate = self::DEFAULT_COMMAND_TO_EXECUTE_TPL;
         }
         $this->maxParallelProcessesToExecute = $maxParallelProcessesToExecute;
@@ -27,7 +27,6 @@ class ProcessFactory
 
     public function createAProcess($suite, $currentProcessorNumber, $currentProcessCounter, $isFirstOnThread = false)
     {
-
         $cmd = $this->replaceParameters($this->commandToExecuteTemplate, $suite, $currentProcessorNumber);
         $arrayEnv = $this->envCommandCreator->execute($currentProcessorNumber, $this->maxParallelProcessesToExecute, $suite, $currentProcessCounter, $isFirstOnThread);
 
@@ -52,12 +51,6 @@ class ProcessFactory
 
     private function createProcess($executeCommand, $arrayEnv)
     {
-        $string = sprintf("> %s\n", implode(';',$arrayEnv));
-
-        $f = fopen('/tmp/a.log','a');
-        fwrite($f, $string);
-        fclose($f);
-
         $process = new Process($executeCommand, null, $arrayEnv);
 
         $process->setTimeout(null);

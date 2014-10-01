@@ -54,4 +54,13 @@ class TestsQueue extends ArrayCollection
     {
         return parent::isEmpty();
     }
+
+
+    /**
+     * @return boolean
+     */
+    public function hasBeenRandomized()
+    {
+        return $this->hasBeenRandomized;
+    }
 }

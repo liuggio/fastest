@@ -1,5 +1,6 @@
 {
     "name": "liuggio/fastest",
+    "description": "Simple parallel testing execution... with some goodies for functional tests.",
     "license": "MIT",
     "authors": [
         {

@@ -33,9 +33,13 @@ class ProcessorCounter
     {
         $file = $this->procCPUInfo;
         if (!is_file($file) || !is_readable($file)) {
-            return 4;
+            return self::PROC_DEFAULT_NUMBER;
         }
-        $contents = trim(@file_get_contents($file));
+        try {
+            $contents = trim(file_get_contents($file));
+        } catch (\Exception $e) {
+            return self::PROC_DEFAULT_NUMBER;
+        }
 
         return substr_count($contents, 'processor');
     }
