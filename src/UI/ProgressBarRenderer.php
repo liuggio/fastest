@@ -1,51 +1,57 @@
 <?php
 
-namespace Liuggio\Fastest\Command;
+namespace Liuggio\Fastest\UI;
 
 use Liuggio\Fastest\Process\Processes;
+use Liuggio\Fastest\Queue\QueueInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\ProgressHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class UIProgressBar
+class ProgressBarRenderer implements RendererInterface
 {
     private $bar;
     private $last;
     private $degrade;
     private $output;
     private $preProcesses;
+    private $messagesInTheQueue;
 
     public function __construct($messageInTheQueue, OutputInterface $output, $helper, $preProcesses = 0)
     {
-        $this->preProcesses = (int) $preProcesses;
-
+        $this->messagesInTheQueue = $messageInTheQueue;
         $this->output = $output;
+        $this->helper = $helper;
+        $this->preProcesses = (int) $preProcesses;
         $this->degrade = true;
+    }
+
+    public function renderHeader(QueueInterface $queue)
+    {
         $this->output->writeln('');
         $this->output->writeln('');
         $this->output->writeln('');
         $this->output->writeln('');
 
         if (class_exists('\Symfony\Component\Console\Helper\ProgressBar')) {
-            $this->bar = new ProgressBar($output, $messageInTheQueue+$this->preProcesses );
+            $this->bar = new ProgressBar($this->output, $this->messagesInTheQueue+$this->preProcesses );
             $this->bar->setFormat('very_verbose');
             $this->bar->setFormat("%current%/%max% <fg=white;bg=blue>[%bar%]</> %percent:3s%% %elapsed:6s% %memory:6s% \n\n     %number%");
             $this->bar->start();
             $this->degrade = false;
         } else {
-            $this->bar = $helper;
+            $this->bar = $this->helper;
             $this->bar->setFormat('very_verbose');
             $this->bar->setFormat(ProgressHelper::FORMAT_VERBOSE);
             $this->bar->setBarCharacter('<fg=white;bg=blue>=</>');
-            $this->bar->start($output, $messageInTheQueue+$this->preProcesses );
+            $this->bar->start($this->output, $this->messagesInTheQueue+$this->preProcesses );
         }
 
         $this->writeMessage('<info>0</info> failures', 'number');
-        $this->last = $messageInTheQueue+$this->preProcesses;
-
+        $this->last = $this->messagesInTheQueue+$this->preProcesses;
     }
 
-    public function render($queue, Processes $processes)
+    public function renderBody(QueueInterface $queue, Processes $processes)
     {
         $now = $queue->count();
         $errorCount = $processes->countErrors();
@@ -64,10 +70,19 @@ class UIProgressBar
         return $errorCount;
     }
 
-    public function finish($queue, Processes $processes)
+    public function renderFooter(QueueInterface $queue, Processes $processes)
     {
-        $this->render($queue, $processes);
+        $this->renderBody($queue, $processes);
         $this->bar->finish();
+        $this->output->writeln('');
+        $this->output->writeln($processes->getErrorOutput());
+
+        $out = "    <info>✔</info> You are great!";
+        if (!$processes->isSuccessful()) {
+            $out = "    <error>✘ ehm broken tests...</error>";
+        }
+
+        $this->output->writeln(PHP_EOL.$out);
     }
 
     private function writeMessage($what, $message)

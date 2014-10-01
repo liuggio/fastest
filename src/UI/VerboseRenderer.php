@@ -1,11 +1,12 @@
 <?php
 
-namespace Liuggio\Fastest\Command;
+namespace Liuggio\Fastest\UI;
 
 use Liuggio\Fastest\Process\Processes;
+use Liuggio\Fastest\Queue\QueueInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class UIVerboseProgressBar implements ProgressBarInterface
+class VerboseRenderer implements RendererInterface
 {
     private $messageInTheQueue;
     private $lastIndex;
@@ -20,7 +21,25 @@ class UIVerboseProgressBar implements ProgressBarInterface
         $this->preProcesses = (int) $preProcesses;
     }
 
-    public function render($queue, Processes $processes)
+    public function renderHeader(QueueInterface $queue)
+    {
+    }
+
+    public function renderFooter(QueueInterface $queue, Processes $processes)
+    {
+        $this->renderBody($queue, $processes);
+        $this->output->writeln('');
+        $this->output->writeln($processes->getErrorOutput());
+
+        $out = "    <info>✔</info> You are great!";
+        if (!$processes->isSuccessful()) {
+            $out = "    <error>✘ ehm broken tests...</error>";
+        }
+
+        $this->output->writeln(PHP_EOL.$out);
+    }
+
+    public function renderBody(QueueInterface $queue, Processes $processes)
     {
         $now = $queue->count()+$this->preProcesses;
         $errorCount = $processes->countErrors();
@@ -55,10 +74,5 @@ class UIVerboseProgressBar implements ProgressBarInterface
         $this->lastIndex = $count;
 
         return $errorCount;
-    }
-
-    public function finish($queue, Processes $processes)
-    {
-        $this->render($queue, $processes);
     }
 }

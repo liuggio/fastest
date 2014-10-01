@@ -3,6 +3,8 @@
 namespace Liuggio\Fastest\Command;
 
 use Liuggio\Fastest\Queue\TestsQueue;
+use Liuggio\Fastest\UI\ProgressBarRenderer;
+use Liuggio\Fastest\UI\VerboseRenderer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -119,27 +121,19 @@ class ParallelCommand extends Command
         $processes = null;
 
         if ($this->isVerbose($output)) {
-            $progressBar = new UIVerboseProgressBar($queue->count(), $output, $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
+            $progressBar = new VerboseRenderer($queue->count(), $output, $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
         } else {
-            $progressBar = new UIProgressBar($queue->count(), $output, $this->getHelper('progress'), $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
+            $progressBar = new ProgressBarRenderer($queue->count(), $output, $this->getHelper('progress'), $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
         }
 
+        $progressBar->renderHeader($queue, $processes);
+
         while ($processManager->assertNProcessRunning($queue, $processes)) {
-            $progressBar->render($queue, $processes);
+            $progressBar->renderBody($queue, $processes);
         }
 
         $processes->wait();
-        $progressBar->finish($queue, $processes);
-        $output->writeln('');
-        // render footer
-        $rendererFinalOutput = new RenderFinalOutputInformation();
-        $rendererFinalOutput->render($output, $processes);
-
-        $out = "    <info>✔</info> You are great!";
-        if (!$processes->isSuccessful()) {
-            $out = "    <error>✘ ehm broken tests...</error>";
-        }
-        $output->writeln(PHP_EOL.$out);
+        $progressBar->renderFooter($queue, $processes);
 
         return $processes;
     }

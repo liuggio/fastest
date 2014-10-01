@@ -27,6 +27,7 @@ class ProcessFactory
 
     public function createAProcess($suite, $currentProcessorNumber, $currentProcessCounter, $isFirstOnThread = false)
     {
+
         $cmd = $this->replaceParameters($this->commandToExecuteTemplate, $suite, $currentProcessorNumber);
         $arrayEnv = $this->envCommandCreator->execute($currentProcessorNumber, $this->maxParallelProcessesToExecute, $suite, $currentProcessCounter, $isFirstOnThread);
 
@@ -36,7 +37,7 @@ class ProcessFactory
     public function createAProcessForACustomCommand($execute, $currentProcessorNumber, $currentProcessCounter, $isFirstOnThread = false)
     {
         $cmd = $this->replaceParameters($execute, '', $currentProcessorNumber);
-        $arrayEnv = $this->envCommandCreator->execute($currentProcessorNumber, $this->maxParallelProcessesToExecute, $execute, $currentProcessCounter);
+        $arrayEnv = $this->envCommandCreator->execute($currentProcessorNumber, $this->maxParallelProcessesToExecute, $execute, $currentProcessCounter, $isFirstOnThread);
 
         return $this->createProcess($cmd, $arrayEnv);
     }
@@ -51,6 +52,12 @@ class ProcessFactory
 
     private function createProcess($executeCommand, $arrayEnv)
     {
+        $string = sprintf("> %s\n", implode(';',$arrayEnv));
+
+        $f = fopen('/tmp/a.log','a');
+        fwrite($f, $string);
+        fclose($f);
+
         $process = new Process($executeCommand, null, $arrayEnv);
 
         $process->setTimeout(null);
