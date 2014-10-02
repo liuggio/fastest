@@ -3,14 +3,8 @@
 <phpunit bootstrap="tests/bootstrap.php" colors="true">
     <testsuites>
         <testsuite name="Fastest Test Suite">
-            <directory>tests/Fastest/Process/ProcessesTest.php</directory>
-            <directory>tests/Fastest/Process/ProcessFactoryTest.php</directory>
-            <directory>tests/Fastest/Process/ProcessesManagerTest.php</directory>
-            <directory>tests/Fastest/Process/ProcessorCounterTest.php</directory>
-            <directory>tests/Fastest/Queue/ReadFromInputAndPushIntoTheQueueTest.php</directory>
-            <directory>tests/Fastest/Queue/Infrastructure/InMemoryQueueFactoryTest.php</directory>
-            <directory>tests/Fastest/Queue/Infrastructure/InMemoryQueueTest.php</directory>
-            <directory>tests/Fastest/Queue/CreateTestsQueueFromPhpUnitXMLTest.php</directory>
+            <directory>tests/Fastest/Process/</directory>
+            <directory>tests/Fastest/Queue/</directory>
         </testsuite>
     </testsuites>
 

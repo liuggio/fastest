@@ -14,7 +14,7 @@ class VerboseRenderer implements RendererInterface
 
     public function __construct($messageInTheQueue, OutputInterface $output)
     {
-        $this->messageInTheQueue = $messageInTheQueue+$preProcesses;
+        $this->messageInTheQueue = $messageInTheQueue;
         $this->output = $output;
         $this->lastIndex = 0;
     }
