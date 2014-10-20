@@ -10,6 +10,7 @@ class Processes
     private $totalBuffer;
     private $errorBuffer;
     private $errorCounter;
+    private $skippedCounter;
 
     public function __construct(array $processes)
     {
@@ -17,6 +18,7 @@ class Processes
         $this->totalBuffer = array();
         $this->errorBuffer = array();
         $this->errorCounter = 0;
+        $this->skippedCounter = 0;
     }
 
     public function cleanUP()
@@ -142,6 +144,15 @@ class Processes
         return $this->errorBuffer;
     }
 
+    public function countSkipped($processOutput)
+    {
+        if(!preg_match_all('#Skipped: (?P<counter>\d+)#', $processOutput, $skippedTests)) {
+            return 0;
+        }
+
+        return (int) $skippedTests['counter'][0];
+    }
+
     /**
      * @throws LogicException
      */
@@ -166,7 +177,9 @@ class Processes
             $this->errorBuffer[$suite] .= $process->getErrorOutput();
         }
 
-        $this->totalBuffer[] = new Report($suite, $process->isSuccessful(), $number, isset($this->errorBuffer[$suite])?$this->errorBuffer[$suite]:null, $numberOnThread);
+        $this->skippedCounter = $this->countSkipped($process->getOutput());
+
+        $this->totalBuffer[] = new Report($suite, $process->isSuccessful(), $number, isset($this->errorBuffer[$suite])?$this->errorBuffer[$suite]:null, $numberOnThread, $this->skippedCounter);
     }
 
     /**

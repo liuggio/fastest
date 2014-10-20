@@ -57,6 +57,14 @@ class VerboseRenderer implements RendererInterface
             }
 
             $flag = "<info>✔</info>";
+
+            $skipped = '';
+            if ($report->getSkippedCount() > 0) {
+                $flag = "<info>S</info>";
+                if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $this->output->getVerbosity()) {
+                    $skipped = "<comment>\n|\n|_ {$report->getSkippedCount()} Test skipped</comment>\n\n";
+                }
+            }
             $err = '';
             if (!$report->isSuccessful()) {
                 $flag = "<error>✘</error>";
@@ -66,7 +74,7 @@ class VerboseRenderer implements RendererInterface
             }
 
             $remaining = sprintf('%d/%d', $this->lastIndex, $this->messageInTheQueue);
-            $this->output->writeln($processorN.$remaining."\t".$flag."\t".$report->getSuite().$err);
+            $this->output->writeln($processorN.$remaining."\t".$flag."\t".$report->getSuite().$err.$skipped);
         }
         $this->lastIndex = $count;
 

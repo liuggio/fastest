@@ -9,14 +9,16 @@ class Report
     private $processorNumber;
     private $time;
     private $isFirstOnThread;
+    private $skippedCount;
 
-    public function __construct($suite, $isSuccess, $processorNumber, $errorBuffer, $isFirstOnThread)
+    public function __construct($suite, $isSuccess, $processorNumber, $errorBuffer, $isFirstOnThread, $skippedCount)
     {
         $this->isSuccess = $isSuccess;
         $this->processorNumber = $processorNumber;
         $this->suite = $suite;
         $this->errorBuffer = $errorBuffer;
         $this->isFirstOnThread = $isFirstOnThread;
+        $this->skippedCount = $skippedCount;
     }
 
     /**
@@ -67,4 +69,11 @@ class Report
         return $this->errorBuffer;
     }
 
+    /**
+    * @return int
+    */
+    public function getSkippedCount()
+    {
+        return $this->skippedCount;
+    }
 }
