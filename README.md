@@ -92,7 +92,7 @@ Image that you are running tests on a computer that has 4 core, `fastest` will c
 and inside your test you could use those variables:
 
 ``` php
-echo getevn('ENV_TEST_CHANNEL_READABLE'); // The number of the current channel that is using the current test eg.2
+echo getevn('ENV_TEST_CHANNEL'); // The number of the current channel that is using the current test eg.2
 echo getevn('ENV_TEST_CHANNEL_READABLE'); // Name for the database, is a readable name eg. test_2
 echo getevn('ENV_TEST_CHANNELS_NUMBER');  // Max channel number on a system (the core number) eg. 4
 echo getevn('ENV_TEST_ARGUMENT');         // The current running test eg. tests/UserFunctionalTest.php
