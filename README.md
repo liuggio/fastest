@@ -132,18 +132,29 @@ Options:
 
 ```
 
-## Symfony and Doctrine DBAL Adapter
+## Symfony and Doctrine
 
 If you want to parallel functional tests, and if you have a machine with 4 CPUs, the best think you could do is create a db foreach parallel process,
 `fastest` gives you the opportunity to work easily with Symfony.
 
 Modifying the config_test config file in Symfony, each functional test will look for a database called `test_x` automatically (x is from 1 to CPUs number).
 
+### DBAL Adapter
+
 `config_test.yml`
 ``` yml
 parameters:
     # Stubs
     doctrine.dbal.connection_factory.class: Liuggio\Fastest\Doctrine\DbalConnectionFactory
+```
+
+### MongoDB Connection
+
+`config_test.yml`
+``` yml
+parameters:
+    # Stubs
+    doctrine_mongodb.odm.connection.class: Liuggio\Fastest\Doctrine\MongoDB\Connection
 ```
 
 ## Install
