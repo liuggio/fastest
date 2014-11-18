@@ -12,3 +12,4 @@ before_script:
 
 script:
   - find tests/ -name "*Test.php" | php fastest -v
+  - bin/behat -fprogress --strict
