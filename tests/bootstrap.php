@@ -7,4 +7,6 @@
 
 $loader = require __DIR__ . "/../vendor/autoload.php";
 $loader->addPsr4('Liuggio\\Fastest\\', __DIR__.'/Fastest');
-define('SCRIPT_NAME', 'fastest');
+if (!defined('SCRIPT_NAME')) {
+    define('SCRIPT_NAME', 'fastest');
+}

@@ -41,7 +41,8 @@ Our old codebase run in 30 minutes, now in 7 minutes with 4 Processors.
 3. Is not coupled with PhpUnit you could run any command.
 3. Is developed in PHP with no dependencies.
 4. As input you could use a `phpunit.xml.dist` file or use pipe (see below).
-5. Increase Verbosity with -v option.
+5. Includes a Behat extension to easily pipe scenarios into fastest.
+6. Increase Verbosity with -v option.
 
 ## How
 
@@ -157,6 +158,67 @@ parameters:
     doctrine_mongodb.odm.connection.class: Liuggio\Fastest\Doctrine\MongoDB\Connection
 ```
 
+### About browser-based tests (Selenium, Mink, etc)
+
+When a browser is controlled remotely via PHPUnit, Behat or another test suite that is being used by Fastest, the browser makes requests
+back to the server. The problem is that when the server process the request it has no idea of which fastest channel called it, so there must
+be a way to set this information before connecting to the database (in order to choose the correct database that corresponds to the channel).
+
+One possible way is to implement the following steps:
+
+#### 1. Set a cookie, GET query parameter or HTTP header with the appropiate channel value
+
+When your test scenario begins, maybe at the authentication phase, set one of the following to the value of the environment variable `ENV_TEST_CHANNEL_READABLE`:
+
+* If its a cookie or a GET query parameter name it ENV_TEST_CHANNEL_READABLE
+   * Beware that if you use the GET query parameter option and via automation you click on a link of the browser that doesn't have that query parameter, the request won't
+   have the query parameter the server won't know the channel to initialize.
+* If its a HTTP header name it X-FASTEST-ENV-TEST-CHANNEL-READABLE and send it on every request to the server.
+
+#### 2. Configure the entry point of your application to set the environment variables for the request
+
+For this is enough to add the following code before booting your application:
+
+    \Liuggio\Fastest\Environment\FastestEnvironment::setFromRequest();
+
+This will detect the presence of the ENV_TEST_CHANNEL_READABLE value in any of the contexts mentioned in #1 and set the corresponding environment variable.
+
+For example, in the case of the Symfony2 framework you may just add it in `web/app_dev.php` just before `require_once __DIR__.'/../app/AppKernel.php'`:
+
+``` php
+// ... code
+$loader = require_once __DIR__.'/../app/bootstrap.php.cache';
+Debug::enable();
+
+\Liuggio\Fastest\Environment\FastestEnvironment::setFromRequest();
+
+require_once __DIR__.'/../app/AppKernel.php';
+$kernel = new AppKernel('dev', true);
+// ... code
+```
+## Behat extension
+
+A Behat extension is included that provides the ability for Behat to output a list of feature files or individual scenarios that would be executed without
+actually executing them. This list can be piped into fastest to run the scenarios in parallel.
+
+To install the extension just add it to your `behat.yml` file:
+
+``` yaml
+extensions:
+    Liuggio\Fastest\Behat\ListFeaturesExtension\Extension: ~
+```
+
+After this you will have two additional command line options: `--list-features` and `--list-scenarios`. The former will output a list of *.feature files
+and the later will output each scenario of each feature file, including its line number (e.g. /full/path/Features/myfeature.feature:lineNumber)
+
+This will let you pipe the output directly into fastest to parallelize its execution:
+
+    /my/path/behat --list-scenarios | ./bin/fastest "/my/path/behat {}"
+
+Using `--list-scenarios` is preferred over `--list-features` because it will give a more granular scenario-by-scenario output, allowing fastest to shuffle and balance
+individual tests in a better way.
+
+
 ## Install
 
 if you use Composer just run `composer require-dev 'liuggio/fastest' 'dev-master'`
@@ -188,6 +250,7 @@ If you want to use it with phpunit you may want to install phpunit/phpunit as de
 - ~~Add the db_name variable~~ Done!
 - ~~Remove redis ad dependency~~ Done!
 - ~~Remove parallel_tests ad dependency~~ Done!
-- Behat provider?
+- ~~Behat integration~~ Done!
+- Mink integration for database-backed tests
 - Develop ProcessorCounter for Windows/Darwin.
 - Improve the UI and Progress bar.
