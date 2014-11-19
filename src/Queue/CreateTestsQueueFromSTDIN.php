@@ -17,7 +17,6 @@ class CreateTestsQueueFromSTDIN
     {
         $this->fstin = fopen($this->stdin, 'r');
         $testSuites = new TestsQueue();
-        stream_set_blocking($this->fstin , false);
         while (false !== ($line = fgets($this->fstin ))) {
             $this->addLineIfNotEmpty($testSuites, $line);
         }
