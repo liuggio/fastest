@@ -5,6 +5,7 @@
         <testsuite name="Fastest Test Suite">
             <directory>tests/Fastest/Process/</directory>
             <directory>tests/Fastest/Queue/</directory>
+            <directory>tests/Fastest/Environment/</directory>
         </testsuite>
     </testsuites>
 
