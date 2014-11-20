@@ -97,7 +97,7 @@ echo getevn('ENV_TEST_CHANNEL_READABLE'); // Name for the database, is a readabl
 echo getevn('ENV_TEST_CHANNELS_NUMBER');  // Max channel number on a system (the core number) eg. 4
 echo getevn('ENV_TEST_ARGUMENT');         // The current running test eg. tests/UserFunctionalTest.php
 echo getevn('ENV_TEST_INC_NUMBER');       // Unique number of the current test eg. 32
-echo getevn('ENV_TEST_IS_FIRST');         // Is 1 if is the first test on its thread useful for clear cache.
+echo getevn('ENV_TEST_IS_FIRST_ON_CHANNEL');         // Is 1 if is the first test on its thread useful for clear cache.
 ```
 
 ### Setup the database `before`
