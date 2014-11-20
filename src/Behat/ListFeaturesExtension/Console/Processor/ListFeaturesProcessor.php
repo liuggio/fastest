@@ -3,14 +3,11 @@
 namespace Liuggio\Fastest\Behat\ListFeaturesExtension\Console\Processor;
 
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\DependencyInjection\ContainerInterface,
-    Symfony\Component\Console\Command\Command,
-    Symfony\Component\Console\Input\InputArgument,
-    Symfony\Component\Console\Input\InputInterface,
-    Symfony\Component\Console\Output\OutputInterface;
-
-
-use  Behat\Behat\Console\Processor\Processor as BaseProcessor;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Behat\Behat\Console\Processor\Processor as BaseProcessor;
 
 /**
  * Extends Behat command line options to provide options that lists the individual feature files / scenarios that
@@ -55,7 +52,6 @@ class ListFeaturesProcessor extends BaseProcessor
      */
     public function process(InputInterface $input, OutputInterface $output)
     {
-
         $listFeatures = $input->getOption('list-features');
         $listScenarios = $input->getOption('list-scenarios');
 
@@ -67,8 +63,7 @@ class ListFeaturesProcessor extends BaseProcessor
         $results = [];
         if ($listFeatures) {
             $results = array_merge($results, $this->_getFeatureFiles($featurePath));
-        }
-        else {
+        } else {
             $results = array_merge($results, $this->_getScenarios($featurePath));
         }
 
@@ -90,15 +85,13 @@ class ListFeaturesProcessor extends BaseProcessor
         $scenarios = [];
         /* @var $featureNodes \Behat\Gherkin\Node\FeatureNode[] */
         $featureNodes = $this->container->get('gherkin')->load($featurePath);
-        foreach($featureNodes as $featureNode) {
-
+        foreach ($featureNodes as $featureNode) {
             /* @var $scenario \Behat\Gherkin\Node\ScenarioNode */
             foreach ($featureNode->getScenarios() as $scenario) {
                 $file = $scenario->getFile();
                 $lineNo = $scenario->getLine();
                 $scenarios[] = "$file:$lineNo";
             }
-
         }
 
         return $scenarios;
@@ -116,7 +109,7 @@ class ListFeaturesProcessor extends BaseProcessor
         $featureFiles = [];
         /* @var $featureNodes \Behat\Gherkin\Node\FeatureNode[] */
         $featureNodes = $this->container->get('gherkin')->load($featurePath);
-        foreach($featureNodes as $featureNode) {
+        foreach ($featureNodes as $featureNode) {
             $featureFiles[] = $featureNode->getFile();
         }
 

@@ -39,17 +39,14 @@ class ProcessesManager
         $parallelProcesses =  max(1, min($queue->count(), $this->maxNumberOfParallelProcesses));
 
         if (null === $processes) {
-
             $channelsEmpty = range(1, $parallelProcesses);
             $processes =  new Processes(array());
 
             if (false !== $this->beforeCommand && null !== $this->beforeCommand) {
                 return $this->createProcessesForTheBeforeCommand($channelsEmpty, $processes);
             }
-
         } else {
             $channelsEmpty = $processes->getIndexesOfCompletedChannel();
-
         }
 
         if (count($channelsEmpty) == 0) {

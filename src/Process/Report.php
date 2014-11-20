@@ -66,5 +66,4 @@ class Report
     {
         return $this->errorBuffer;
     }
-
 }
