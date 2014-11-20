@@ -21,7 +21,7 @@ class Processes
 
     public function cleanUP()
     {
-        foreach ($this->processes as $key=>$process) {
+        foreach ($this->processes as $key => $process) {
             if (null !== $process && $process->isTerminated()) {
                 $this->moveToCompletedProcesses($process);
                 $this->processes[$key] = null;
@@ -32,7 +32,7 @@ class Processes
     public function getIndexesOfCompletedChannel()
     {
         $indexes = array();
-        foreach ($this->processes as $index=>$process) {
+        foreach ($this->processes as $index => $process) {
             if (null === $process || $process->isTerminated()) {
                 $indexes[] = $index;
             }
@@ -104,7 +104,7 @@ class Processes
         $noOneIsRunning = true;
 
         foreach ($this->processes as $process) {
-            $noOneIsRunning = $noOneIsRunning && (null===$process || $process->isTerminated());
+            $noOneIsRunning = $noOneIsRunning && (null === $process || $process->isTerminated());
         }
 
         return !$noOneIsRunning;
@@ -166,7 +166,7 @@ class Processes
             $this->errorBuffer[$suite] .= $process->getErrorOutput();
         }
 
-        $this->totalBuffer[] = new Report($suite, $process->isSuccessful(), $number, isset($this->errorBuffer[$suite])?$this->errorBuffer[$suite]:null, $numberOnThread);
+        $this->totalBuffer[] = new Report($suite, $process->isSuccessful(), $number, isset($this->errorBuffer[$suite]) ? $this->errorBuffer[$suite] : null, $numberOnThread);
     }
 
     /**

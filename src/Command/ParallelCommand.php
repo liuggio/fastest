@@ -78,17 +78,17 @@ class ParallelCommand extends Command
         $processManager =  new ProcessesManager($processFactory, $maxNumberOfParallelProc, $input->getOption('before'));
 
         // header
-        $shuffled = $input->getOption('preserve-order')?'':'shuffled ';
+        $shuffled = $input->getOption('preserve-order') ? '' : 'shuffled ';
         $output->writeln('- <fg=white;bg=blue>'.$queue->count().'</> '.$shuffled.'tests into the queue.');
         $output->writeln('- Will be consumed by <fg=white;bg=blue>'.$maxNumberOfParallelProc.'</> parallel Processes.');
 
         // loop
         $processes = $this->doExecute($output, $queue, $processManager);
 
-        $event =$stopWatch->stop('execute');
-        $output->writeln( sprintf("    Time: %d ms, Memory: %d b", $event->getDuration(), $event->getMemory()));
+        $event = $stopWatch->stop('execute');
+        $output->writeln(sprintf("    Time: %d ms, Memory: %d b", $event->getDuration(), $event->getMemory()));
 
-        if ($input->getOption('rerun-failed') ) {
+        if ($input->getOption('rerun-failed')) {
             $processes = $this->executeBeforeCommand($queue, $processes, $output, $processManager);
         }
 

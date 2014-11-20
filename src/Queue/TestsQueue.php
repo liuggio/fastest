@@ -40,11 +40,11 @@ class TestsQueue extends ArrayCollection
      */
     public function add($value)
     {
-       if (!($value instanceof TestSuite)) {
-           $value = new TestSuite($value);
-       }
+        if (!($value instanceof TestSuite)) {
+            $value = new TestSuite($value);
+        }
 
-       return parent::add($value);
+        return parent::add($value);
     }
 
     /**
@@ -54,7 +54,6 @@ class TestsQueue extends ArrayCollection
     {
         return parent::isEmpty();
     }
-
 
     /**
      * @return boolean

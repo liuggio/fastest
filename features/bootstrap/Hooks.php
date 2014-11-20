@@ -37,7 +37,6 @@ use \Liuggio\Fastest\Process\EnvCommandCreator;
  */
 class Hooks extends BehatContext
 {
-
     /**
      * Get current fastest channel.
      *

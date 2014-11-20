@@ -55,7 +55,7 @@ class ProcessFactory
 
         $process->setTimeout(null);
         // compatibility to SF 2.2
-        if (method_exists($process,'setIdleTimeout')) {
+        if (method_exists($process, 'setIdleTimeout')) {
             $process->setIdleTimeout(null);
         }
 

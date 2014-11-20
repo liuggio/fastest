@@ -6,7 +6,6 @@ use Behat\Behat\Exception\PendingException;
 
 class FeatureContext extends BehatContext
 {
-
     private $lastBehatStdOut;
 
     /**

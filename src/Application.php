@@ -12,7 +12,6 @@ class Application extends BaseApp
     public function __construct()
     {
         parent::__construct('fastest', self::VERSION);
-
     }
 
     /**

@@ -19,8 +19,8 @@ class FastestEnvironment
     {
         // Try to find if ENV_TEST_CHANNEL_READABLE is present in the request
         $testDbEnvVarName = EnvCommandCreator::ENV_TEST_CHANNEL_READABLE;
-        $httpHeaderName = "HTTP_X_FASTEST_" . $testDbEnvVarName;
-        switch(true) {
+        $httpHeaderName = "HTTP_X_FASTEST_".$testDbEnvVarName;
+        switch (true) {
 
             // Check request query
             case isset($_GET[$testDbEnvVarName]):
@@ -50,7 +50,5 @@ class FastestEnvironment
 
         // Set environment variable
         putenv("$testDbEnvVarName=$envVarValue");
-
     }
-
 }

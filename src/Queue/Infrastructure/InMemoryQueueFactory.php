@@ -6,7 +6,7 @@ use Liuggio\Fastest\Queue\QueueFactoryInterface;
 
 class InMemoryQueueFactory implements QueueFactoryInterface
 {
-    private static $queue= null;
+    private static $queue = null;
 
     public function create()
     {
