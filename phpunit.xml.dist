@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="tests/bootstrap.php" colors="true">
+<phpunit bootstrap="vendor/autoload.php" colors="true">
     <testsuites>
         <testsuite name="Fastest Test Suite">
-            <directory>tests/Fastest/Process/</directory>
-            <directory>tests/Fastest/Queue/</directory>
-            <directory>tests/Fastest/Environment/</directory>
+            <directory>tests/Queue/</directory>
+            <directory>tests/Process/</directory>
+            <directory>tests/Environment/</directory>
         </testsuite>
     </testsuites>
 

@@ -16,7 +16,7 @@ class CreateTestsQueueFromSTDINTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldReadTestQueueFromDelayedStdin()
     {
-        $bootstrapFile = realpath(__DIR__ . "/../../bootstrap.php");
+        $bootstrapFile = realpath(__DIR__ . "/../../vendor/autoload.php");
 
         $code = '
             require "' . $bootstrapFile . '";
