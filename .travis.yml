@@ -12,4 +12,4 @@ before_script:
 
 script:
   - find tests/ -name "*Test.php" | php fastest -v
-  - bin/behat --list-scenarios | php fastest -v "bin/behat --strict {}"
+  - bin/behat
