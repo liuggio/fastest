@@ -221,7 +221,7 @@ individual tests in a better way.
 
 ## Install
 
-if you use Composer just run `composer require-dev 'liuggio/fastest' 'dev-master'`
+if you use Composer just run `composer require --dev 'liuggio/fastest' 'dev-master'`
 
 or simply add a dependency on liuggio/fastest to your project's composer.json file:
 
