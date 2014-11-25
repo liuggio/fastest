@@ -34,9 +34,14 @@
         "fastest"
     ],
     "autoload": {
-        "psr-4": {"Liuggio\\Fastest\\": "src"}
+        "psr-4": {"Liuggio\\Fastest\\": ["src", "adapters"]}
     },
     "autoload-dev": {
         "psr-4": { "Liuggio\\Fastest\\": "tests" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
     }
 }
