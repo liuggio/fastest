@@ -1,3 +1,3 @@
 default:
     extensions:
-        Liuggio\Fastest\Behat\ListFeaturesExtension\Extension: ~
+        Liuggio\Fastest\Behat2\ListFeaturesExtension\Extension: ~

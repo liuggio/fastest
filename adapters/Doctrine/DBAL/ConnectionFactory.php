@@ -1,8 +1,8 @@
 <?php
 
-namespace Liuggio\Fastest\Doctrine;
+namespace Liuggio\Fastest\Doctrine\DBAL;
 
-use Doctrine\Bundle\DoctrineBundle\ConnectionFactory;
+use Doctrine\Bundle\DoctrineBundle\ConnectionFactory as BaseConnectionFactory;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Configuration;
 use Liuggio\Fastest\Process\EnvCommandCreator;
@@ -10,7 +10,7 @@ use Liuggio\Fastest\Process\EnvCommandCreator;
 /**
  * Creates a connection taking the db name from the env, this is great if you want to run parallel functional tests.
  */
-class DbalConnectionFactory extends ConnectionFactory
+class ConnectionFactory extends BaseConnectionFactory
 {
     /**
      * Create a connection by name.

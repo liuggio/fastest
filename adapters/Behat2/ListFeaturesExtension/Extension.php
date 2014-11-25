@@ -1,11 +1,12 @@
 <?php
 
-namespace  Liuggio\Fastest\Behat\ListFeaturesExtension;
+namespace  Liuggio\Fastest\Behat2\ListFeaturesExtension;
 
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\Config\FileLocator,
+    Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition,
+    Symfony\Component\DependencyInjection\ContainerBuilder,
+    Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+
 use Behat\Behat\Extension\ExtensionInterface;
 
 /**
@@ -14,6 +15,7 @@ use Behat\Behat\Extension\ExtensionInterface;
  */
 class Extension implements ExtensionInterface
 {
+
     /**
      * Loads a specific configuration.
      *
@@ -33,7 +35,6 @@ class Extension implements ExtensionInterface
      */
     public function getConfig(ArrayNodeDefinition $builder)
     {
-        // TODO: Implement getConfig() method.
     }
 
     /**
