@@ -88,17 +88,17 @@ if you are running tests on a computer that has 4 core, `fastest` will create 4 
 and inside your test you could use those variables to better identify the current process:
 
 ``` php
-echo getevn('ENV_TEST_CHANNEL');          // The number of the current channel that is using the current test eg.2
-echo getevn('ENV_TEST_CHANNEL_READABLE'); // Name for the database, is a readable name eg. test_2
-echo getevn('ENV_TEST_CHANNELS_NUMBER');  // Max channel number on a system (the core number) eg. 4
-echo getevn('ENV_TEST_ARGUMENT');         // The current running test eg. tests/UserFunctionalTest.php
-echo getevn('ENV_TEST_INC_NUMBER');       // Unique number of the current test eg. 32
-echo getevn('ENV_TEST_IS_FIRST_ON_CHANNEL'); // Is 1 if is the first test on its thread useful for clear cache.
+echo getenv('ENV_TEST_CHANNEL');          // The number of the current channel that is using the current test eg.2
+echo getenv('ENV_TEST_CHANNEL_READABLE'); // Name for the database, is a readable name eg. test_2
+echo getenv('ENV_TEST_CHANNELS_NUMBER');  // Max channel number on a system (the core number) eg. 4
+echo getenv('ENV_TEST_ARGUMENT');         // The current running test eg. tests/UserFunctionalTest.php
+echo getenv('ENV_TEST_INC_NUMBER');       // Unique number of the current test eg. 32
+echo getenv('ENV_TEST_IS_FIRST_ON_CHANNEL'); // Is 1 if is the first test on its thread useful for clear cache.
 ```
 
 ### Setup the database `before`
 
-you can also run a script per process **before** the tests, useful for init schema and fixtures loading.
+You can also run a script per process **before** the tests, useful for init schema and fixtures loading.
 
 ``` bash
 find tests/ -name "*Test.php" | ./bin/fastest -b"app/console doc:sch:create -e test";
