@@ -29,8 +29,7 @@
  */
 
 use Behat\Behat\Context\BehatContext;
-
-use \Liuggio\Fastest\Process\EnvCommandCreator;
+use Liuggio\Fastest\Process\EnvCommandCreator;
 
 /**
  * Based on Behat test suite hooks (some portions of the code that didn't apply were removed and others added).
@@ -48,6 +47,7 @@ class Hooks extends BehatContext
     public static function getFastestChannel()
     {
         $channel = getenv(EnvCommandCreator::ENV_TEST_CHANNEL);
+
         return (int) $channel;
     }
 
@@ -58,18 +58,17 @@ class Hooks extends BehatContext
      */
     public static function cleanTestFolders()
     {
-
         $channel  = self::getFastestChannel();
 
         $underFastest = (bool) $channel;
         $firstFastestTest = getenv(EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL);
 
         // If under fastest only purge directory on the first test
-        if ($underFastest && !$firstFastestTest ) {
+        if ($underFastest && !$firstFastestTest) {
             return;
         }
 
-        if (is_dir($dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'fastest-behat' . $channel)) {
+        if (is_dir($dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'fastest-behat'.$channel)) {
             self::rmdirRecursive($dir);
         }
     }
@@ -83,20 +82,20 @@ class Hooks extends BehatContext
     {
         $channel = self::getFastestChannel();
 
-        $dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'fastest-behat' . $channel. DIRECTORY_SEPARATOR .
+        $dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'fastest-behat'.$channel.DIRECTORY_SEPARATOR.
             md5(microtime() * rand(0, 10000));
 
         mkdir($dir, 0777, true);
         chdir($dir);
 
         mkdir('features');
-        mkdir('features' . DIRECTORY_SEPARATOR . 'bootstrap');
+        mkdir('features'.DIRECTORY_SEPARATOR.'bootstrap');
     }
 
     /**
      * Removes files and folders recursively at provided path.
      *
-     * @param   string  $path
+     * @param string $path
      */
     private static function rmdirRecursive($path)
     {
@@ -105,7 +104,7 @@ class Hooks extends BehatContext
         array_shift($files);
 
         foreach ($files as $file) {
-            $file = $path . DIRECTORY_SEPARATOR . $file;
+            $file = $path.DIRECTORY_SEPARATOR.$file;
             if (is_dir($file)) {
                 self::rmdirRecursive($file);
             } else {
