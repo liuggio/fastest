@@ -1,0 +1,8 @@
+default:
+    suites:
+        default:
+            contexts:
+                - FeatureContext
+                - Hooks
+    extensions:
+        Liuggio\Fastest\Behat\ListFeaturesExtension\Extension: ~
