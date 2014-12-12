@@ -32,7 +32,7 @@ class ConnectionFactory extends BaseConnectionFactory
     private function getDbNameFromEnv($dbName)
     {
         if ($this->issetDbNameEnvValue()) {
-            return $this->getDbNameEnvValue();
+            return $dbName.'_'.$this->getDbNameEnvValue();
         }
 
         return $dbName;

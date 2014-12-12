@@ -89,7 +89,7 @@ and inside your test you could use those variables to better identify the curren
 
 ``` php
 echo getenv('ENV_TEST_CHANNEL');          // The number of the current channel that is using the current test eg.2
-echo getenv('ENV_TEST_CHANNEL_READABLE'); // Name for the database, is a readable name eg. test_2
+echo getenv('ENV_TEST_CHANNEL_READABLE'); // Name used to make the database name unique, is a readable name eg. test_2
 echo getenv('ENV_TEST_CHANNELS_NUMBER');  // Max channel number on a system (the core number) eg. 4
 echo getenv('ENV_TEST_ARGUMENT');         // The current running test eg. tests/UserFunctionalTest.php
 echo getenv('ENV_TEST_INC_NUMBER');       // Unique number of the current test eg. 32
@@ -109,7 +109,7 @@ find tests/ -name "*Test.php" | ./bin/fastest -b"app/console doc:sch:create -e t
 If you want to parallel functional tests, and if you have a machine with 4 CPUs, the best think you could do is create a db foreach parallel process,
 `fastest` gives you the opportunity to work easily with Symfony.
 
-Modifying the config_test config file in Symfony, each functional test will look for a database called `test_x` automatically (x is from 1 to CPUs number).
+Modifying the config_test config file in Symfony, each functional test will look for a database called `<database_name>_test_x` automatically (x is from 1 to CPUs number).
 
 ### Doctrine DBAL
 
