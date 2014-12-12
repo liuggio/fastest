@@ -96,7 +96,7 @@ class ProcessesManagerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $array = array([1,1,true], [2,2,true], [3,3,true], [1,4,false], [2,5,false], [3,6,false]);
+        $array = array(array(1,1,true), array(2,2,true), array(3,3,true), array(1,4,false), array(2,5,false), array(3,6,false));
 
 
         foreach ($array as $at=>$expectation) {
