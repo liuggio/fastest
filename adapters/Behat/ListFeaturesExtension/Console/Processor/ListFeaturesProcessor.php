@@ -63,7 +63,7 @@ class ListFeaturesProcessor implements Controller
             return;
         }
 
-        $results = [];
+        $results = array();
         if ($listFeatures) {
             $results = array_merge($results, $this->getFeatureFiles());
         } else {
@@ -79,7 +79,7 @@ class ListFeaturesProcessor implements Controller
     */
     public function getScenarios()
     {
-        $scenarios = [];
+        $scenarios = array();
 
         foreach ($this->registry->getSuites() as $suite) {
             foreach ($this->locator->locateSpecifications($suite, '') as $feature) {
@@ -99,7 +99,7 @@ class ListFeaturesProcessor implements Controller
     */
     private function getFeatureFiles()
     {
-        $featureFiles = [];
+        $featureFiles = array();
         foreach ($this->registry->getSuites() as $suite) {
             foreach ($this->locator->locateSpecifications($suite, '') as $feature) {
                 $featureFiles[] = $feature->getFile();

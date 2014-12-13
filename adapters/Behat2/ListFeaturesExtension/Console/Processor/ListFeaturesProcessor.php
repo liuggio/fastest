@@ -59,7 +59,7 @@ class ListFeaturesProcessor extends BaseProcessor
             return;
         }
 
-        $results = [];
+        $results = array();
         $featurePaths = $this->container->get('behat.console.command')->getFeaturesPaths();
         foreach ($featurePaths as $featurePath) {
             if ($listFeatures) {
@@ -84,7 +84,7 @@ class ListFeaturesProcessor extends BaseProcessor
      */
     private function _getScenarios($featurePath)
     {
-        $scenarios = [];
+        $scenarios = array();
         /* @var $featureNodes \Behat\Gherkin\Node\FeatureNode[] */
         $featureNodes = $this->container->get('gherkin')->load($featurePath);
         foreach ($featureNodes as $featureNode) {
@@ -108,7 +108,7 @@ class ListFeaturesProcessor extends BaseProcessor
      */
     private function _getFeatureFiles($featurePath)
     {
-        $featureFiles = [];
+        $featureFiles = array();
         /* @var $featureNodes \Behat\Gherkin\Node\FeatureNode[] */
         $featureNodes = $this->container->get('gherkin')->load($featurePath);
         foreach ($featureNodes as $featureNode) {
