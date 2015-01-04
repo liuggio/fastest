@@ -51,6 +51,7 @@ class ProcessFactory
 
     private function createProcess($executeCommand, $arrayEnv)
     {
+        $arrayEnv[] = 'PATH='.$_SERVER['PATH'];
         $process = new Process($executeCommand, null, $arrayEnv);
 
         $process->setTimeout(null);
