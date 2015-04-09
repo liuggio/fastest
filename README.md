@@ -219,7 +219,7 @@ If you want to use it with phpunit you may want to install phpunit/phpunit as de
 
 ```
 Usage:
- fastest [-p|--process="..."] [-b|--before="..."] [-x|--xml="..."] [-o|--preserve-order] [execute]
+ fastest [-p|--process="..."] [-b|--before="..."] [-x|--xml="..."] [-o|--preserve-order] [--no-errors-summary] [execute]
 
 Arguments:
  execute               Optional command to execute.
@@ -229,6 +229,7 @@ Options:
  --before (-b)         Execute a process before consuming the queue, it executes this command once per process, useful for init schema and load fixtures.
  --xml (-x)            Read input from a phpunit xml file from the '<testsuites>' collection. Note: it is not used for consuming.
  --preserve-order (-o) Queue is randomized by default, with this option the queue is read preserving the order.
+ --no-errors-summary   Do not display all errors after the test run. Useful with --vv because it already displays errors immediately after they happen.
  --help (-h)           Display this help message.
  --quiet (-q)          Do not output any message.
  --verbose (-v|vv|vvv) Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug

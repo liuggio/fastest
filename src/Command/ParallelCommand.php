@@ -59,6 +59,12 @@ class ParallelCommand extends Command
                 InputOption::VALUE_NONE,
                 'Re-run failed test with before command if exists.'
             )
+            ->addOption(
+                'no-errors-summary',
+                null,
+                InputOption::VALUE_NONE,
+                'Do not display all errors after the test run. Useful with --vv because it already displays errors immediately after they happen.'
+            )
         ;
     }
 
@@ -83,13 +89,13 @@ class ParallelCommand extends Command
         $output->writeln('- Will be consumed by <fg=white;bg=blue>'.$maxNumberOfParallelProc.'</> parallel Processes.');
 
         // loop
-        $processes = $this->doExecute($output, $queue, $processManager);
+        $processes = $this->doExecute($input, $output, $queue, $processManager);
 
         $event = $stopWatch->stop('execute');
         $output->writeln(sprintf("    Time: %d ms, Memory: %d b", $event->getDuration(), $event->getMemory()));
 
         if ($input->getOption('rerun-failed')) {
-            $processes = $this->executeBeforeCommand($queue, $processes, $output, $processManager);
+            $processes = $this->executeBeforeCommand($queue, $processes, $input, $output, $processManager);
         }
 
         return $processes->getExitCode();
@@ -107,19 +113,20 @@ class ParallelCommand extends Command
     }
 
     /**
+     * @param InputInterface $input
      * @param  OutputInterface $output
      * @param $queue
      * @param $processManager
      * @return array
      */
-    private function doExecute(OutputInterface $output, $queue, $processManager)
+    private function doExecute(InputInterface $input, OutputInterface $output, $queue, $processManager)
     {
         $processes = null;
 
         if ($this->isVerbose($output)) {
-            $progressBar = new VerboseRenderer($queue->count(), $output, $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
+            $progressBar = new VerboseRenderer($queue->count(), $this->hasErrorSummary($input), $output, $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
         } else {
-            $progressBar = new ProgressBarRenderer($queue->count(), $output, $this->getHelper('progress'), $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
+            $progressBar = new ProgressBarRenderer($queue->count(),$this->hasErrorSummary($input), $output, $this->getHelper('progress'), $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
         }
 
         $progressBar->renderHeader($queue, $processes);
@@ -143,13 +150,22 @@ class ParallelCommand extends Command
         return false;
     }
 
-    private function executeBeforeCommand($queue, $processes, $output, $processManager)
+    /**
+     * @param InputInterface $input
+     * @return bool Whether user wanted to see error summary
+     */
+    private function hasErrorSummary(InputInterface $input)
+    {
+        return !$input->getOption('no-errors-summary');
+    }
+
+    private function executeBeforeCommand($queue, $processes, $input, $output, $processManager)
     {
         if (!$processes->isSuccessful()) {
             $array = $processes->getErrorOutput();
             $output->writeln(sprintf("Re-Running [%d] elements", count($array)));
             $queue->push(new TestsQueue(array_keys($array)));
-            $processes = $this->doExecute($output, $queue, $processManager);
+            $processes = $this->doExecute($input, $output, $queue, $processManager);
         }
 
         return $processes;
