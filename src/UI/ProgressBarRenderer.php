@@ -16,10 +16,19 @@ class ProgressBarRenderer implements RendererInterface
     private $output;
     private $preProcesses;
     private $messagesInTheQueue;
+    private $errorsSummary;
 
-    public function __construct($messageInTheQueue, OutputInterface $output, $helper, $preProcesses = 0)
+    /**
+     * @param $messageInTheQueue
+     * @param bool $errorsSummary Whether to display errors summary in the footer
+     * @param OutputInterface $output
+     * @param $helper
+     * @param int $preProcesses
+     */
+    public function __construct($messageInTheQueue, $errorsSummary, OutputInterface $output, $helper, $preProcesses = 0)
     {
         $this->messagesInTheQueue = $messageInTheQueue;
+        $this->errorsSummary = $errorsSummary;
         $this->output = $output;
         $this->helper = $helper;
         $this->preProcesses = (int) $preProcesses;
@@ -75,7 +84,9 @@ class ProgressBarRenderer implements RendererInterface
         $this->renderBody($queue, $processes);
         $this->bar->finish();
         $this->output->writeln('');
-        $this->output->writeln($processes->getErrorOutput());
+        if ($this->errorsSummary) {
+            $this->output->writeln($processes->getErrorOutput());
+        }
 
         $out = "    <info>✔</info> You are great!";
         if (!$processes->isSuccessful()) {
