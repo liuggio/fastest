@@ -13,6 +13,7 @@ class ProcessorCounter
     private static $count = null;
 
     private $procCPUInfo;
+
     public function __construct($procCPUInfo = self::PROC_CPUINFO)
     {
         $this->procCPUInfo = $procCPUInfo;
