@@ -12,7 +12,7 @@ class ProcessorCounterTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldCountTheNumberOfProcessorInLinux()
     {
-        $processorCount = new ProcessorCounter(__DIR__.'/Fixture/proc_cpuinfo');
+        $processorCount = new ProcessorCounter();
 
         $this->assertEquals(4, $processorCount->execute());
     }
