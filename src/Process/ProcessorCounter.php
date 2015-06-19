@@ -8,8 +8,15 @@ namespace Liuggio\Fastest\Process;
 class ProcessorCounter
 {
     const PROC_DEFAULT_NUMBER = 4;
+    const PROC_CPUINFO = '/proc/cpuinfo';
 
     private static $count = null;
+
+    private $procCPUInfo;
+    public function __construct($procCPUInfo = self::PROC_CPUINFO)
+    {
+        $this->procCPUInfo = $procCPUInfo;
+    }
 
     public function execute()
     {
@@ -30,7 +37,7 @@ class ProcessorCounter
                 return $processors;
             }
         } elseif (PHP_OS === 'Linux') {
-            $file = '/proc/cpuinfo';
+            $file = $this->procCPUInfo;
             if (is_file($file) && is_readable($file)) {
                 try {
                     $contents = trim(file_get_contents($file));
