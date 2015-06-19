@@ -7,17 +7,9 @@ namespace Liuggio\Fastest\Process;
  */
 class ProcessorCounter
 {
-    const PROC_CPUINFO = '/proc/cpuinfo';
-    const PROC_DEFAULT_NUMBER = 4;
+    const PROC_DEFAULT_NUMBER = 'unknown';
 
     private static $count = null;
-
-    private $procCPUInfo;
-
-    public function __construct($procCPUInfo = self::PROC_CPUINFO)
-    {
-        $this->procCPUInfo = $procCPUInfo;
-    }
 
     public function execute()
     {
@@ -31,16 +23,23 @@ class ProcessorCounter
 
     private function readFromProcCPUInfo()
     {
-        $file = $this->procCPUInfo;
-        if (!is_file($file) || !is_readable($file)) {
-            return self::PROC_DEFAULT_NUMBER;
-        }
-        try {
-            $contents = trim(file_get_contents($file));
-        } catch (\Exception $e) {
-            return self::PROC_DEFAULT_NUMBER;
+        if (PHP_OS === 'Darwin') {
+            $processors = system('/usr/sbin/sysctl -n hw.physicalcpu');
+
+            if ($processors !== false && $processors) {
+                return $processors;
+            }
+        } elseif (PHP_OS === 'Linux') {
+            $file = '/proc/cpuinfo';
+            if (is_file($file) && is_readable($file)) {
+                try {
+                    $contents = trim(file_get_contents($file));
+                    return substr_count($contents, 'processor');
+                } catch (\Exception $e) {
+                }
+            }
         }
 
-        return substr_count($contents, 'processor');
+        return self::PROC_DEFAULT_NUMBER;
     }
 }
