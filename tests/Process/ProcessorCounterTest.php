@@ -2,7 +2,6 @@
 
 namespace Liuggio\Fastest\Process;
 
-
 use Liuggio\Fastest\Process\ProcessorCounter;
 
 class ProcessorCounterTest extends \PHPUnit_Framework_TestCase
@@ -17,4 +16,3 @@ class ProcessorCounterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(4, $processorCount->execute());
     }
 }
- 
