@@ -7,7 +7,7 @@ namespace Liuggio\Fastest\Process;
  */
 class ProcessorCounter
 {
-    const PROC_DEFAULT_NUMBER = 'unknown';
+    const PROC_DEFAULT_NUMBER = 4;
 
     private static $count = null;
 
