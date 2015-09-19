@@ -6,8 +6,16 @@ use Symfony\Component\Process\Process;
 
 class Processes
 {
+    /**
+     * @var Process[]
+     */
     private $processes;
 
+    /**
+     * @var float[] Unix timestamp with float part of processes start times
+     */
+    private $startTimes;
+    
     /**
      * @var Report[]
      */
@@ -21,6 +29,7 @@ class Processes
         $this->processes = $processes;
         $this->totalBuffer = array();
         $this->errorBuffer = array();
+        $this->startTimes = array();
         $this->errorCounter = 0;
     }
 
@@ -28,8 +37,9 @@ class Processes
     {
         foreach ($this->processes as $key => $process) {
             if (null !== $process && $process->isTerminated()) {
-                $this->moveToCompletedProcesses($process);
+                $this->moveToCompletedProcesses($key, $process);
                 $this->processes[$key] = null;
+                $this->startTimes[$key] = null;
             }
         }
     }
@@ -51,7 +61,7 @@ class Processes
         $this->cleanUP();
         if (isset($this->processes[$key]) && null !== $this->processes[$key]) {
             $this->assertTerminated($key);
-            $this->moveToCompletedProcesses($this->processes[$key]);
+            $this->moveToCompletedProcesses($key, $this->processes[$key]);
             $this->processes[$key] = null;
         }
 
@@ -61,16 +71,25 @@ class Processes
     public function start($key = null)
     {
         if (null !== $key) {
-            $this->processes[$key]->start();
-
+            $this->startProcess($key);
             return true;
         }
 
-        return array_walk($this->processes, function (Process $item = null) {
-            if (null !== $item) {
-                $item->start();
+        foreach ($this->processes as $key => $process) {
+            if (null !== $process) {
+                $this->startProcess($key);
             }
-        });
+        }
+        return true;
+    }
+
+    /**
+     * @param $key
+     */
+    private function startProcess($key)
+    {
+        $this->startTimes[$key] = microtime(true);
+        $this->processes[$key]->start();
     }
 
     public function stop()
@@ -171,7 +190,11 @@ class Processes
         }
     }
 
-    private function moveToCompletedProcesses(Process $process)
+    /**
+     * @param $key
+     * @param Process $process
+     */
+    private function moveToCompletedProcesses($key, Process $process)
     {
         $env = $process->getEnv();
         $suite = str_replace(EnvCommandCreator::ENV_TEST_ARGUMENT.'=', '', $env[3]);
@@ -185,7 +208,14 @@ class Processes
             $this->errorBuffer[$suite] .= $process->getErrorOutput();
         }
 
-        $this->totalBuffer[] = new Report($suite, $process->isSuccessful(), $number, isset($this->errorBuffer[$suite]) ? $this->errorBuffer[$suite] : null, $numberOnThread);
+        $this->totalBuffer[] = new Report(
+            $suite,
+            $process->isSuccessful(),
+            microtime(true) - $this->startTimes[$key],
+            $number,
+            isset($this->errorBuffer[$suite]) ? $this->errorBuffer[$suite] : null,
+            $numberOnThread
+        );
     }
 
     /**
