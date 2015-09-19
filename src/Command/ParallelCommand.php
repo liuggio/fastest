@@ -2,6 +2,8 @@
 
 namespace Liuggio\Fastest\Command;
 
+use Liuggio\Fastest\Process\Processes;
+use Liuggio\Fastest\Queue\QueueInterface;
 use Liuggio\Fastest\Queue\TestsQueue;
 use Liuggio\Fastest\UI\ProgressBarRenderer;
 use Liuggio\Fastest\UI\VerboseRenderer;
@@ -114,12 +116,15 @@ class ParallelCommand extends Command
 
     /**
      * @param InputInterface $input
-     * @param  OutputInterface $output
-     * @param $queue
-     * @param $processManager
+     * @param OutputInterface $output
+     * @param QueueInterface $queue
+     * @param ProcessesManager $processManager
      * @return array
      */
-    private function doExecute(InputInterface $input, OutputInterface $output, $queue, $processManager)
+    private function doExecute(InputInterface $input,
+                               OutputInterface $output,
+                               QueueInterface $queue,
+                               ProcessesManager $processManager)
     {
         $processes = null;
 
@@ -134,7 +139,10 @@ class ParallelCommand extends Command
         while ($processManager->assertNProcessRunning($queue, $processes)) {
             $progressBar->renderBody($queue, $processes);
         }
-
+        
+        /**
+         * @var Processes $processes
+         */
         $processes->wait();
         $progressBar->renderFooter($queue, $processes);
 
