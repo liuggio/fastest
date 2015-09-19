@@ -143,7 +143,9 @@ class ParallelCommand extends Command
         /**
          * @var Processes $processes
          */
-        $processes->wait();
+        $processes->wait(function() use ($progressBar, $queue, $processes) {
+            $progressBar->renderBody($queue, $processes);
+        });
         $progressBar->renderFooter($queue, $processes);
 
         return $processes;

@@ -7,7 +7,12 @@ use Symfony\Component\Process\Process;
 class Processes
 {
     private $processes;
+
+    /**
+     * @var Report[]
+     */
     private $totalBuffer;
+
     private $errorBuffer;
     private $errorCounter;
 
@@ -77,16 +82,25 @@ class Processes
         });
     }
 
-    public function wait()
+    /**
+     * @param callable $terminationCallback A callback to be called after one of the processes is terminated
+     * @return bool
+     */
+    public function wait($terminationCallback = null)
     {
-        $ret = array_walk($this->processes, function (Process $item = null) {
-            if (null !== $item) {
-                $item->wait();
+        $lastProcessesRunningCount = $currentRunningProcessesCount = $this->countRunning();
+        while ($currentRunningProcessesCount > 0) {
+            $currentRunningProcessesCount = $this->countRunning();
+            if ($lastProcessesRunningCount !== $currentRunningProcessesCount) {
+                $lastProcessesRunningCount = $currentRunningProcessesCount;
+                $this->cleanUP();
+                if ($terminationCallback !== null) {
+                    call_user_func($terminationCallback);
+                }
             }
-        });
-        $this->cleanUP();
-
-        return $ret;
+            usleep(1000);
+        }
+        return true;
     }
 
     public function count()
@@ -108,6 +122,22 @@ class Processes
         }
 
         return !$noOneIsRunning;
+    }
+
+    /**
+     * @return int Number of processes still running
+     */
+    public function countRunning()
+    {
+        $count = 0;
+
+        foreach ($this->processes as $process) {
+            if (null !== $process && !$process->isTerminated()) {
+                $count++;
+            }
+        }
+
+        return $count;
     }
 
     /**

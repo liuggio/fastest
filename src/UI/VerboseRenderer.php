@@ -75,7 +75,12 @@ class VerboseRenderer implements RendererInterface
             }
 
             $remaining = sprintf('%d/%d', $this->lastIndex, $this->messageInTheQueue);
-            $this->output->writeln($processorN.$remaining."\t".$flag."\t".$report->getSuite().$err);
+            $time = round($report->getTime() * 1000) . ' ms';
+            // add a tab to add some space for longer strings so that the next column doesn't jump
+            if (strlen($time) < 8) {
+                $time .= "\t";
+            }
+            $this->output->writeln($processorN.$remaining."\t".$flag."\t".$time."\t".$report->getSuite().$err);
         }
         $this->lastIndex = $count;
 
