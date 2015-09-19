@@ -134,12 +134,12 @@ class ParallelCommand extends Command
             $progressBar = new ProgressBarRenderer($queue->count(),$this->hasErrorSummary($input), $output, $this->getHelper('progress'), $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
         }
 
-        $progressBar->renderHeader($queue, $processes);
+        $progressBar->renderHeader($queue);
 
         while ($processManager->assertNProcessRunning($queue, $processes)) {
             $progressBar->renderBody($queue, $processes);
         }
-        
+
         /**
          * @var Processes $processes
          */
