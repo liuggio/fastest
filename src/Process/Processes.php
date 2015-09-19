@@ -113,17 +113,6 @@ class Processes
         return $this->processes[$index];
     }
 
-    public function isAnyStillRunning()
-    {
-        $noOneIsRunning = true;
-
-        foreach ($this->processes as $process) {
-            $noOneIsRunning = $noOneIsRunning && (null === $process || $process->isTerminated());
-        }
-
-        return !$noOneIsRunning;
-    }
-
     /**
      * @return int Number of processes still running
      */
