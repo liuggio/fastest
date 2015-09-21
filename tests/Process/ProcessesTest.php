@@ -36,7 +36,15 @@ class ProcessesTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldWaitAllTheItems()
     {
-        $process = $this->mockProcessWithExpectation('wait');
+        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $process
+            ->expects($this->exactly(5))
+            ->method('isTerminated')
+            ->willReturn(false)
+            ->willReturnOnConsecutiveCalls(false, false, false, true)
+        ;
 
         $processes = new Processes(array($process));
 
@@ -55,4 +63,3 @@ class ProcessesTest extends \PHPUnit_Framework_TestCase
         return $process;
     }
 }
- 

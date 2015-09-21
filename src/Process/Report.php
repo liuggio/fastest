@@ -10,17 +10,31 @@ class Report
     private $time;
     private $isFirstOnThread;
 
-    public function __construct($suite, $isSuccess, $processorNumber, $errorBuffer, $isFirstOnThread)
+    /**
+     * @param string $suite
+     * @param boolean $isSuccess
+     * @param int $time
+     * @param int $processorNumber
+     * @param string|null $errorBuffer
+     * @param boolean $isFirstOnThread
+     */
+    public function __construct($suite, 
+                                $isSuccess,
+                                $time,
+                                $processorNumber,
+                                $errorBuffer,
+                                $isFirstOnThread)
     {
         $this->isSuccess = $isSuccess;
         $this->processorNumber = $processorNumber;
         $this->suite = $suite;
         $this->errorBuffer = $errorBuffer;
         $this->isFirstOnThread = $isFirstOnThread;
+        $this->time = $time;
     }
 
     /**
-     * @return mixed
+     * @return boolean
      */
     public function isSuccessful()
     {
@@ -28,7 +42,7 @@ class Report
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getProcessorNumber()
     {
@@ -36,7 +50,7 @@ class Report
     }
 
     /**
-     * @return mixed
+     * @return boolean
      */
     public function isFirstOnThread()
     {
@@ -44,7 +58,7 @@ class Report
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getSuite()
     {
@@ -52,7 +66,7 @@ class Report
     }
 
     /**
-     * @return mixed
+     * @return int Time in microseconds
      */
     public function getTime()
     {
@@ -60,7 +74,7 @@ class Report
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
     public function getErrorBuffer()
     {
