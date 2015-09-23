@@ -27,11 +27,7 @@ if (!$found) {
     );
 }
 
-
-use Liuggio\Fastest\Application;
-use Liuggio\Fastest\AppParametersFromEnv;
-
+use Liuggio\Fastest\UI\CLI\Application;
 
 $application = new Application();
 $application->run();
-

@@ -3,9 +3,7 @@
 <phpunit bootstrap="vendor/autoload.php" colors="true">
     <testsuites>
         <testsuite name="Fastest Test Suite">
-            <directory>tests/Queue/</directory>
-            <directory>tests/Process/</directory>
-            <directory>tests/Environment/</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 

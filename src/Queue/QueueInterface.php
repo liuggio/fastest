@@ -2,43 +2,51 @@
 
 namespace Liuggio\Fastest\Queue;
 
+use Liuggio\Fastest\InputLine;
+
 interface QueueInterface
 {
     /**
-     * @return TestSuite
+     * Adds an element to the queue.
+     *
+     * @param InputLine $value <p>
+     *                         The value to enqueue.
+     *                         </p>
      */
-    public function pop();
+    public function enqueue(InputLine $value);
 
     /**
-     * Push a collections of tests.
+     * Dequeues a node from the queue.
      *
-     * @param TestsQueue $tests
-     *
-     * @return int The number of message sent with this push.
+     * @return InputLine|null The value of the dequeued node or null if the queue is empty.
      */
-    public function push(TestsQueue $tests);
+    public function dequeue();
 
     /**
-     * Get the number of the message sent.
+     * Randomizes and return a new QueueInterface.
      *
-     * @return int
+     * @return static
      */
-    public function getNumberOfPushedMessage();
+    public function randomize();
 
     /**
-     * Get the number of messages..
+     * Checks if the queue is freezed.
      *
-     * @return int
+     * @return bool whether the heap is empty.
+     */
+    public function isFrozen();
+
+    /**
+     * Freeze the queue for future write access.
+     *
+     * @return bool whether the heap is empty.
+     */
+    public function freeze();
+
+    /**
+     * Count elements of a queue.
+     *
+     * @return int queue items count as an integer.
      */
     public function count();
-
-    /**
-     * @return bool
-     */
-    public function isEmpty();
-
-    /**
-     * @return bool
-     */
-    public function close();
 }
