@@ -143,6 +143,7 @@ class ParallelCommand extends Command
         /**
          * @var Processes $processes
          */
+        $processes->cleanUP(); //it is not getting called with -p1 after the last process otherwise
         $processes->wait(function() use ($progressBar, $queue, $processes) {
             $progressBar->renderBody($queue, $processes);
         });
