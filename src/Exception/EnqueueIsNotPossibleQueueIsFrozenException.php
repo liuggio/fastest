@@ -2,6 +2,6 @@
 
 namespace Liuggio\Fastest\Exception;
 
-class EnqueueIsNotPossibleQueueIsFrozenException extends \Exception
+class EnqueueIsNotPossibleQueueIsFrozenException extends AbstractRuntimeException
 {
 }
