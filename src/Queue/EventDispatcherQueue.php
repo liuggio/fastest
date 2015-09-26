@@ -2,12 +2,12 @@
 
 namespace Liuggio\Fastest\Queue;
 
+use Liuggio\Fastest\Event\EmptiedQueueEvent;
+use Liuggio\Fastest\Event\EventsName;
 use Liuggio\Fastest\Event\FrozenQueueEvent;
-use Liuggio\Fastest\InputLine;
 use Liuggio\Fastest\Event\InputLineDequeuedEvent;
 use Liuggio\Fastest\Event\InputLineEnqueuedEvent;
-use Liuggio\Fastest\Event\EventsName;
-use Liuggio\Fastest\Event\EmptiedQueueEvent;
+use Liuggio\Fastest\InputLine;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

@@ -2,8 +2,8 @@
 
 namespace Liuggio\Fastest\Producer;
 
-use Liuggio\Fastest\InputLine;
 use Liuggio\Fastest\Exception\StdInMustBeAValidResourceException;
+use Liuggio\Fastest\InputLine;
 use Liuggio\Fastest\Queue\QueueInterface;
 
 class StdInProducer implements ProducerInterface

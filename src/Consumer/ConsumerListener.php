@@ -3,9 +3,9 @@
 namespace Liuggio\Fastest\Consumer;
 
 use Liuggio\Fastest\CommandLine;
+use Liuggio\Fastest\Event\ChannelIsWaitingEvent;
 use Liuggio\Fastest\Event\EventsName;
 use Liuggio\Fastest\Event\ProcessStartedEvent;
-use Liuggio\Fastest\Event\ChannelIsWaitingEvent;
 use Liuggio\Fastest\Process\CreateAndStartAProcess;
 use Liuggio\Fastest\Queue\QueueInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
