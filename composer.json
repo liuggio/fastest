@@ -31,7 +31,7 @@
         "fastest"
     ],
     "autoload": {
-        "psr-4": {"Liuggio\\Fastest\\": ["src", "adapters"]}
+        "psr-4": { "Liuggio\\Fastest\\": "src" }
     },
     "autoload-dev": {
         "psr-4": { "Liuggio\\Fastest\\": "tests" }
