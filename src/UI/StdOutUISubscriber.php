@@ -43,12 +43,12 @@ class StdOutUISubscriber implements EventSubscriberInterface
      */
     public function onProcessCompleted(ProcessCompletedEvent $event)
     {
-        echo sprintf("%s] onProcessCompleted: [%s] on [%s] with %s\n",
+        echo sprintf(
+            "%s] onProcessCompleted: [%s] on [%s] with %s\n",
             $event->getProcess()->isSuccessful() ? '✅' : '✗',
             $event->getProcess()->getIncrementalNumber(),
             $event->getProcess()->getChannel(),
             $event->getProcess()->getCommandLine()
-
         );
     }
 
@@ -65,7 +65,8 @@ class StdOutUISubscriber implements EventSubscriberInterface
             return;
         }
 
-        echo sprintf(" - buffer: [%s] on [%s] with %s \n  out %s|err %s\n",
+        echo sprintf(
+            " - buffer: [%s] on [%s] with %s \n  out %s|err %s\n",
             $event->getProcess()->getIncrementalNumber(),
             $event->getProcess()->getChannel(),
             $event->getProcess()->getCommandLine(),

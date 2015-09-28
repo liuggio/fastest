@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 class ApplicationCommand extends Command
@@ -121,13 +122,16 @@ class ApplicationCommand extends Command
         return $processorCounter->execute();
     }
 
-    private function addListenersAndSubscribers($eventDispatcher, $supervisor, $consumerListener)
-    {
     /**
      * @param EventDispatcher          $eventDispatcher
      * @param EventSubscriberInterface $supervisor
      * @param mixed                    $consumerListener
      */
+    private function addListenersAndSubscribers(
+        EventDispatcher $eventDispatcher,
+        EventSubscriberInterface $supervisor,
+        $consumerListener
+    ) {
         // init dispatcher
         $eventDispatcher->addSubscriber(new StdOutUISubscriber());
         $eventDispatcher->addSubscriber($supervisor);

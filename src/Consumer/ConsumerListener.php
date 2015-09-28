@@ -47,8 +47,8 @@ class ConsumerListener
         QueueInterface $queue,
         CommandLine $baseCommandLine,
         EventDispatcherInterface $eventDispatcher,
-        CreateAndStartAProcess $createStartAndWaitAProcess = null)
-    {
+        CreateAndStartAProcess $createStartAndWaitAProcess = null
+    ) {
         $this->queue = $queue;
         $this->baseCommandLine = $baseCommandLine;
         $this->eventDispatcher = $eventDispatcher;
