@@ -9,8 +9,6 @@ use Liuggio\Fastest\InputLine;
 class CreateAndStartAProcess
 {
     /**
-     * Creates a process and waits the end, dispatching events.
-     *
      * @param Channel     $channel
      * @param CommandLine $baseCommandLine
      * @param InputLine   $inputLine
@@ -26,6 +24,14 @@ class CreateAndStartAProcess
         return $process;
     }
 
+    /**
+     * @param Channel     $channel
+     * @param CommandLine $baseCommandLine
+     * @param InputLine   $inputLine
+     * @param int         $incrementalProcessCounter
+     *
+     * @return Process
+     */
     private function create(Channel $channel, CommandLine $baseCommandLine, InputLine $inputLine, $incrementalProcessCounter)
     {
         $envs = new ProcessEnvironment($channel, $inputLine, $incrementalProcessCounter);

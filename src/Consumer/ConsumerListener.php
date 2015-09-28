@@ -12,17 +12,37 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ConsumerListener
 {
-    /** @var int */
+    /**
+     * @var int
+     */
     private $processCounter;
-    /** @var QueueInterface */
+
+    /**
+     * @var QueueInterface
+     */
     private $queue;
-    /** @var CreateAndStartAProcess */
+
+    /**
+     * @var CreateAndStartAProcess
+     */
     private $createAndStartAProcess;
-    /** @var CommandLine */
+
+    /**
+     * @var CommandLine
+     */
     private $baseCommandLine;
-    /** @var EventDispatcherInterface */
+
+    /**
+     * @var EventDispatcherInterface
+     */
     private $eventDispatcher;
 
+    /**
+     * @param QueueInterface              $queue
+     * @param CommandLine                 $baseCommandLine
+     * @param EventDispatcherInterface    $eventDispatcher
+     * @param CreateAndStartAProcess|null $createStartAndWaitAProcess
+     */
     public function __construct(
         QueueInterface $queue,
         CommandLine $baseCommandLine,
@@ -36,6 +56,9 @@ class ConsumerListener
         $this->processCounter = 0;
     }
 
+    /**
+     * @param ChannelIsWaitingEvent $event
+     */
     public function onChannelIsWaiting(ChannelIsWaitingEvent $event)
     {
         $channel = $event->getChannel();

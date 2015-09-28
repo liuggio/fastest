@@ -9,19 +9,35 @@ class ProcessorCounter
 {
     const PROC_DEFAULT_NUMBER = 4;
     const PROC_CPUINFO = '/proc/cpuinfo';
-    /** @var int|null */
+
+    /**
+     * @var int|null
+     */
     private static $count = null;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     private $procCPUInfo;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     private $os;
 
+    /**
+     * @param string $procCPUInfo
+     * @param string $os
+     */
     public function __construct($procCPUInfo = self::PROC_CPUINFO, $os = PHP_OS)
     {
         $this->procCPUInfo = $procCPUInfo;
         $this->os = $os;
     }
 
+    /**
+     * @return int
+     */
     public function execute()
     {
         if (null !== self::$count) {
@@ -32,6 +48,9 @@ class ProcessorCounter
         return self::$count;
     }
 
+    /**
+     * @return int
+     */
     private function readFromProcCPUInfo()
     {
         if ($this->os === 'Darwin') {

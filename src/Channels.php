@@ -6,9 +6,14 @@ use Liuggio\Fastest\Process\Process;
 
 class Channels
 {
-    /** @var array */
+    /**
+     * @var array
+     */
     private $channels;
 
+    /**
+     * @param int $channelsNumber
+     */
     private function __construct($channelsNumber)
     {
         for ($i = 0; $i < $channelsNumber; ++$i) {
@@ -20,7 +25,7 @@ class Channels
     /**
      * Creates a bunch of waiting channels.
      *
-     * @param $channelsNumber
+     * @param int $channelsNumber
      *
      * @return Channels
      */

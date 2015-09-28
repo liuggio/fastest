@@ -20,6 +20,9 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class ApplicationCommand extends Command
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this
@@ -69,6 +72,9 @@ class ApplicationCommand extends Command
         ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $stopWatch = new Stopwatch();
@@ -99,6 +105,11 @@ class ApplicationCommand extends Command
         return $supervisor->loop();
     }
 
+    /**
+     * @param int $maxNumberOfParallelProc
+     *
+     * @return int
+     */
     private function getMaxNumberOfProcess($maxNumberOfParallelProc)
     {
         if (null !== $maxNumberOfParallelProc && (int) $maxNumberOfParallelProc > 0) {
@@ -112,6 +123,11 @@ class ApplicationCommand extends Command
 
     private function addListenersAndSubscribers($eventDispatcher, $supervisor, $consumerListener)
     {
+    /**
+     * @param EventDispatcher          $eventDispatcher
+     * @param EventSubscriberInterface $supervisor
+     * @param mixed                    $consumerListener
+     */
         // init dispatcher
         $eventDispatcher->addSubscriber(new StdOutUISubscriber());
         $eventDispatcher->addSubscriber($supervisor);
@@ -124,7 +140,7 @@ class ApplicationCommand extends Command
     /**
      * @param InputInterface $input
      *
-     * @return CommandLine|static
+     * @return CommandLine
      */
     protected function getExecuteCommandLine(InputInterface $input)
     {

@@ -6,12 +6,7 @@ use Liuggio\Fastest\CommandLine;
 
 class ApplyCommandLineTemplate
 {
-    /** @var string */
-    private $commandLineTemplate;
-
     /**
-     * Create a inputLine using the default the template.
-     *
      * @param CommandLine        $commandLineTemplate
      * @param ProcessEnvironment $processEnvironment
      *
@@ -22,6 +17,12 @@ class ApplyCommandLineTemplate
         return $this->fillCorrectArgumentsOnCommandLine($commandLineTemplate, $processEnvironment);
     }
 
+    /**
+     * @param CommandLine        $template
+     * @param ProcessEnvironment $processEnvironment
+     *
+     * @return CommandLine
+     */
     private function fillCorrectArgumentsOnCommandLine(CommandLine $template, ProcessEnvironment $processEnvironment)
     {
         $commandToExecute = str_replace('{}', (string) $processEnvironment->getInputLine(), (string) $template);

@@ -18,19 +18,40 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class Supervisor implements EventSubscriberInterface
 {
-    /** @var  EventDispatcherInterface */
+    /**
+     * @var EventDispatcherInterface
+     */
     private $eventDispatcher;
-    /** @var int */
+
+    /**
+     * @var int
+     */
     private $channelsNumber;
-    /** @var bool */
+
+    /**
+     * @var bool
+     */
     private $queueIsEmpty;
-    /** @var bool */
+
+    /**
+     * @var bool
+     */
     private $queueIsFrozen;
-    /** @var Channels */
+
+    /**
+     * @var Channels
+     */
     private $channels;
-    /** @var int */
+
+    /**
+     * @var int
+     */
     private $exitCode;
 
+    /**
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param int                      $channelsNumber
+     */
     public function __construct(EventDispatcherInterface $eventDispatcher, $channelsNumber)
     {
         $this->eventDispatcher = $eventDispatcher;
@@ -40,6 +61,9 @@ class Supervisor implements EventSubscriberInterface
         $this->exitCode = 0;
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return array(
@@ -50,22 +74,34 @@ class Supervisor implements EventSubscriberInterface
         );
     }
 
+    /**
+     * @param FrozenQueueEvent $event
+     */
     public function onFrozenQueue(FrozenQueueEvent $event)
     {
         $this->queueIsFrozen = true;
     }
 
+    /**
+     * @param EmptiedQueueEvent $event
+     */
     public function onQueueEmptied(EmptiedQueueEvent $event)
     {
         $this->queueIsEmpty = true;
     }
 
+    /**
+     * @param ProcessStartedEvent $event
+     */
     public function onProcessStarted(ProcessStartedEvent $event)
     {
         $channel = $event->getProcess()->getChannel();
         $this->channels->assignAProcess($channel, $event->getProcess());
     }
 
+    /**
+     * @param ProcessCompletedEvent $event
+     */
     public function onProcessCompleted(ProcessCompletedEvent $event)
     {
         $channel = $event->getProcess()->getChannel();
@@ -78,6 +114,9 @@ class Supervisor implements EventSubscriberInterface
         $this->eventDispatcher->dispatch(EventsName::CHANNEL_IS_WAITING, new ChannelIsWaitingEvent($channel));
     }
 
+    /**
+     * @return int
+     */
     public function loop()
     {
         $this->channels = Channels::createWaiting($this->channelsNumber);
@@ -95,6 +134,9 @@ class Supervisor implements EventSubscriberInterface
         return $this->exitCode;
     }
 
+    /**
+     * @param Channel[] $waitingChannels
+     */
     private function notifyWaitingChannel($waitingChannels)
     {
         foreach ($waitingChannels as $channel) {
@@ -105,6 +147,9 @@ class Supervisor implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param Channel[] $assignedChannels
+     */
     private function checkTerminatedProcessOnChannels($assignedChannels)
     {
         foreach ($assignedChannels as $channel) {

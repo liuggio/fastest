@@ -6,12 +6,12 @@ use Symfony\Component\EventDispatcher\Event;
 
 class LoopStartedEvent extends Event
 {
-    /** @var int */
+    /**
+     * @var int
+     */
     private $channelsNumber;
 
     /**
-     * LoopStartedEvent constructor.
-     *
      * @param int $channelsNumber
      */
     public function __construct($channelsNumber)

@@ -8,11 +8,19 @@ use Liuggio\Fastest\Queue\QueueInterface;
 
 class StdInProducer implements ProducerInterface
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     private $stdIn;
-    /** @var resource */
+
+    /**
+     * @var resource
+     */
     private $resource;
 
+    /**
+     * @param string $stdIn
+     */
     public function __construct($stdIn = 'php://stdin')
     {
         $this->stdIn = $stdIn;
@@ -40,6 +48,10 @@ class StdInProducer implements ProducerInterface
         }
     }
 
+    /**
+     * @param QueueInterface $queue
+     * @param string         $line
+     */
     private function addLineIfNotEmpty(QueueInterface $queue, $line)
     {
         $line = trim($line);
@@ -48,6 +60,9 @@ class StdInProducer implements ProducerInterface
         }
     }
 
+    /**
+     * @throws StdInMustBeAValidResourceException
+     */
     private function assertResourceIsValid()
     {
         if (!$this->resource) {

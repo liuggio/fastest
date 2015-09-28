@@ -7,13 +7,13 @@ use Symfony\Component\EventDispatcher\Event;
 
 abstract class AbstractInputLineEvent extends Event
 {
-    /** @var InputLine */
+    /**
+     * @var InputLine
+     */
     private $inputLine;
 
     /**
-     * NewCommandLoadedEvent constructor.
-     *
-     * @param InputLine $command
+     * @param InputLine $inputLine
      */
     public function __construct(InputLine $command)
     {

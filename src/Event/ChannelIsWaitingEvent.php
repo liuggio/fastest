@@ -7,12 +7,12 @@ use Symfony\Component\EventDispatcher\Event;
 
 class ChannelIsWaitingEvent extends Event
 {
-    /** @var  Channel */
+    /**
+     * @var Channel
+     */
     private $channel;
 
     /**
-     * CommandLineAssignedToAChannel constructor.
-     *
      * @param Channel $channel
      */
     public function __construct(Channel $channel)

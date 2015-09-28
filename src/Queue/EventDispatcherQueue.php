@@ -13,16 +13,21 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class EventDispatcherQueue implements QueueInterface
 {
-    /** @var  QueueInterface */
+    /**
+     * @var QueueInterface
+     */
     private $queue;
-    /** @var  EventDispatcherInterface */
+
+    /**
+     * @var EventDispatcherInterface
+     */
     private $eventDispatcher;
 
     /**
      * EventDispatcherQueue constructor.
      *
-     * @param QueueInterface           $queue
-     * @param EventDispatcherInterface $eventDispatcher
+     * @param QueueInterface|null           $queue
+     * @param EventDispatcherInterface|null $eventDispatcher
      */
     public function __construct(EventDispatcherInterface $eventDispatcher = null, QueueInterface $queue = null)
     {

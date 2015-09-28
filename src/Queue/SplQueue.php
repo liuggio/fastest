@@ -7,10 +7,15 @@ use Liuggio\Fastest\InputLine;
 
 class SplQueue implements QueueInterface
 {
-    /** @var  \SplQueue */
+    /**
+     * @var \SplQueue
+     */
     private $queue;
-    /** @var  bool */
     private $isFrozen;
+
+    /**
+     * @var bool
+     */
 
     /**
      * {@inheritdoc}
@@ -90,6 +95,9 @@ class SplQueue implements QueueInterface
         return $this->queue->count();
     }
 
+    /**
+     * @throws EnqueueIsNotPossibleQueueIsFrozenException
+     */
     private function assertIsNotFrozen()
     {
         if ($this->isFrozen()) {
