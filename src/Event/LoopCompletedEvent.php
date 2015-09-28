@@ -24,7 +24,7 @@ class LoopCompletedEvent extends Event
     public function __construct(StopwatchEvent $stopwatchEvent, $exitCode)
     {
         $this->stopwatchEvent = $stopwatchEvent;
-        $this->exitCode = $exitCode;
+        $this->exitCode = (int) $exitCode;
     }
 
     /**

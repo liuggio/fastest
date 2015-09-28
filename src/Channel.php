@@ -34,9 +34,9 @@ class Channel
      */
     private function __construct($channelId, $channelsNumber, $commandsCounter = 0, Process $process = null)
     {
-        $this->channelId = $channelId;
-        $this->channelsNumber = $channelsNumber;
-        $this->assignedProcessesCounter = $commandsCounter;
+        $this->channelId = (int) $channelId;
+        $this->channelsNumber = (int) $channelsNumber;
+        $this->assignedProcessesCounter = (int) $commandsCounter;
         $this->process = $process;
     }
 

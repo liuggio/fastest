@@ -31,8 +31,8 @@ class ProcessorCounter
      */
     public function __construct($procCPUInfo = self::PROC_CPUINFO, $os = PHP_OS)
     {
-        $this->procCPUInfo = $procCPUInfo;
-        $this->os = $os;
+        $this->procCPUInfo = (string) $procCPUInfo;
+        $this->os = (string) $os;
     }
 
     /**

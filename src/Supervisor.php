@@ -55,7 +55,7 @@ class Supervisor implements EventSubscriberInterface
     public function __construct(EventDispatcherInterface $eventDispatcher, $channelsNumber)
     {
         $this->eventDispatcher = $eventDispatcher;
-        $this->channelsNumber = $channelsNumber;
+        $this->channelsNumber = (int) $channelsNumber;
     }
 
     /**

@@ -16,7 +16,7 @@ class LoopStartedEvent extends Event
      */
     public function __construct($channelsNumber)
     {
-        $this->channelsNumber = $channelsNumber;
+        $this->channelsNumber = (int) $channelsNumber;
     }
 
     /**
