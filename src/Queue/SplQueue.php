@@ -11,18 +11,17 @@ class SplQueue implements QueueInterface
      * @var \SplQueue
      */
     private $queue;
-    private $isFrozen;
 
     /**
      * @var bool
      */
+    private $isFrozen = false;
 
     /**
      * {@inheritdoc}
      */
     public function __construct(\SplQueue $queue = null)
     {
-        $this->isFrozen = false;
         $this->queue = $queue ?: new \SplQueue(\SplDoublyLinkedList::IT_MODE_FIFO & \SplDoublyLinkedList::IT_MODE_DELETE);
     }
 

@@ -55,7 +55,7 @@ class ProcessorCounter
     {
         if ($this->os === 'Darwin') {
             $processors = system('/usr/sbin/sysctl -n hw.physicalcpu');
-            if ($processors !== false && $processors) {
+            if ($processors) {
                 return $processors;
             }
         } elseif ($this->os === 'Linux') {

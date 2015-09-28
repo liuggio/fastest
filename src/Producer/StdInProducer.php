@@ -24,7 +24,6 @@ class StdInProducer implements ProducerInterface
     public function __construct($stdIn = 'php://stdin')
     {
         $this->stdIn = $stdIn;
-        $this->resource = null;
     }
 
     /**

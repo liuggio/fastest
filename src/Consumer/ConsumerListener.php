@@ -64,7 +64,6 @@ class ConsumerListener
         $channel = $event->getChannel();
         $event->stopPropagation();
 
-        $value = null;
         while (null === ($value = $this->queue->dequeue())) {
             if ($this->queue->isFrozen()) {
                 return;

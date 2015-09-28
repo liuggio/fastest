@@ -31,12 +31,12 @@ class Supervisor implements EventSubscriberInterface
     /**
      * @var bool
      */
-    private $queueIsEmpty;
+    private $queueIsEmpty = false;
 
     /**
      * @var bool
      */
-    private $queueIsFrozen;
+    private $queueIsFrozen = false;
 
     /**
      * @var Channels
@@ -46,7 +46,7 @@ class Supervisor implements EventSubscriberInterface
     /**
      * @var int
      */
-    private $exitCode;
+    private $exitCode = 0;
 
     /**
      * @param EventDispatcherInterface $eventDispatcher
@@ -56,9 +56,6 @@ class Supervisor implements EventSubscriberInterface
     {
         $this->eventDispatcher = $eventDispatcher;
         $this->channelsNumber = $channelsNumber;
-        $this->queueIsEmpty = false;
-        $this->queueIsFrozen = false;
-        $this->exitCode = 0;
     }
 
     /**
@@ -124,7 +121,7 @@ class Supervisor implements EventSubscriberInterface
         $stopWatch->start('loop');
         $this->eventDispatcher->dispatch(EventsName::LOOP_STARTED, new LoopStartedEvent($this->channelsNumber));
         $this->notifyWaitingChannel($this->channels->getWaitingChannels());
-        while (!($this->queueIsFrozen && $this->queueIsEmpty && count($assignedChannels = $this->channels->getAssignedChannels()) < 1)) {
+        while (!($this->queueIsFrozen && $this->queueIsEmpty && count($this->channels->getAssignedChannels()) < 1)) {
             $this->checkTerminatedProcessOnChannels($this->channels->getAssignedChannels());
             usleep(200);
         }
