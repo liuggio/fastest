@@ -15,9 +15,9 @@ abstract class AbstractInputLineEvent extends Event
     /**
      * @param InputLine $inputLine
      */
-    public function __construct(InputLine $command)
+    public function __construct(InputLine $inputLine)
     {
-        $this->inputLine = $command;
+        $this->inputLine = $inputLine;
     }
 
     /**
