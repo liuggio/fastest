@@ -14,28 +14,36 @@ class ProcessEnvironment
     const ENV_TEST_INCREMENTAL_NUMBER = 'ENV_TEST_INC_NUMBER';
     const ENV_TEST_IS_FIRST_ON_CHANNEL = 'ENV_TEST_IS_FIRST_ON_CHANNEL';
 
-    /** @var Channel */
+    /**
+     * @var Channel
+     */
     private $channel;
-    /** @var int */
-    private $channelsNumber;
-    /** @var InputLine */
+
+    /**
+     * @var InputLine
+     */
     private $inputLine;
-    /** @var int */
+
+    /**
+     * @var int
+     */
     private $incrementNumber;
 
     /**
-     * @param Channel $channel
-     * @param $channelsNumber
+     * @param Channel   $channel
      * @param InputLine $inputLine
-     * @param $incrementNumber
+     * @param int       $incrementNumber
      */
     public function __construct(Channel $channel, InputLine $inputLine, $incrementNumber)
     {
         $this->channel = $channel;
         $this->inputLine = $inputLine;
-        $this->incrementNumber = $incrementNumber;
+        $this->incrementNumber = (int) $incrementNumber;
     }
 
+    /**
+     * @return array
+     */
     public function exportToEnvsArray()
     {
         return array(
@@ -57,7 +65,7 @@ class ProcessEnvironment
     }
 
     /**
-     * @return Channel
+     * @return int
      */
     public function getChannelId()
     {

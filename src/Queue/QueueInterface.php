@@ -9,9 +9,7 @@ interface QueueInterface
     /**
      * Adds an element to the queue.
      *
-     * @param InputLine $value <p>
-     *                         The value to enqueue.
-     *                         </p>
+     * @param InputLine $value The value to enqueue.
      */
     public function enqueue(InputLine $value);
 

@@ -2,27 +2,32 @@
 
 namespace Liuggio\Fastest\Queue;
 
+use Liuggio\Fastest\Event\EmptiedQueueEvent;
+use Liuggio\Fastest\Event\EventsName;
 use Liuggio\Fastest\Event\FrozenQueueEvent;
-use Liuggio\Fastest\InputLine;
 use Liuggio\Fastest\Event\InputLineDequeuedEvent;
 use Liuggio\Fastest\Event\InputLineEnqueuedEvent;
-use Liuggio\Fastest\Event\EventsName;
-use Liuggio\Fastest\Event\EmptiedQueueEvent;
+use Liuggio\Fastest\InputLine;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class EventDispatcherQueue implements QueueInterface
 {
-    /** @var  QueueInterface */
+    /**
+     * @var QueueInterface
+     */
     private $queue;
-    /** @var  EventDispatcherInterface */
+
+    /**
+     * @var EventDispatcherInterface
+     */
     private $eventDispatcher;
 
     /**
      * EventDispatcherQueue constructor.
      *
-     * @param QueueInterface           $queue
-     * @param EventDispatcherInterface $eventDispatcher
+     * @param QueueInterface|null           $queue
+     * @param EventDispatcherInterface|null $eventDispatcher
      */
     public function __construct(EventDispatcherInterface $eventDispatcher = null, QueueInterface $queue = null)
     {

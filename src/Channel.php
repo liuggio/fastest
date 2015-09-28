@@ -6,27 +6,45 @@ use Liuggio\Fastest\Process\Process;
 
 class Channel
 {
-    /** @var  int */
+    /**
+     * @var int
+     */
     private $channelId;
-    /** @var int */
+
+    /**
+     * @var int
+     */
     private $assignedProcessesCounter;
-    /** @var int */
+
+    /**
+     * @var int
+     */
     private $channelsNumber;
-    /** @var Process */
+
+    /**
+     * @var Process
+     */
     private $process;
 
+    /**
+     * @param int          $channelId
+     * @param int          $channelsNumber
+     * @param int          $commandsCounter
+     * @param Process|null $process
+     */
     private function __construct($channelId, $channelsNumber, $commandsCounter = 0, Process $process = null)
     {
-        $this->channelId = $channelId;
-        $this->channelsNumber = $channelsNumber;
-        $this->assignedProcessesCounter = $commandsCounter;
+        $this->channelId = (int) $channelId;
+        $this->channelsNumber = (int) $channelsNumber;
+        $this->assignedProcessesCounter = (int) $commandsCounter;
         $this->process = $process;
     }
 
     /**
      * Creates a channel.
      *
-     * @param $id
+     * @param int $id
+     * @param int $channelsNumber
      *
      * @return Channel
      */

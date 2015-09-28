@@ -7,17 +7,21 @@ use Liuggio\Fastest\InputLine;
 
 class SplQueue implements QueueInterface
 {
-    /** @var  \SplQueue */
+    /**
+     * @var \SplQueue
+     */
     private $queue;
-    /** @var  bool */
-    private $isFrozen;
+
+    /**
+     * @var bool
+     */
+    private $isFrozen = false;
 
     /**
      * {@inheritdoc}
      */
     public function __construct(\SplQueue $queue = null)
     {
-        $this->isFrozen = false;
         $this->queue = $queue ?: new \SplQueue(\SplDoublyLinkedList::IT_MODE_FIFO & \SplDoublyLinkedList::IT_MODE_DELETE);
     }
 
@@ -90,6 +94,9 @@ class SplQueue implements QueueInterface
         return $this->queue->count();
     }
 
+    /**
+     * @throws EnqueueIsNotPossibleQueueIsFrozenException
+     */
     private function assertIsNotFrozen()
     {
         if ($this->isFrozen()) {

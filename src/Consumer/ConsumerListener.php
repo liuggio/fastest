@@ -3,32 +3,52 @@
 namespace Liuggio\Fastest\Consumer;
 
 use Liuggio\Fastest\CommandLine;
+use Liuggio\Fastest\Event\ChannelIsWaitingEvent;
 use Liuggio\Fastest\Event\EventsName;
 use Liuggio\Fastest\Event\ProcessStartedEvent;
-use Liuggio\Fastest\Event\ChannelIsWaitingEvent;
 use Liuggio\Fastest\Process\CreateAndStartAProcess;
 use Liuggio\Fastest\Queue\QueueInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ConsumerListener
 {
-    /** @var int */
+    /**
+     * @var int
+     */
     private $processCounter;
-    /** @var QueueInterface */
+
+    /**
+     * @var QueueInterface
+     */
     private $queue;
-    /** @var CreateAndStartAProcess */
+
+    /**
+     * @var CreateAndStartAProcess
+     */
     private $createAndStartAProcess;
-    /** @var CommandLine */
+
+    /**
+     * @var CommandLine
+     */
     private $baseCommandLine;
-    /** @var EventDispatcherInterface */
+
+    /**
+     * @var EventDispatcherInterface
+     */
     private $eventDispatcher;
 
+    /**
+     * @param QueueInterface              $queue
+     * @param CommandLine                 $baseCommandLine
+     * @param EventDispatcherInterface    $eventDispatcher
+     * @param CreateAndStartAProcess|null $createStartAndWaitAProcess
+     */
     public function __construct(
         QueueInterface $queue,
         CommandLine $baseCommandLine,
         EventDispatcherInterface $eventDispatcher,
-        CreateAndStartAProcess $createStartAndWaitAProcess = null)
-    {
+        CreateAndStartAProcess $createStartAndWaitAProcess = null
+    ) {
         $this->queue = $queue;
         $this->baseCommandLine = $baseCommandLine;
         $this->eventDispatcher = $eventDispatcher;
@@ -36,12 +56,14 @@ class ConsumerListener
         $this->processCounter = 0;
     }
 
+    /**
+     * @param ChannelIsWaitingEvent $event
+     */
     public function onChannelIsWaiting(ChannelIsWaitingEvent $event)
     {
         $channel = $event->getChannel();
         $event->stopPropagation();
 
-        $value = null;
         while (null === ($value = $this->queue->dequeue())) {
             if ($this->queue->isFrozen()) {
                 return;

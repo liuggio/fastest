@@ -7,20 +7,24 @@ use Symfony\Component\Stopwatch\StopwatchEvent;
 
 class LoopCompletedEvent extends Event
 {
-    /** @var StopwatchEvent */
+    /**
+     * @var StopwatchEvent
+     */
     private $stopwatchEvent;
-    /** @var int */
+
+    /**
+     * @var int
+     */
     private $exitCode;
 
     /**
-     * LoopCompletedEvent constructor.
-     *
      * @param StopwatchEvent $stopwatchEvent
+     * @param int            $exitCode
      */
     public function __construct(StopwatchEvent $stopwatchEvent, $exitCode)
     {
         $this->stopwatchEvent = $stopwatchEvent;
-        $this->exitCode = $exitCode;
+        $this->exitCode = (int) $exitCode;
     }
 
     /**

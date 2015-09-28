@@ -7,7 +7,9 @@ namespace Liuggio\Fastest;
  */
 class InputLine
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     private $inputValue;
 
     /**
@@ -33,7 +35,7 @@ class InputLine
     /**
      * Creates a new CommandLine given a line string.
      *
-     * @param $string
+     * @param string $string
      *
      * @return static
      */

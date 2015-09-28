@@ -43,6 +43,8 @@ class Application extends BaseApp
     /**
      * Overridden so that the application doesn't expect the command
      * name to be the first argument.
+     *
+     * @return \Symfony\Component\Console\Input\InputDefinition
      */
     public function getDefinition()
     {
