@@ -129,6 +129,23 @@ parameters:
     doctrine_mongodb.odm.connection.class: Liuggio\Fastest\Doctrine\MongoDB\Connection
 ```
 
+### SQLite databases
+
+SQLite databases don't have names. It's always 1 database per file. If SQLite driver is detected, instead switching the database name, database path will be changed. To make it work simply add `__DBNAME__` placeholder in your database path.
+
+`config_test.yml`
+``` yml
+doctrine:
+    dbal:
+        driver:   pdo_sqlite
+        path:     "%kernel.cache_dir%/__DBNAME__.db"
+        
+parameters:
+    doctrine.dbal.connection_factory.class: Liuggio\Fastest\Doctrine\DBAL\ConnectionFactory
+```
+
+Where `__DBNAME__` will be replaced with `ENV_TEST_CHANNEL_READABLE` value.
+
 ### Behat2.* extension
 
 A Behat extension is included that provides the ability for Behat to output a list of feature files or individual scenarios that would be executed without
