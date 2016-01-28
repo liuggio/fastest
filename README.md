@@ -215,7 +215,7 @@ or simply add a dependency on liuggio/fastest to your project's composer.json fi
 
 	{
 	    "require-dev": {
-		    "liuggio/fastest": "~1.3"
+		    "liuggio/fastest": "~1.2"
 	    }
 	}
 
