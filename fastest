@@ -12,6 +12,8 @@ $files = array(
 $found = false;
 
 foreach ($files as $file) {
+    $file = str_replace('/', DIRECTORY_SEPARATOR, $file);
+    
     if (file_exists($file)) {
         require $file;
         $found = true;
