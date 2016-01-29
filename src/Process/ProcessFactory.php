@@ -62,7 +62,7 @@ class ProcessFactory
     
     public static function getDefaultCommandToExecute()
     {
-        return ('\\' === DIRECTORY_SEPERATOR)
+        return ('\\' === DIRECTORY_SEPARATOR)
             ? 'bin\phpunit {}'
             : 'bin/phpunit {}';
     }
