@@ -261,6 +261,22 @@ Options:
 
 If you're faceing problems with unknown command errors, make sure your  [variables_order](http://us.php.net/manual/en/ini.core.php#ini.variables-order) `php.ini` setting contains `E`. If not, your enviroment variables are not set, and commands that are in your `PATH` will not work.
 
+### Windows compability
+
+Under Windows default CLI `cmd.exe` you could you have to use Windows directory seperators `\`.
+
+``` bash
+cd src && dir *Test.php /b/s | ..\bin\fastest.bat "..\bin\phpunit.bat {}" && cd ..
+```
+
+> Note: the cd `src` is to narrow down the search for Tests inside the `src` directory. That forces you to use relative `..\` paths. The `cd ..` at the end is to return to root dir when you're finished.
+
+Though I recommend installing [Git for Windows](https://git-scm.com/download/win) and installing [bmatzelle/gow](https://github.com/bmatzelle/gow) (unix untilities for Windows). Add GOW bin dir to your `PATH` (adds tools like `find`) and use the `sh.exe` shell (Git for Windows). Then you can use unix-like commands:
+
+``` bash
+find src/*/*Bundle/Tests -name '*Test.php' | bin/fastest "bin/phpunit {}"
+```
+
 ### Contribution
 
 Please help with code, love, feedback and bug reporting.
