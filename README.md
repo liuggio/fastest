@@ -263,7 +263,7 @@ If you're faceing problems with unknown command errors, make sure your  [variabl
 
 ### Windows compability
 
-Under Windows default CLI `cmd.exe` you could you have to use Windows directory seperators `\`.
+Under Windows default CLI `cmd.exe` you have to use Windows directory seperators `\`.
 
 ``` bash
 dir src\*Test.php /b/s | bin\fastest.bat "bin\phpunit.bat {}"
