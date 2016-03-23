@@ -28,17 +28,33 @@ class ProcessFactory
     public function createAProcess($suite, $currentProcessorNumber, $currentProcessCounter, $isFirstOnThread = false)
     {
         $cmd = $this->replaceParameters($this->commandToExecuteTemplate, $suite, $currentProcessorNumber);
-        $arrayEnv = $this->envCommandCreator->execute($currentProcessorNumber, $this->maxParallelProcessesToExecute, $suite, $currentProcessCounter, $isFirstOnThread);
 
-        return $this->createProcess($cmd, $arrayEnv);
+        // inject enviroment variables
+        $this->envCommandCreator->execute(
+            $currentProcessorNumber,
+            $this->maxParallelProcessesToExecute,
+            $suite,
+            $currentProcessCounter,
+            $isFirstOnThread
+        );
+
+        return $this->createProcess($cmd);
     }
 
     public function createAProcessForACustomCommand($execute, $currentProcessorNumber, $currentProcessCounter, $isFirstOnThread = false)
     {
         $cmd = $this->replaceParameters($execute, '', $currentProcessorNumber);
-        $arrayEnv = $this->envCommandCreator->execute($currentProcessorNumber, $this->maxParallelProcessesToExecute, $execute, $currentProcessCounter, $isFirstOnThread);
 
-        return $this->createProcess($cmd, $arrayEnv);
+        // inject enviroment variables
+        $this->envCommandCreator->execute(
+            $currentProcessorNumber,
+            $this->maxParallelProcessesToExecute,
+            $execute,
+            $currentProcessCounter,
+            $isFirstOnThread
+        );
+
+        return $this->createProcess($cmd);
     }
 
     private function replaceParameters($cmd, $suite, $processNumber)
@@ -49,9 +65,13 @@ class ProcessFactory
         return $commandToExecute;
     }
 
-    private function createProcess($executeCommand, $arrayEnv)
+    private function createProcess($executeCommand)
     {
-        $process = new Process($executeCommand, null, $arrayEnv);
+        $process = new Process(
+            $executeCommand,
+            null,
+            null    // when passed null, process component should pick up current enviroment variables
+        );
 
         $process->setTimeout(null);
         // compatibility to SF 2.2
