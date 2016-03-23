@@ -22,7 +22,7 @@ class ProcessesManagerTest extends \PHPUnit_Framework_TestCase
         $factory->expects($this->once())
             ->method('createAProcessForACustomCommand')
             ->with($this->anything(), $this->equalTo(1), $this->equalTo(1), $this->equalTo(true))
-            ->willReturn(new Process('echo '.rand()));
+            ->willReturn(new Process('echo ',rand()));
 
         $manager = new ProcessesManager($factory, 1, 'echo "ciao"');
 
