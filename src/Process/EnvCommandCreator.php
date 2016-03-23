@@ -10,23 +10,16 @@ class EnvCommandCreator
     const ENV_TEST_ARGUMENT = 'ENV_TEST_ARGUMENT';
     const ENV_TEST_INCREMENTAL_NUMBER = 'ENV_TEST_INC_NUMBER';
     const ENV_TEST_IS_FIRST_ON_CHANNEL = 'ENV_TEST_IS_FIRST_ON_CHANNEL';
-
-    /**
-     * Injects parameters into enviroment variables.
-     *
-     * @param int    $i                     Channel number
-     * @param int    $maxProcesses          Max processes
-     * @param string $suite                 Suite
-     * @param int    $currentProcessCounter Current process counter
-     * @param bool   $isFirstOnItsThread    Is first on its thread?
-     */
+    // create an array of env
     public function execute($i, $maxProcesses, $suite, $currentProcessCounter, $isFirstOnItsThread = false)
     {
-        putenv(self::ENV_TEST_CHANNEL.'='.(int) $i);
-        putenv(self::ENV_TEST_CHANNEL_READABLE.'=test_'.(int) $i);
-        putenv(self::ENV_TEST_CHANNELS_NUMBER.'='.(int) $maxProcesses);
-        putenv(self::ENV_TEST_ARGUMENT.'='.$suite);
-        putenv(self::ENV_TEST_INCREMENTAL_NUMBER.'='.(int) $currentProcessCounter);
-        putenv(self::ENV_TEST_IS_FIRST_ON_CHANNEL.'='.(int) $isFirstOnItsThread);
+        return $_ENV + array(
+            self::ENV_TEST_CHANNEL.'='.(int) $i,
+            self::ENV_TEST_CHANNEL_READABLE.'=test_'.(int) $i,
+            self::ENV_TEST_CHANNELS_NUMBER.'='.(int) $maxProcesses,
+            self::ENV_TEST_ARGUMENT.'='.$suite,
+            self::ENV_TEST_INCREMENTAL_NUMBER.'='.(int) $currentProcessCounter,
+            self::ENV_TEST_IS_FIRST_ON_CHANNEL.'='.(int) $isFirstOnItsThread,
+        );
     }
 }
