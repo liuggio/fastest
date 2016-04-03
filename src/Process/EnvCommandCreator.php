@@ -10,16 +10,18 @@ class EnvCommandCreator
     const ENV_TEST_ARGUMENT = 'ENV_TEST_ARGUMENT';
     const ENV_TEST_INCREMENTAL_NUMBER = 'ENV_TEST_INC_NUMBER';
     const ENV_TEST_IS_FIRST_ON_CHANNEL = 'ENV_TEST_IS_FIRST_ON_CHANNEL';
+
     // create an array of env
     public function execute($i, $maxProcesses, $suite, $currentProcessCounter, $isFirstOnItsThread = false)
     {
-        return $_ENV + array(
+        return array(
             self::ENV_TEST_CHANNEL.'='.(int) $i,
             self::ENV_TEST_CHANNEL_READABLE.'=test_'.(int) $i,
             self::ENV_TEST_CHANNELS_NUMBER.'='.(int) $maxProcesses,
             self::ENV_TEST_ARGUMENT.'='.$suite,
             self::ENV_TEST_INCREMENTAL_NUMBER.'='.(int) $currentProcessCounter,
             self::ENV_TEST_IS_FIRST_ON_CHANNEL.'='.(int) $isFirstOnItsThread,
+            'PATH='.getenv('PATH'),
         );
     }
 }
