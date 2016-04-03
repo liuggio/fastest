@@ -215,13 +215,13 @@ or simply add a dependency on liuggio/fastest to your project's composer.json fi
 
 	{
 	    "require-dev": {
-		    "liuggio/fastest": "~1.2"
+		    "liuggio/fastest": "~1.3"
 	    }
 	}
 
 For a system-wide installation via Composer, you can run:
 
-`composer global require "liuggio/fastest=~1.2"`
+`composer global require "liuggio/fastest=~1.3"`
 
 Make sure you have `~/.composer/vendor/bin/` in your path,
 read more at [getcomposer.org](https://getcomposer.org/doc/00-intro.md#globally)
