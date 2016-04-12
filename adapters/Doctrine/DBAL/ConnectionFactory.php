@@ -35,7 +35,7 @@ class ConnectionFactory extends BaseConnectionFactory
         return parent::createConnection($params, $config, $eventManager, $mappingTypes);
     }
 
-    private function getDbNameFromEnv($dbName)
+    protected function getDbNameFromEnv($dbName)
     {
         if ($this->issetDbNameEnvValue()) {
             return $dbName.'_'.$this->getDbNameEnvValue();
@@ -44,14 +44,14 @@ class ConnectionFactory extends BaseConnectionFactory
         return $dbName;
     }
 
-    private function issetDbNameEnvValue()
+    protected function issetDbNameEnvValue()
     {
         $dbName = $this->getDbNameEnvValue();
 
         return (!empty($dbName));
     }
 
-    private function getDbNameEnvValue()
+    protected function getDbNameEnvValue()
     {
         return getenv(EnvCommandCreator::ENV_TEST_CHANNEL_READABLE);
     }
