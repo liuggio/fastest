@@ -16,7 +16,7 @@ class ProcessFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('bin/phpunit fileA', $process->getCommandLine());
         $this->assertEquals(
-            array(
+            $_ENV + array(
                 0 => 'ENV_TEST_CHANNEL=2',
                 1 => 'ENV_TEST_CHANNEL_READABLE=test_2',
                 2 => 'ENV_TEST_CHANNELS_NUMBER=10',
@@ -39,7 +39,7 @@ class ProcessFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('execute', $process->getCommandLine());
         $this->assertEquals(
-            array(
+            $_ENV + array(
                 0 => 'ENV_TEST_CHANNEL=2',
                 1 => 'ENV_TEST_CHANNEL_READABLE=test_2',
                 2 => 'ENV_TEST_CHANNELS_NUMBER=11',
@@ -62,7 +62,7 @@ class ProcessFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('execute 1 fileA', $process->getCommandLine());
         $this->assertEquals(
-            array(
+            $_ENV + array(
                 0 => 'ENV_TEST_CHANNEL=1',
                 1 => 'ENV_TEST_CHANNEL_READABLE=test_1',
                 2 => 'ENV_TEST_CHANNELS_NUMBER=12',
