@@ -14,6 +14,6 @@ before_script:
 script:
   - find tests/ -name "*Test.php" | php fastest -v
   - bin/behat --config=adapters/Behat2/behat.yml
-  - sed -i -e 's/"behat\/behat"\x3A "~.*/"behat\/behat"\x3A "~3"/' composer.json
+  - sed -i -e 's/"behat\/behat"\x3A "~.*/"behat\/behat"\x3A "~3.1"/' composer.json
   - composer update --prefer-source
   - bin/behat --config=adapters/Behat/behat.yml

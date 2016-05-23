@@ -12,7 +12,7 @@
         <service id="liuggio.fastest.behat.list_features.console.processor.list_features" class="%liuggio.fastest.behat.list_features_extension.console.processor.list_features.class%">
             <argument type="service" id="specifications.locator.filesystem_feature" />
             <argument type="service" id="suite.registry" />
-            <tag name="cli.controller" />
+            <tag name="cli.controller" priority="100" />
         </service>
 
     </services>
