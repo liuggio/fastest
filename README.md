@@ -43,7 +43,7 @@ Our old codebase run in 30 minutes, now in 7 minutes with 4 Processors.
 ## How
 
 It creates N threads where N is the number of the core in the computer.  
-really fast,
+Really fast,
 100% written in PHP, inspired by [Parallel](https://github.com/grosser/parallel).
 
 ## Usage
@@ -109,7 +109,7 @@ find tests/ -name "*Test.php" | ./bin/fastest -b"app/console doc:sch:create -e t
 If you want to parallel functional tests, and if you have a machine with 4 CPUs, the best think you could do is create a db foreach parallel process,
 `fastest` gives you the opportunity to work easily with Symfony.
 
-Modifying the config_test config file in Symfony, each functional test will look for a database called `<database_name>_test_x` automatically (x is from 1 to CPUs number).
+Modifying the `config_test.yml` config file in Symfony, each functional test will look for a database called `<database_name>_test_x` automatically (x is from 1 to CPUs number).
 
 ### Doctrine DBAL
 
@@ -180,10 +180,10 @@ One possible way is to implement the following steps:
 
 When your test scenario begins, maybe at the authentication phase, set one of the following to the value of the environment variable `ENV_TEST_CHANNEL_READABLE`:
 
-* If its a cookie or a GET query parameter name it ENV_TEST_CHANNEL_READABLE
+* If it's a cookie or a GET query parameter name it ENV_TEST_CHANNEL_READABLE
    * Beware that if you use the GET query parameter option and via automation you click on a link of the browser that doesn't have that query parameter, the request won't
    have the query parameter the server won't know the channel to initialize.
-* If its a HTTP header name it X-FASTEST-ENV-TEST-CHANNEL-READABLE and send it on every request to the server.
+* If it's a HTTP header name it X-FASTEST-ENV-TEST-CHANNEL-READABLE and send it on every request to the server.
 
 #### 2. Configure the entry point of your application to set the environment variables for the request
 
@@ -193,7 +193,7 @@ For this is enough to add the following code before booting your application:
 
 This will detect the presence of the ENV_TEST_CHANNEL_READABLE value in any of the contexts mentioned in #1 and set the corresponding environment variable.
 
-For example, in the case of the Symfony2 framework you may just add it in `web/app_dev.php` just before `require_once __DIR__.'/../app/AppKernel.php'`:
+For example, in the case of the Symfony framework you may just add it in `web/app_dev.php` just before `require_once __DIR__.'/../app/AppKernel.php'`:
 
 ``` php
 // ... code
@@ -209,7 +209,7 @@ $kernel = new AppKernel('dev', true);
 
 ## Install
 
-if you use Composer just run `composer require --dev 'liuggio/fastest' 'dev-master'`
+If you use Composer just run `composer require --dev 'liuggio/fastest:~1.3'`
 
 or simply add a dependency on liuggio/fastest to your project's composer.json file:
 
