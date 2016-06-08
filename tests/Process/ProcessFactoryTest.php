@@ -57,10 +57,10 @@ class ProcessFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldReplaceThePlaceholder()
     {
-        $factory = new ProcessFactory(12, 'execute {p} {}');
+        $factory = new ProcessFactory(12, 'execute {p} {} {n}');
         $process = $factory->createAProcess('fileA', 1, 13, true);
 
-        $this->assertEquals('execute 1 fileA', $process->getCommandLine());
+        $this->assertEquals('execute 1 fileA 13', $process->getCommandLine());
         $this->assertEquals(
             $_ENV + array(
                 0 => 'ENV_TEST_CHANNEL=1',

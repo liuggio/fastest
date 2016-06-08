@@ -27,7 +27,7 @@ class ProcessFactory
 
     public function createAProcess($suite, $currentProcessorNumber, $currentProcessCounter, $isFirstOnThread = false)
     {
-        $cmd = $this->replaceParameters($this->commandToExecuteTemplate, $suite, $currentProcessorNumber);
+        $cmd = $this->replaceParameters($this->commandToExecuteTemplate, $suite, $currentProcessorNumber, $currentProcessCounter);
         $arrayEnv = $this->envCommandCreator->execute($currentProcessorNumber, $this->maxParallelProcessesToExecute, $suite, $currentProcessCounter, $isFirstOnThread);
 
         return $this->createProcess($cmd, $arrayEnv);
@@ -35,16 +35,17 @@ class ProcessFactory
 
     public function createAProcessForACustomCommand($execute, $currentProcessorNumber, $currentProcessCounter, $isFirstOnThread = false)
     {
-        $cmd = $this->replaceParameters($execute, '', $currentProcessorNumber);
+        $cmd = $this->replaceParameters($execute, '', $currentProcessorNumber, $currentProcessCounter);
         $arrayEnv = $this->envCommandCreator->execute($currentProcessorNumber, $this->maxParallelProcessesToExecute, $execute, $currentProcessCounter, $isFirstOnThread);
 
         return $this->createProcess($cmd, $arrayEnv);
     }
 
-    private function replaceParameters($cmd, $suite, $processNumber)
+    private function replaceParameters($cmd, $suite, $processNumber, $currentProcessCounter)
     {
         $commandToExecute = str_replace('{}', $suite, $cmd);
         $commandToExecute = str_replace('{p}', $processNumber, $commandToExecute);
+        $commandToExecute = str_replace('{n}', $currentProcessCounter, $commandToExecute);
 
         return $commandToExecute;
     }

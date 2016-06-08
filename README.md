@@ -57,6 +57,7 @@ ls | ./fastest "echo slow operation on {}" -vvv
 
 `{}` is the current test file.  
 `{p}` is the current processor number.  
+`{n}` is the unique number of the current test.
 `phpunit {}` is used as default command.
 
 ### PHPUnit
