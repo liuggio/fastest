@@ -231,7 +231,7 @@ If you want to use it with phpunit you may want to install phpunit/phpunit as de
 
 ### Run this test with `fastest`
 
-**Easy** see [.travis.yml](.travis.yml#L14) file
+**Easy** see [.travis.yml](.travis.yml#L18) file
 
 ## The arguments:
 
