@@ -4,16 +4,20 @@ php: [5.3, 5.4, 5.5, 5.6, 7.0, hhvm]
 
 matrix:
   allow_failures:
-    - php: 7.0
     - php: hhvm
+  fast_finish: true
+
+cache:
+  directories:
+    - $HOME/.composer/cache
 
 before_script:
   - composer selfupdate
-  - composer install --prefer-source
+  - composer install
 
 script:
   - find tests/ -name "*Test.php" | php fastest -v
   - bin/behat --config=adapters/Behat2/behat.yml
-  - sed -i -e 's/"behat\/behat"\x3A "~.*/"behat\/behat"\x3A "~3.1"/' composer.json
-  - composer update --prefer-source
+  - composer require --dev "behat/behat:~3.1" --no-update # update the Behat version.
+  - composer update
   - bin/behat --config=adapters/Behat/behat.yml
