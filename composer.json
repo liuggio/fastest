@@ -9,6 +9,7 @@
         }
     ],
     "require": {
+        "php": ">=5.6",
         "symfony/console": "~2.7|~3.0",
         "symfony/stopwatch": "~2.7|~3.0",
         "symfony/process": "~2.7|~3.0",
@@ -27,7 +28,6 @@
         }
     },
     "suggest": {
-        "phpunit/phpunit": "Install it if you want to run test on /bin/phpunit",
         "behat/behat": "Install it if you want to run tests with the provided Behat extension"
     },
     "bin": [
