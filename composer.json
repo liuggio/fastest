@@ -9,13 +9,14 @@
         }
     ],
     "require": {
-        "symfony/console": "~2.2|~3.0",
-        "symfony/stopwatch": "~2.2|~3.0",
-        "symfony/process": "~2.2|~3.0",
-        "doctrine/collections" : "~1.2"
+        "php": ">=5.6",
+        "symfony/console": "~2.7|~3.0",
+        "symfony/stopwatch": "~2.7|~3.0",
+        "symfony/process": "~2.7|~3.0",
+        "doctrine/collections" : "~1.2",
+        "phpunit/phpunit": "~4.8|~5.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.8|~5.4",
         "behat/behat": "~2.5"
     },
     "config": {
@@ -27,7 +28,6 @@
         }
     },
     "suggest": {
-        "phpunit/phpunit": "Install it if you want to run test on /bin/phpunit",
         "behat/behat": "Install it if you want to run tests with the provided Behat extension"
     },
     "bin": [

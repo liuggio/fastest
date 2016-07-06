@@ -8,6 +8,7 @@ use Liuggio\Fastest\Queue\TestsQueue;
 use Liuggio\Fastest\UI\ProgressBarRenderer;
 use Liuggio\Fastest\UI\VerboseRenderer;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -131,7 +132,7 @@ class ParallelCommand extends Command
         if ($this->isVerbose($output)) {
             $progressBar = new VerboseRenderer($queue->count(), $this->hasErrorSummary($input), $output, $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
         } else {
-            $progressBar = new ProgressBarRenderer($queue->count(),$this->hasErrorSummary($input), $output, $this->getHelper('progress'), $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
+            $progressBar = new ProgressBarRenderer($queue->count(),$this->hasErrorSummary($input), $output, new ProgressBar($output), $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
         }
 
         $progressBar->renderHeader($queue);

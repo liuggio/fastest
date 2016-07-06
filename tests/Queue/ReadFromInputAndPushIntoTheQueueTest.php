@@ -10,9 +10,15 @@ class ReadFromInputAndPushIntoTheQueueTest extends \PHPUnit_Framework_TestCase {
      */
     public function shouldPushIntoTheQueueTheXMLFile()
     {
-        $assertion = new TestsQueue(array('tests/Fastest/folderA', 'tests/Fastest/folderB'));
+        $directory = __DIR__ . '/Infrastructure/';
+        $files = array('InMemoryQueueFactoryTest.php', 'InMemoryQueueTest.php');
+        $assertion = new TestsQueue();
 
-        $queue = $this->getMock('\Liuggio\Fastest\Queue\QueueInterface');
+        foreach ($files as $file) {
+            $assertion->add($directory . $file);
+        }
+
+        $queue = $this->createMock('\Liuggio\Fastest\Queue\QueueInterface');
         $queue->expects($this->once())
             ->method('push')
             ->with($assertion);
@@ -32,4 +38,3 @@ class ReadFromInputAndPushIntoTheQueueTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($queue, $ret);
     }
 }
- 

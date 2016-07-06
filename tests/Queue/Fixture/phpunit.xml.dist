@@ -2,15 +2,8 @@
 
 <phpunit bootstrap="tests/bootstrap.php" colors="true">
     <testsuites>
-        <testsuite name="Price Test Suite">
-            <directory>tests/Fastest/folderA</directory>
-            <directory>tests/Fastest/folderB</directory>
+        <testsuite name="Project Test Suite">
+            <directory>../Infrastructure/</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory suffix=".php">src</directory>
-        </whitelist>
-    </filter>
 </phpunit>
