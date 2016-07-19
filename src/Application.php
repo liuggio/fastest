@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class Application extends BaseApp
 {
-    const VERSION = '1.2.1';
+    const VERSION = '1.4';
 
     public function __construct()
     {
