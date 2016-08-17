@@ -6,8 +6,6 @@ use Symfony\Component\Process\Process;
 
 class ProcessFactory
 {
-    const DEFAULT_COMMAND_TO_EXECUTE_TPL = 'bin/phpunit {}';
-
     private $envCommandCreator;
     private $commandToExecuteTemplate;
     private $maxParallelProcessesToExecute;
@@ -18,7 +16,7 @@ class ProcessFactory
             $envCommandCreator = new EnvCommandCreator();
         }
         if (null === $commandToExecuteTemplate || empty($commandToExecuteTemplate)) {
-            $commandToExecuteTemplate = self::DEFAULT_COMMAND_TO_EXECUTE_TPL;
+            $commandToExecuteTemplate = self::getDefaultCommandToExecute();
         }
         $this->maxParallelProcessesToExecute = $maxParallelProcessesToExecute;
         $this->envCommandCreator = $envCommandCreator;
@@ -61,5 +59,12 @@ class ProcessFactory
         }
 
         return $process;
+    }
+    
+    public static function getDefaultCommandToExecute()
+    {
+        return ('\\' === DIRECTORY_SEPARATOR)
+            ? 'bin\phpunit.bat {}'
+            : 'bin/phpunit {}';
     }
 }
