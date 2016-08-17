@@ -210,19 +210,19 @@ $kernel = new AppKernel('dev', true);
 
 ## Install
 
-If you use Composer just run `composer require --dev 'liuggio/fastest:~1.3'`
+If you use Composer just run `composer require --dev 'liuggio/fastest:~1.4'`
 
 or simply add a dependency on liuggio/fastest to your project's composer.json file:
 
 	{
 	    "require-dev": {
-		    "liuggio/fastest": "~1.3"
+		    "liuggio/fastest": "~1.4"
 	    }
 	}
 
 For a system-wide installation via Composer, you can run:
 
-`composer global require "liuggio/fastest=~1.3"`
+`composer global require "liuggio/fastest=~1.4"`
 
 Make sure you have `~/.composer/vendor/bin/` in your path,
 read more at [getcomposer.org](https://getcomposer.org/doc/00-intro.md#globally)
