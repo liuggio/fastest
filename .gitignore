@@ -2,3 +2,4 @@ vendor
 composer.lock
 bin
 docs/_build
+.idea
