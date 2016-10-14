@@ -105,6 +105,21 @@ You can also run a script per process **before** the tests, useful for init sche
 find tests/ -name "*Test.php" | ./bin/fastest -b"app/console doc:sch:create -e test";
 ```
 
+### Generate and merge code coverage
+
+``` bash
+# Install phpcov in order to merge the code coverage
+composer require --dev "phpunit/phpcov:~3.0"
+# Create a directory where the coverage files will be put
+mkdir -p cov/fastest/
+# Generate as many files than tests, since {n} is an unique number for each test
+find tests/ -name "*Test.php" | bin/fastest "bin/phpunit -c app {} --coverage-php cov/fastest/{n}.cov;"
+# Merge the code coverage files
+phpcov merge cov/fastest/ --html cov/merge/fastest/
+```
+
+Code coverage will be available in the `cov/merge/fastest/` directory.
+
 ## Storage adapters
 
 If you want to parallel functional tests, and if you have a machine with 4 CPUs, the best think you could do is create a db foreach parallel process,
