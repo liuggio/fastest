@@ -162,12 +162,19 @@ parameters:
 
 Where `__DBNAME__` will be replaced with `ENV_TEST_CHANNEL_READABLE` value.
 
-### Behat2.* extension
+### Behat.* extension
 
 A Behat extension is included that provides the ability for Behat to output a list of feature files or individual scenarios that would be executed without
 actually executing them. This list can be piped into fastest to run the scenarios in parallel.
 
 To install the extension just add it to your `behat.yml` file:
+
+``` yaml
+extensions:
+    Liuggio\Fastest\Behat\ListFeaturesExtension\Extension: ~
+```
+
+for Behat2:
 
 ``` yaml
 extensions:

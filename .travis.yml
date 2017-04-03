@@ -18,6 +18,6 @@ before_script:
 script:
   - find tests/ -name "*Test.php" | php fastest -v
   - bin/behat --config=adapters/Behat2/behat.yml
-  - composer require --dev "behat/behat:~3.1" --no-update # update the Behat version.
+  - composer require --dev "behat/behat:~3.3" --no-update # update the Behat version.
   - composer update
   - bin/behat --config=adapters/Behat/behat.yml
