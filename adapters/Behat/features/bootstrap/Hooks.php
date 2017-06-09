@@ -83,7 +83,7 @@ class Hooks implements Context
         $channel = self::getFastestChannel();
 
         $dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'fastest-behat'.$channel.DIRECTORY_SEPARATOR.
-            md5(microtime() * rand(0, 10000));
+            md5(microtime(true) * rand(0, 10000));
 
         mkdir($dir, 0777, true);
         chdir($dir);
