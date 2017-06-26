@@ -5,7 +5,7 @@ namespace Liuggio\Fastest\Process;
 
 use Liuggio\Fastest\Process\ProcessorCounter;
 
-class ProcessesTest extends \PHPUnit_Framework_TestCase
+class ProcessesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test

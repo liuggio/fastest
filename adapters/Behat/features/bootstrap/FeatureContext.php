@@ -39,11 +39,11 @@ class FeatureContext implements Context
     {
         $stdOutLines = explode(PHP_EOL, $this->lastBehatStdOut);
         $expectedLines = $string->getStrings();
-        \PHPUnit_Framework_Assert::assertCount(count($expectedLines), $stdOutLines);
+        \PHPUnit\Framework\Assert::assertCount(count($expectedLines), $stdOutLines);
 
         foreach ($stdOutLines as $idx => $stdOutLine) {
             $suffix = isset($expectedLines[$idx]) ? $expectedLines[$idx] : '(NONE)';
-            $constraint = \PHPUnit_Framework_Assert::stringEndsWith($suffix);
+            $constraint = \PHPUnit\Framework\Assert::stringEndsWith($suffix);
             $constraint->evaluate($stdOutLine);
         }
     }
@@ -53,7 +53,7 @@ class FeatureContext implements Context
      */
     public function theConsoleOutputShouldContain($string)
     {
-        \PHPUnit_Framework_Assert::assertContains($string, $this->lastBehatStdOut);
+        \PHPUnit\Framework\Assert::assertContains($string, $this->lastBehatStdOut);
     }
 
     /**
