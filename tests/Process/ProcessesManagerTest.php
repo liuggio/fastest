@@ -6,14 +6,14 @@ namespace Liuggio\Fastest\Process;
 use Liuggio\Fastest\Queue\TestSuite;
 use Symfony\Component\Process\Process;
 
-class ProcessesManagerTest extends \PHPUnit_Framework_TestCase
+class ProcessesManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test
      */
     public function shouldCreateBeforeProcessesExecutingFactoryWithTheCorrectArguments()
     {
-        $queue = $this->getMock('Liuggio\Fastest\Queue\QueueInterface');
+        $queue = $this->createMock('Liuggio\Fastest\Queue\QueueInterface');
 
         $factory = $this->getMockBuilder('Liuggio\Fastest\Process\ProcessFactory')
             ->disableOriginalConstructor()
@@ -35,7 +35,7 @@ class ProcessesManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldCreateProcessesWithoutBeforeProcessExecutingFactoryWithTheCorrectArguments()
     {
-        $queue = $this->getMock('Liuggio\Fastest\Queue\QueueInterface');
+        $queue = $this->createMock('Liuggio\Fastest\Queue\QueueInterface');
         $queue->expects($this->once())
             ->method('isEmpty')
             ->willReturn(false);
@@ -71,7 +71,7 @@ class ProcessesManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldCreate6ProcessesGivingThemTheCorrectEnvParameters()
     {
-        $queue = $this->getMock('Liuggio\Fastest\Queue\QueueInterface');
+        $queue = $this->createMock('Liuggio\Fastest\Queue\QueueInterface');
         $queue->expects($this->exactly(6))
             ->method('isEmpty')
             ->willReturn(false);
@@ -112,4 +112,3 @@ class ProcessesManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($manager->assertNProcessRunning($queue, $processes));
     }
 }
- 

@@ -2,7 +2,7 @@
 
 namespace Liuggio\Fastest\Queue;
 
-class CreateTestsQueueFromSTDINTest extends \PHPUnit_Framework_TestCase
+class CreateTestsQueueFromSTDINTest extends \PHPUnit\Framework\TestCase
 {
 
     /**

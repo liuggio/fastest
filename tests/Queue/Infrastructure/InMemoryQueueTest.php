@@ -5,7 +5,7 @@ namespace Liuggio\Fastest\Queue\Infrastructure;
 use Liuggio\Fastest\Queue\TestsQueue;
 use Liuggio\Fastest\Queue\TestSuite;
 
-class InMemoryQueueTest extends \PHPUnit_Framework_TestCase
+class InMemoryQueueTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test

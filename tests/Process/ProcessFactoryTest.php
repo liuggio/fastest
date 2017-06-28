@@ -3,7 +3,7 @@
 namespace Liuggio\Fastest\Process;
 
 
-class ProcessFactoryTest extends \PHPUnit_Framework_TestCase
+class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
 {
 
     /**

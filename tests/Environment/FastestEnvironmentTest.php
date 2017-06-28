@@ -8,7 +8,7 @@ use Liuggio\Fastest\Process\EnvCommandCreator;
 /**
  *
  */
-class FastestEnvironmentTest extends \PHPUnit_Framework_TestCase
+class FastestEnvironmentTest extends \PHPUnit\Framework\TestCase
 {
 
     public function setup()
@@ -73,7 +73,7 @@ class FastestEnvironmentTest extends \PHPUnit_Framework_TestCase
         $envName = EnvCommandCreator::ENV_TEST_CHANNEL_READABLE;
         $_GET[$envName] = $envValue;
 
-        $this->setExpectedException('\Liuggio\Fastest\Environment\InvalidValueException');
+        $this->expectException('\Liuggio\Fastest\Environment\InvalidValueException');
         FastestEnvironment::setFromRequest();
     }
 }

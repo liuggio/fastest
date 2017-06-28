@@ -2,7 +2,7 @@
 
 namespace Liuggio\Fastest\Queue\Infrastructure;
 
-class InMemoryQueueFactoryTest extends \PHPUnit_Framework_TestCase
+class InMemoryQueueFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test
