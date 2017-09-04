@@ -11,11 +11,24 @@ class ReadFromInputAndPushIntoTheQueueTest extends \PHPUnit\Framework\TestCase {
     public function shouldPushIntoTheQueueTheXMLFile()
     {
         $directory = __DIR__ . '/Infrastructure/';
-        $files = array('InMemoryQueueFactoryTest.php', 'InMemoryQueueTest.php');
+        $files = ['InMemoryQueueFactoryTest.php', 'InMemoryQueueTest.php'];
+
+        $processesDir = str_replace('/Queue', '', __DIR__) . '/Process/';
+        $processesFiles =[
+            'ProcessFactoryTest.php',
+            'ProcessesManagerTest.php',
+            'ProcessesTest.php',
+            'ProcessorCounterTest.php',
+        ];
+
         $assertion = new TestsQueue();
 
         foreach ($files as $file) {
             $assertion->add($directory . $file);
+        }
+
+        foreach ($processesFiles as $file) {
+            $assertion->add($processesDir . $file);
         }
 
         $queue = $this->createMock('\Liuggio\Fastest\Queue\QueueInterface');

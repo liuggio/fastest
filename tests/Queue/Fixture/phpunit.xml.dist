@@ -2,8 +2,11 @@
 
 <phpunit bootstrap="tests/bootstrap.php" colors="true">
     <testsuites>
-        <testsuite name="Project Test Suite">
+        <testsuite name="Infrastracture Test Suite">
             <directory>../Infrastructure/</directory>
+        </testsuite>
+        <testsuite name="Processes Test Suite">
+            <directory>../../Process/</directory>
         </testsuite>
     </testsuites>
 </phpunit>
