@@ -9,7 +9,7 @@ Fastest - simple parallel testing execution
 **Execute parallel commands, creating a Process for each Processor (with some goodies for functional tests).**
 
 ``` bash
-find tests/ -name "*Test.php" | ./bin/fastest "bin/phpunit -c app {};"
+find tests/ -name "*Test.php" | ./vendor/liuggio/fastest/fastest "vendor/phpunit/phpunit/phpunit -c app {};"
 ```
 
 Fastest works with **any available testing tool**! It just executes it in parallel.
@@ -48,6 +48,20 @@ Really fast,
 
 ## Usage
 
+### Configure paths to binaries
+
+Examples shown below use paths to binaries installed in the `vendor/` directory.
+You can use symlinks in the `bin/` directory by defining the [`bin-dir` parameter of Composer](https://getcomposer.org/doc/06-config.md#bin-dir):
+
+```
+composer config "bin-dir" "bin"
+```
+
+Then you'll be able to call binaries in the `bin/` directory:
+
+- `bin/fastest` instead of `vendor/liuggio/fastest/fastest`
+- `bin/phpunit` instead of `vendor/phpunit/phpunit/phpunit`
+
 ### Parallelize everything
 
 ``` bash
@@ -65,20 +79,20 @@ ls | ./fastest "echo slow operation on {}" -vvv
 #### A. Using `ls`, list of folders as input **suggested**
 
 ``` bash
-ls -d test/* | ./bin/fastest
+ls -d test/* | ./vendor/liuggio/fastest/fastest "vendor/phpunit/phpunit/phpunit {};"
 ```
 
 #### B. using `find`, list of php files as input
 
 ``` bash
-find tests/ -name "*Test.php" | ./bin/fastest
+find tests/ -name "*Test.php" | ./vendor/liuggio/fastest/fastest  "vendor/phpunit/phpunit/phpunit {};"
 ```
 
 #### C. Using `phpunit.xml.dist` as input
 
 You can use the option `-x` and import the test suites from the `phpunit.xml.dist`
 
-`./bin/fastest -x phpunit.xml.dist`
+`./vendor/liuggio/fastest/fastest -x phpunit.xml.dist "vendor/phpunit/phpunit/phpunit {};"`
 
 If you use this option make sure the test-suites contains a lot of directories: **this feature should be improved, don't blame help instead.**
 
@@ -102,7 +116,7 @@ echo getenv('ENV_TEST_IS_FIRST_ON_CHANNEL'); // Is 1 if is the first test on its
 You can also run a script per process **before** the tests, useful for init schema and fixtures loading.
 
 ``` bash
-find tests/ -name "*Test.php" | ./bin/fastest -b"app/console doc:sch:create -e test";
+find tests/ -name "*Test.php" | ./vendor/liuggio/fastest/fastest -b"app/console doc:sch:create -e test" "vendor/phpunit/phpunit/phpunit {};";
 ```
 
 ### Generate and merge code coverage
@@ -113,7 +127,7 @@ composer require --dev "phpunit/phpcov:~3.0"
 # Create a directory where the coverage files will be put
 mkdir -p cov/fastest/
 # Generate as many files than tests, since {n} is an unique number for each test
-find tests/ -name "*Test.php" | bin/fastest "bin/phpunit -c app {} --coverage-php cov/fastest/{n}.cov;"
+find tests/ -name "*Test.php" | vendor/liuggio/fastest/fastest "vendor/phpunit/phpunit/phpunit -c app {} --coverage-php cov/fastest/{n}.cov;"
 # Merge the code coverage files
 phpcov merge cov/fastest/ --html cov/merge/fastest/
 ```
@@ -186,7 +200,7 @@ and the later will output each scenario of each feature file, including its line
 
 This will let you pipe the output directly into fastest to parallelize its execution:
 
-    /my/path/behat --list-scenarios | ./bin/fastest "/my/path/behat {}"
+    /my/path/behat --list-scenarios | ./vendor/liuggio/fastest/fastest "/my/path/behat {}"
 
 Using `--list-scenarios` is preferred over `--list-features` because it will give a more granular scenario-by-scenario output, allowing fastest to shuffle and balance
 individual tests in a better way.
