@@ -130,9 +130,9 @@ class ParallelCommand extends Command
         $processes = null;
 
         if ($this->isVerbose($output)) {
-            $progressBar = new VerboseRenderer($queue->count(), $this->hasErrorSummary($input), $output, $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
+            $progressBar = new VerboseRenderer($queue->count(), $this->hasErrorSummary($input), $output);
         } else {
-            $progressBar = new ProgressBarRenderer($queue->count(),$this->hasErrorSummary($input), $output, new ProgressBar($output), $processManager->getNumberOfProcessExecutedByTheBeforeCommand());
+            $progressBar = new ProgressBarRenderer($queue->count(),$this->hasErrorSummary($input), $output, new ProgressBar($output));
         }
 
         $progressBar->renderHeader($queue);
