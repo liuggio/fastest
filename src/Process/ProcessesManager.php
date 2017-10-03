@@ -22,7 +22,7 @@ class ProcessesManager
         $this->maxNumberOfParallelProcesses = $maxNumberOfParallelProcesses;
         $this->beforeCommand = $beforeCommand;
         $this->processCounter = 0;
-        $this->isFirstForItsChannel = array();
+        $this->isFirstForItsChannel = [];
     }
 
     public function getNumberOfProcessExecutedByTheBeforeCommand()
@@ -40,7 +40,7 @@ class ProcessesManager
 
         if (null === $processes) {
             $channelsEmpty = range(1, $parallelProcesses);
-            $processes =  new Processes(array());
+            $processes =  new Processes([]);
 
             if (false !== $this->beforeCommand && null !== $this->beforeCommand) {
                 return $this->createProcessesForTheBeforeCommand($channelsEmpty, $processes);

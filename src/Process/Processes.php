@@ -27,9 +27,9 @@ class Processes
     public function __construct(array $processes)
     {
         $this->processes = $processes;
-        $this->totalBuffer = array();
-        $this->errorBuffer = array();
-        $this->startTimes = array();
+        $this->totalBuffer = [];
+        $this->errorBuffer = [];
+        $this->startTimes = [];
         $this->errorCounter = 0;
     }
 
@@ -46,7 +46,7 @@ class Processes
 
     public function getIndexesOfCompletedChannel()
     {
-        $indexes = array();
+        $indexes = [];
         foreach ($this->processes as $index => $process) {
             if (null === $process || $process->isTerminated()) {
                 $indexes[] = $index;

@@ -14,7 +14,7 @@ class ReadFromInputAndPushIntoTheQueueTest extends \PHPUnit\Framework\TestCase {
         $files = ['InMemoryQueueFactoryTest.php', 'InMemoryQueueTest.php'];
 
         $processesDir = str_replace('/Queue', '', __DIR__) . '/Process/';
-        $processesFiles =[
+        $processesFiles = [
             'ProcessFactoryTest.php',
             'ProcessesManagerTest.php',
             'ProcessesTest.php',

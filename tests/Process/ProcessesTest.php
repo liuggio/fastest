@@ -14,7 +14,7 @@ class ProcessesTest extends \PHPUnit\Framework\TestCase
     {
         $process = $this->mockProcessWithExpectation('start');
 
-        $processes = new Processes(array($process));
+        $processes = new Processes([$process]);
 
         $this->assertTrue($processes->start());
     }
@@ -26,7 +26,7 @@ class ProcessesTest extends \PHPUnit\Framework\TestCase
     {
         $process = $this->mockProcessWithExpectation('stop');
 
-        $processes = new Processes(array($process));
+        $processes = new Processes([$process]);
 
         $this->assertTrue($processes->stop());
     }
@@ -46,7 +46,7 @@ class ProcessesTest extends \PHPUnit\Framework\TestCase
             ->willReturnOnConsecutiveCalls(false, false, false, true)
         ;
 
-        $processes = new Processes(array($process));
+        $processes = new Processes([$process]);
 
         $this->assertTrue($processes->wait());
     }

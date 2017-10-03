@@ -13,7 +13,7 @@ class InMemoryQueueTest extends \PHPUnit\Framework\TestCase
     public function shouldPopAndPushASuite()
     {
         $queue = new InMemoryQueue();
-        $tests =  new TestsQueue(array('a','b'));
+        $tests =  new TestsQueue(['a','b']);
         $queue->push($tests);
         $this->assertEquals('b', $queue->pop());
         $this->assertEquals('a', $queue->pop());
