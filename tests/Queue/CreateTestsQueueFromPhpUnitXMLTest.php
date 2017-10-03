@@ -19,7 +19,7 @@ class CreateTestsQueueFromPhpUnitXMLTest extends \PHPUnit\Framework\TestCase
         ];
 
         $processesDir = str_replace('/Queue', '', __DIR__) . '/Process/';
-        $processesFiles =[
+        $processesFiles = [
             'ProcessFactoryTest.php',
             'ProcessesManagerTest.php',
             'ProcessesTest.php',

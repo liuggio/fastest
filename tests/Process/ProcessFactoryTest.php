@@ -16,7 +16,7 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals('bin/phpunit fileA', $process->getCommandLine());
         $this->assertEquals(
-            $_ENV + array(
+            $_ENV + [
                 0 => 'ENV_TEST_CHANNEL=2',
                 1 => 'ENV_TEST_CHANNEL_READABLE=test_2',
                 2 => 'ENV_TEST_CHANNELS_NUMBER=10',
@@ -24,7 +24,7 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
                 4 => 'ENV_TEST_INC_NUMBER=10',
                 5 => 'ENV_TEST_IS_FIRST_ON_CHANNEL=1',
                 6 => 'PATH='.getenv('PATH')
-            ),
+            ],
             $process->getenv()
         );
     }
@@ -39,7 +39,7 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals('execute', $process->getCommandLine());
         $this->assertEquals(
-            $_ENV + array(
+            $_ENV + [
                 0 => 'ENV_TEST_CHANNEL=2',
                 1 => 'ENV_TEST_CHANNEL_READABLE=test_2',
                 2 => 'ENV_TEST_CHANNELS_NUMBER=11',
@@ -47,7 +47,7 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
                 4 => 'ENV_TEST_INC_NUMBER=12',
                 5 => 'ENV_TEST_IS_FIRST_ON_CHANNEL=0',
                 6 => 'PATH='.getenv('PATH')
-            ),
+            ],
             $process->getenv()
         );
     }
@@ -62,7 +62,7 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals('execute 1 fileA 13', $process->getCommandLine());
         $this->assertEquals(
-            $_ENV + array(
+            $_ENV + [
                 0 => 'ENV_TEST_CHANNEL=1',
                 1 => 'ENV_TEST_CHANNEL_READABLE=test_1',
                 2 => 'ENV_TEST_CHANNELS_NUMBER=12',
@@ -70,7 +70,7 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
                 4 => 'ENV_TEST_INC_NUMBER=13',
                 5 => 'ENV_TEST_IS_FIRST_ON_CHANNEL=1',
                 6 => 'PATH='.getenv('PATH')
-            ),
+            ],
             $process->getenv()
         );
     }

@@ -31,10 +31,10 @@ class CreateTestsQueueFromSTDINTest extends \PHPUnit\Framework\TestCase
         $code = escapeshellarg($code);
         $command = 'php -r' . $code;
 
-        $stdinLines = array(
+        $stdinLines = [
            "Line 1" . PHP_EOL,
            "Line 2" . PHP_EOL
-        );
+        ];
 
         $expectedStdout = implode('', $stdinLines);
 
@@ -46,13 +46,13 @@ class CreateTestsQueueFromSTDINTest extends \PHPUnit\Framework\TestCase
 
     private function executeCommandWithDelayedStdin($command, $stdinLines, $delayMicroseconds = 1000000)
     {
-        $descriptors = array(
-            0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-            1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-            2 => array("pipe", "w") // stderr is a pipe that the child will write to
-        );
+        $descriptors = [
+            0 => ["pipe", "r"],  // stdin is a pipe that the child will read from
+            1 => ["pipe", "w"],  // stdout is a pipe that the child will write to
+            2 => ["pipe", "w"] // stderr is a pipe that the child will write to
+        ];
 
-        $pipes = array();
+        $pipes = [];
         $process = proc_open($command, $descriptors, $pipes);
 
         if (!is_resource($process)) {

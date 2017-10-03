@@ -13,7 +13,7 @@ class TestsQueue extends ArrayCollection
      * @param array $elements
      * @param bool  $hasBeenRandomized
      */
-    public function __construct(array $elements = array(), $hasBeenRandomized = false)
+    public function __construct(array $elements = [], $hasBeenRandomized = false)
     {
         parent::__construct();
         foreach ($elements as $element) {

@@ -11,7 +11,7 @@ class InMemoryQueue implements QueueInterface
 
     public function __construct()
     {
-        $this->queue = array();
+        $this->queue = [];
     }
 
     public function pop()

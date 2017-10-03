@@ -49,7 +49,7 @@ class ProcessesManagerTest extends \PHPUnit\Framework\TestCase
 
         $processes->expects($this->once())
             ->method('getIndexesOfCompletedChannel')
-            ->willReturn(array(1));
+            ->willReturn([1]);
 
         $factory = $this->getMockBuilder('Liuggio\Fastest\Process\ProcessFactory')
             ->disableOriginalConstructor()
@@ -96,8 +96,14 @@ class ProcessesManagerTest extends \PHPUnit\Framework\TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $array = array(array(1,1,true), array(2,2,true), array(3,3,true), array(1,4,false), array(2,5,false), array(3,6,false));
-
+        $array = [
+            [1,1,true],
+            [2,2,true],
+            [3,3,true],
+            [1,4,false],
+            [2,5,false],
+            [3,6,false]
+        ];
 
         foreach ($array as $at=>$expectation) {
             $factory->expects($this->at($at))
