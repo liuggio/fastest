@@ -75,7 +75,7 @@ class VerboseRenderer implements RendererInterface
             }
 
             $remaining = sprintf('%d/%d', $this->lastIndex, $this->messageInTheQueue);
-            $time = round($report->getTime() * 1000) . ' ms';
+            $time = $this->formatDuration(round($report->getTime() * 1000));
             // add a tab to add some space for longer strings so that the next column doesn't jump
             if (strlen($time) < 8) {
                 $time .= "\t";
@@ -85,5 +85,37 @@ class VerboseRenderer implements RendererInterface
         $this->lastIndex = $count;
 
         return $errorCount;
+    }
+
+    /**
+     * Method to format duration to human readable format.
+     *
+     * @param int $milliseconds
+     *
+     * @return string
+     */
+    private function formatDuration($milliseconds)
+    {
+        $minutes = floor($milliseconds / 1000 / 60);
+        $milliseconds -= ($minutes * 60 * 1000);
+
+        $seconds = floor($milliseconds / 1000);
+        $milliseconds -= ($seconds * 1000);
+
+        $values = array(
+            'm'        => $minutes,
+            's'        => $seconds,
+            'ms'   => $milliseconds,
+        );
+
+        $parts = array();
+
+        foreach ($values as $text => $value) {
+            if ($value > 0) {
+                $parts[] = $value . ' ' . $text;
+            }
+        }
+
+        return implode(' ', $parts);
     }
 }
