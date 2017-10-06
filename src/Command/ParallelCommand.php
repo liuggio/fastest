@@ -192,9 +192,6 @@ class ParallelCommand extends Command
      */
     private function formatDuration($milliseconds)
     {
-        $days = floor($milliseconds / 1000 / 86400);
-        $milliseconds -= ($days * 86400 * 1000);
-
         $hours = floor($milliseconds / 1000 / 3600);
         $milliseconds -= ($hours * 3600 * 1000);
 
@@ -205,7 +202,6 @@ class ParallelCommand extends Command
         $milliseconds -= ($seconds * 1000);
 
         $values = array(
-            'day'           => $days,
             'hour'          => $hours,
             'minute'        => $minutes,
             'second'        => $seconds,
@@ -232,7 +228,7 @@ class ParallelCommand extends Command
      */
     private function formatMemory($bytes)
     {
-        $units = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB');
+        $units = array('B', 'KiB', 'MiB', 'GiB');
         $mod   = 1024;
         $power = ($bytes > 0) ? (int)floor(log($bytes, $mod)) : 0;
 
