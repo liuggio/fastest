@@ -103,16 +103,16 @@ class VerboseRenderer implements RendererInterface
         $milliseconds -= ($seconds * 1000);
 
         $values = array(
-            'm'  => $minutes,
-            's'  => $seconds,
-            'ms' => $milliseconds,
+            'min' => $minutes,
+            's'   => $seconds,
+            'ms'  => $milliseconds,
         );
 
         $parts = array();
 
         foreach ($values as $text => $value) {
             if ($value > 0) {
-                $parts[] = $value . $text;
+                $parts[] = $value . ' ' . $text;
             }
         }
 
