@@ -27,6 +27,8 @@ Scenario: The --list-scenarios command outputs each feature with the line number
   """
   features/firstfeature.feature:3
   features/firstfeature.feature:8
+  features/firstfeature.feature:18
+  features/firstfeature.feature:19
   features/secondfeature.feature:3
   features/secondfeature.feature:7
   features/secondfeature.feature:12

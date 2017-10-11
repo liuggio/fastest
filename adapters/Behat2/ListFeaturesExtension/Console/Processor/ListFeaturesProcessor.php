@@ -2,6 +2,7 @@
 
 namespace Liuggio\Fastest\Behat2\ListFeaturesExtension\Console\Processor;
 
+use Behat\Gherkin\Node\OutlineNode;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -91,8 +92,16 @@ class ListFeaturesProcessor extends BaseProcessor
             /* @var $scenario \Behat\Gherkin\Node\ScenarioNode */
             foreach ($featureNode->getScenarios() as $scenario) {
                 $file = $scenario->getFile();
-                $lineNo = $scenario->getLine();
-                $scenarios[] = "$file:$lineNo";
+                $lines = [$scenario->getLine()];
+
+                if ($scenario instanceof OutlineNode) {
+                    $lines = $scenario->getExamples()->getRowLines();
+                    array_shift($lines);
+                }
+
+                foreach ($lines as $line) {
+                    $scenarios[] = "$file:$line";
+                }
             }
         }
 
