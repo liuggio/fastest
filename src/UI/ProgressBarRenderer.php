@@ -14,7 +14,6 @@ class ProgressBarRenderer implements RendererInterface
     private $last;
     private $degrade;
     private $output;
-    private $preProcesses;
     private $messagesInTheQueue;
     private $errorsSummary;
 
@@ -23,15 +22,13 @@ class ProgressBarRenderer implements RendererInterface
      * @param bool $errorsSummary Whether to display errors summary in the footer
      * @param OutputInterface $output
      * @param $helper
-     * @param int $preProcesses
      */
-    public function __construct($messageInTheQueue, $errorsSummary, OutputInterface $output, $helper, $preProcesses = 0)
+    public function __construct($messageInTheQueue, $errorsSummary, OutputInterface $output, $helper)
     {
         $this->messagesInTheQueue = $messageInTheQueue;
         $this->errorsSummary = $errorsSummary;
         $this->output = $output;
         $this->helper = $helper;
-        $this->preProcesses = (int) $preProcesses;
         $this->degrade = true;
     }
 
@@ -43,7 +40,7 @@ class ProgressBarRenderer implements RendererInterface
         $this->output->writeln('');
 
         if (class_exists('\Symfony\Component\Console\Helper\ProgressBar')) {
-            $this->bar = new ProgressBar($this->output, $this->messagesInTheQueue+$this->preProcesses);
+            $this->bar = new ProgressBar($this->output, $this->messagesInTheQueue);
             $this->bar->setFormat('very_verbose');
             $this->bar->setFormat("%current%/%max% <fg=white;bg=blue>[%bar%]</> %percent:3s%% %elapsed:6s% %memory:6s% \n\n     %number%");
             $this->bar->start();
@@ -53,11 +50,11 @@ class ProgressBarRenderer implements RendererInterface
             $this->bar->setFormat('very_verbose');
             $this->bar->setFormat(ProgressHelper::FORMAT_VERBOSE);
             $this->bar->setBarCharacter('<fg=white;bg=blue>=</>');
-            $this->bar->start($this->output, $this->messagesInTheQueue+$this->preProcesses);
+            $this->bar->start($this->output, $this->messagesInTheQueue);
         }
 
         $this->writeMessage('<info>0</info> failures', 'number');
-        $this->last = $this->messagesInTheQueue+$this->preProcesses;
+        $this->last = $this->messagesInTheQueue;
     }
 
     public function renderBody(QueueInterface $queue, Processes $processes)

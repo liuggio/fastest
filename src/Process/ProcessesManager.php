@@ -25,15 +25,6 @@ class ProcessesManager
         $this->isFirstForItsChannel = [];
     }
 
-    public function getNumberOfProcessExecutedByTheBeforeCommand()
-    {
-        if (false !== $this->beforeCommand && null !== $this->beforeCommand) {
-            return $this->maxNumberOfParallelProcesses;
-        }
-
-        return 0;
-    }
-
     public function assertNProcessRunning(QueueInterface &$queue, Processes &$processes = null)
     {
         $parallelProcesses =  max(1, min($queue->count(), $this->maxNumberOfParallelProcesses));
@@ -78,6 +69,19 @@ class ProcessesManager
             $process = $this->processFactory->createAProcessForACustomCommand($this->beforeCommand, $currentChannel, $currentProcessNumber, $this->isFirstForThisChannel($currentChannel));
             $processes->add($currentChannel, $process);
             $processes->start($currentChannel);
+            $processes->wait(function() use ($processes){
+                while ($processes->countRunning() != 0) {
+                    continue;
+                }
+
+                if ($processes->getExitCode()) {
+                    $errorOutput = $processes->getErrorOutput();
+                    $output = current($errorOutput);
+                    $name = key($errorOutput);
+
+                    throw new \Exception(sprintf('Before command "%s" failed with message: "%s"', $name, $output));
+                }
+            });
         }
 
         return true;
