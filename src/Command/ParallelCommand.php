@@ -95,7 +95,7 @@ class ParallelCommand extends Command
         $processes = $this->doExecute($input, $output, $queue, $processManager);
 
         $event = $stopWatch->stop('execute');
-        $output->writeln(sprintf("    Time: %d ms, Memory: %d b", $event->getDuration(), $event->getMemory()));
+        $output->writeln(sprintf("    Time: %s, Memory: %s", $this->formatDuration($event->getDuration()), $this->formatMemory($event->getMemory())));
 
         if ($input->getOption('rerun-failed')) {
             $processes = $this->executeBeforeCommand($queue, $processes, $input, $output, $processManager);
@@ -181,5 +181,57 @@ class ParallelCommand extends Command
         }
 
         return $processes;
+    }
+
+    /**
+     * Method to format duration to human readable format.
+     *
+     * @param int $milliseconds
+     *
+     * @return string
+     */
+    private function formatDuration($milliseconds)
+    {
+        $hours = floor($milliseconds / 1000 / 3600);
+        $milliseconds -= ($hours * 3600 * 1000);
+
+        $minutes = floor($milliseconds / 1000 / 60);
+        $milliseconds -= ($minutes * 60 * 1000);
+
+        $seconds = floor($milliseconds / 1000);
+        $milliseconds -= ($seconds * 1000);
+
+        $values = array(
+            'hour'          => $hours,
+            'minute'        => $minutes,
+            'second'        => $seconds,
+            'millisecond'   => $milliseconds,
+        );
+
+        $parts = array();
+
+        foreach ($values as $text => $value) {
+            if ($value > 0) {
+                $parts[] = $value . ' ' . $text . ($value > 1 ? 's' : '');
+            }
+        }
+
+        return implode(' ', $parts);
+    }
+
+    /**
+     * Method to format memory usage to human readable format.
+     *
+     * @param int $bytes
+     *
+     * @return string
+     */
+    private function formatMemory($bytes)
+    {
+        $units = array('B', 'KiB', 'MiB', 'GiB');
+        $mod   = 1024;
+        $power = ($bytes > 0) ? (int)floor(log($bytes, $mod)) : 0;
+
+        return sprintf('%01.2f %s', $bytes / pow($mod, $power), $units[$power]);
     }
 }
