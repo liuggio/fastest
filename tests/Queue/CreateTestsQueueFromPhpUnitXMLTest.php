@@ -6,7 +6,6 @@ class CreateTestsQueueFromPhpUnitXMLTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test
-     * @group failing
      */
     public function shouldCreateAnArrayOfTestSuitesFromXML()
     {

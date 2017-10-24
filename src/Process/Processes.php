@@ -33,11 +33,13 @@ class Processes
         $this->errorCounter = 0;
     }
 
-    public function cleanUP()
+    public function cleanUP($addToCompletedQueue = true)
     {
         foreach ($this->processes as $key => $process) {
             if (null !== $process && $process->isTerminated()) {
-                $this->moveToCompletedProcesses($key, $process);
+                if ($addToCompletedQueue) {
+                    $this->moveToCompletedProcesses($key, $process);
+                }
                 $this->processes[$key] = null;
                 $this->startTimes[$key] = null;
             }
@@ -103,16 +105,18 @@ class Processes
 
     /**
      * @param callable $terminationCallback A callback to be called after one of the processes is terminated
+     * @param bool $addToCompletedQueue     A flag that indicates if this process needs to be added to completedQueue
+     *
      * @return bool
      */
-    public function wait($terminationCallback = null)
+    public function wait($terminationCallback = null, $addToCompletedQueue = true)
     {
         $lastProcessesRunningCount = $currentRunningProcessesCount = $this->countRunning();
         while ($currentRunningProcessesCount > 0) {
             $currentRunningProcessesCount = $this->countRunning();
             if ($lastProcessesRunningCount !== $currentRunningProcessesCount) {
                 $lastProcessesRunningCount = $currentRunningProcessesCount;
-                $this->cleanUP();
+                $this->cleanUP($addToCompletedQueue);
                 if ($terminationCallback !== null) {
                     call_user_func($terminationCallback);
                 }
