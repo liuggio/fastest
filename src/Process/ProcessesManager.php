@@ -70,10 +70,6 @@ class ProcessesManager
             $processes->add($currentChannel, $process);
             $processes->start($currentChannel);
             $processes->wait(function() use ($processes){
-                while ($processes->countRunning() != 0) {
-                    continue;
-                }
-
                 if ($processes->getExitCode()) {
                     $errorOutput = $processes->getErrorOutput();
                     $output = current($errorOutput);
@@ -81,7 +77,7 @@ class ProcessesManager
 
                     throw new \Exception(sprintf('Before command "%s" failed with message: "%s"', $name, $output));
                 }
-            });
+            }, false);
         }
 
         return true;
