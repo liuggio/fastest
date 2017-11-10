@@ -122,17 +122,18 @@ class ParallelCommand extends Command
      * @param ProcessesManager $processManager
      * @return array
      */
-    private function doExecute(InputInterface $input,
-                               OutputInterface $output,
-                               QueueInterface $queue,
-                               ProcessesManager $processManager)
-    {
+    private function doExecute(
+        InputInterface $input,
+        OutputInterface $output,
+        QueueInterface $queue,
+        ProcessesManager $processManager
+    ) {
         $processes = null;
 
         if ($this->isVerbose($output)) {
             $progressBar = new VerboseRenderer($queue->count(), $this->hasErrorSummary($input), $output);
         } else {
-            $progressBar = new ProgressBarRenderer($queue->count(),$this->hasErrorSummary($input), $output, new ProgressBar($output));
+            $progressBar = new ProgressBarRenderer($queue->count(), $this->hasErrorSummary($input), $output, new ProgressBar($output));
         }
 
         $progressBar->renderHeader($queue);
@@ -145,7 +146,7 @@ class ParallelCommand extends Command
          * @var Processes $processes
          */
         $processes->cleanUP(); //it is not getting called with -p1 after the last process otherwise
-        $processes->wait(function() use ($progressBar, $queue, $processes) {
+        $processes->wait(function () use ($progressBar, $queue, $processes) {
             $progressBar->renderBody($queue, $processes);
         });
         $progressBar->renderFooter($queue, $processes);

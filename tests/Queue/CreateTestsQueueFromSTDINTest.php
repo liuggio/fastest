@@ -64,7 +64,7 @@ class CreateTestsQueueFromSTDINTest extends \PHPUnit\Framework\TestCase
         // 1 => readable handle connected to child stdout
         // 2 => readable handle connected to child stderr
 
-        foreach($stdinLines as $stdinLine) {
+        foreach ($stdinLines as $stdinLine) {
             usleep($delayMicroseconds);
             fwrite($pipes[0], $stdinLine);
         }

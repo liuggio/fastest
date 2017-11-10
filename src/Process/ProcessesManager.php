@@ -69,7 +69,7 @@ class ProcessesManager
             $process = $this->processFactory->createAProcessForACustomCommand($this->beforeCommand, $currentChannel, $currentProcessNumber, $this->isFirstForThisChannel($currentChannel));
             $processes->add($currentChannel, $process);
             $processes->start($currentChannel);
-            $processes->wait(function() use ($processes){
+            $processes->wait(function () use ($processes) {
                 if ($processes->getExitCode()) {
                     $errorOutput = $processes->getErrorOutput();
                     $output = current($errorOutput);

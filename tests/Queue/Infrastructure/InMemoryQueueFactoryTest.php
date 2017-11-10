@@ -15,4 +15,4 @@ class InMemoryQueueFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf('\Liuggio\Fastest\Queue\Infrastructure\InMemoryQueue', $queue);
     }
-} 
+}

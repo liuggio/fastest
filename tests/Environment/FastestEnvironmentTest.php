@@ -2,7 +2,6 @@
 
 namespace Liuggio\Fastest\Environment;
 
-
 use Liuggio\Fastest\Process\EnvCommandCreator;
 
 /**
@@ -10,7 +9,6 @@ use Liuggio\Fastest\Process\EnvCommandCreator;
  */
 class FastestEnvironmentTest extends \PHPUnit\Framework\TestCase
 {
-
     public function setup()
     {
         $envName = EnvCommandCreator::ENV_TEST_CHANNEL_READABLE;

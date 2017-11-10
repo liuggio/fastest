@@ -44,10 +44,16 @@ class ListFeaturesProcessor implements Controller
     */
     public function configure(Command $command)
     {
-        $command->addOption('list-features', null, InputOption::VALUE_NONE,
+        $command->addOption(
+            'list-features',
+            null,
+            InputOption::VALUE_NONE,
             'Output a list of feature files to be executed by Behat'
         );
-        $command->addOption('list-scenarios', null, InputOption::VALUE_NONE,
+        $command->addOption(
+            'list-scenarios',
+            null,
+            InputOption::VALUE_NONE,
             'Output a list of individual scenarios to be executed by Behat'
         );
     }

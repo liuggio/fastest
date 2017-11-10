@@ -2,7 +2,6 @@
 
 namespace Liuggio\Fastest\Process;
 
-
 use Liuggio\Fastest\Queue\TestSuite;
 use Symfony\Component\Process\Process;
 
@@ -57,7 +56,7 @@ class ProcessesManagerTest extends \PHPUnit\Framework\TestCase
         $factory->expects($this->exactly(1))
             ->method('createAProcess')
             ->with($this->anything(), $this->equalTo(1), $this->equalTo(1), $this->equalTo(true))
-            ->willReturn(new Process('echo ',rand()));
+            ->willReturn(new Process('echo ', rand()));
 
 
         $manager = new ProcessesManager($factory, 1);
@@ -84,7 +83,7 @@ class ProcessesManagerTest extends \PHPUnit\Framework\TestCase
             ->getMock();
         $processes->expects($this->any())
             ->method('getIndexesOfCompletedChannel')
-            ->willReturn(range(1,3));
+            ->willReturn(range(1, 3));
         $processes->expects($this->any())
             ->method('add')
             ->willReturn(true);
@@ -109,7 +108,7 @@ class ProcessesManagerTest extends \PHPUnit\Framework\TestCase
             $factory->expects($this->at($at))
                 ->method('createAProcess')
                 ->with($this->anything(), $this->equalTo($expectation[0]), $this->equalTo($expectation[1]), $this->equalTo($expectation[2]))
-                ->willReturn(new Process('echo ',rand()));
+                ->willReturn(new Process('echo ', rand()));
         }
 
         $manager = new ProcessesManager($factory, 1);
