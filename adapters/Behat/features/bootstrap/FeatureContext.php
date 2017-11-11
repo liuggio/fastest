@@ -25,8 +25,10 @@ class FeatureContext implements Context
             $argumentsString .= ' 2>&1';
         }
 
-        exec($command = sprintf('%s %s',
-            BEHAT_BIN_PATH, $argumentsString
+        exec($command = sprintf(
+            '%s %s',
+            BEHAT_BIN_PATH,
+            $argumentsString
         ), $output, $return);
 
         $this->lastBehatStdOut  = trim(implode("\n", $output));

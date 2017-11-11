@@ -2,8 +2,8 @@
 
 namespace Liuggio\Fastest\Queue;
 
-
-class ReadFromInputAndPushIntoTheQueueTest extends \PHPUnit\Framework\TestCase {
+class ReadFromInputAndPushIntoTheQueueTest extends \PHPUnit\Framework\TestCase
+{
 
     /**
      * @test

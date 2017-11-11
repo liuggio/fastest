@@ -29,11 +29,11 @@ class CreateTestsQueueFromPhpUnitXML
 
     private static function processTestSuite(TestsQueue $testSuites, \PHPUnit\Framework\TestSuiteIterator $testSuiteIterator)
     {
-        foreach ($testSuiteIterator as $testSuite)  {
+        foreach ($testSuiteIterator as $testSuite) {
             self::addTestFile($testSuites, $testSuite);
 
             if ($testSuite instanceof \PHPUnit\Framework\TestSuite) {
-                    self::processTestSuite($testSuites, $testSuite->getIterator());
+                self::processTestSuite($testSuites, $testSuite->getIterator());
             }
         }
     }

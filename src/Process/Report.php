@@ -18,13 +18,14 @@ class Report
      * @param string|null $errorBuffer
      * @param boolean $isFirstOnThread
      */
-    public function __construct($suite, 
-                                $isSuccess,
-                                $time,
-                                $processorNumber,
-                                $errorBuffer,
-                                $isFirstOnThread)
-    {
+    public function __construct(
+        $suite,
+        $isSuccess,
+        $time,
+        $processorNumber,
+        $errorBuffer,
+        $isFirstOnThread
+    ) {
         $this->isSuccess = $isSuccess;
         $this->processorNumber = $processorNumber;
         $this->suite = $suite;

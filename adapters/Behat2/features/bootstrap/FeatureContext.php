@@ -35,8 +35,11 @@ class FeatureContext extends BehatContext
             $argumentsString .= ' 2>&1';
         }
 
-        exec($command = sprintf('%s %s %s --no-time',
-            BEHAT_PHP_BIN_PATH, escapeshellarg(BEHAT_BIN_PATH), $argumentsString
+        exec($command = sprintf(
+            '%s %s %s --no-time',
+            BEHAT_PHP_BIN_PATH,
+            escapeshellarg(BEHAT_BIN_PATH),
+            $argumentsString
         ), $output, $return);
 
         $this->lastBehatStdOut  = trim(implode("\n", $output));
