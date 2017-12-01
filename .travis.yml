@@ -4,6 +4,7 @@ php:
   - 5.6
   - 7.0
   - 7.1
+  - 7.2
   - hhvm
 
 env:
@@ -28,5 +29,5 @@ script:
   - find tests/ -name "*Test.php" | php fastest -v
   - bin/behat --config=adapters/Behat2/behat.yml
   - composer require --dev "behat/behat:~3.3" --no-update # update the Behat version.
-  - composer update --prefer-source $PREFER_LOWEST
+  - composer update $PREFER_LOWEST
   - bin/behat --config=adapters/Behat/behat.yml
