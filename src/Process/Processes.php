@@ -2,7 +2,6 @@
 
 namespace Liuggio\Fastest\Process;
 
-use Liuggio\Fastest\Queue\TestSuite;
 use Symfony\Component\Process\Process;
 
 class Processes
@@ -202,9 +201,9 @@ class Processes
     private function moveToCompletedProcesses($key, Process $process)
     {
         $env = $process->getEnv();
-        $suite = $env['ENV_TEST_ARGUMENT'] instanceof TestSuite ? $env['ENV_TEST_ARGUMENT']->getTestPath() : $env['ENV_TEST_ARGUMENT'];
-        $number = $env['ENV_TEST_CHANNEL'];
-        $numberOnThread = $env['ENV_TEST_IS_FIRST_ON_CHANNEL'];
+        $suite = (string)$env[EnvCommandCreator::ENV_TEST_ARGUMENT];
+        $number = (int)$env[EnvCommandCreator::ENV_TEST_CHANNEL];
+        $numberOnThread = (int)$env[EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL];
 
         if (!$process->isSuccessful()) {
             $this->errorCounter++;
