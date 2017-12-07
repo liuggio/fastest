@@ -9,15 +9,15 @@
         }
     ],
     "require": {
-        "php": ">=5.6",
+        "php": ">=7.1",
         "symfony/console": ">=2.7 <5.0",
         "symfony/stopwatch": ">=2.7 <5.0",
         "symfony/process": ">=2.7 <5.0",
         "doctrine/collections" : "~1.2",
-        "phpunit/phpunit": "^5.7|^6.1"
+        "phpunit/phpunit": "^6.1"
     },
     "require-dev": {
-        "behat/behat": "~2.5"
+        "behat/behat": "~3.3"
     },
     "config": {
         "bin-dir": "bin/"

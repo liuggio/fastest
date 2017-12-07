@@ -1,33 +1,29 @@
 language: php
 
 php:
-  - 5.6
-  - 7.0
   - 7.1
   - 7.2
-  - hhvm
 
 env:
   matrix:
-    - PREFER_LOWEST="--prefer-lowest"
-    - PREFER_LOWEST=""
-
-matrix:
-  allow_failures:
-    - php: hhvm
-  fast_finish: true
-
+    - PREFER_LOWEST="--prefer-lowest" SF_VERSION="~2.7"
+    - PREFER_LOWEST="" SF_VERSION="~2.7"
+    - PREFER_LOWEST="--prefer-lowest" SF_VERSION="~3.0"
+    - PREFER_LOWEST="" SF_VERSION="~3.0"
+    - PREFER_LOWEST="--prefer-lowest" SF_VERSION="~4.0"
+    - PREFER_LOWEST="" SF_VERSION="~4.0"
+    
 cache:
   directories:
     - $HOME/.composer/cache
 
 before_script:
   - composer selfupdate
-  - composer install
+  - composer require "symfony/console:${SF_VERSION}" --no-update
+  - composer require "symfony/stopwatch:${SF_VERSION}" --no-update
+  - composer require "symfony/process:${SF_VERSION}" --no-update
+  - composer update $PREFER_LOWEST
 
 script:
   - find tests/ -name "*Test.php" | php fastest -v
-  - bin/behat --config=adapters/Behat2/behat.yml
-  - composer require --dev "behat/behat:~3.3" --no-update # update the Behat version.
-  - composer update $PREFER_LOWEST
   - bin/behat --config=adapters/Behat/behat.yml
