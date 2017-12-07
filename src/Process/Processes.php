@@ -15,7 +15,7 @@ class Processes
      * @var float[] Unix timestamp with float part of processes start times
      */
     private $startTimes;
-    
+
     /**
      * @var Report[]
      */
@@ -185,12 +185,12 @@ class Processes
     }
 
     /**
-     * @throws LogicException
+     * @throws \LogicException
      */
     private function assertTerminated($key)
     {
         if (!$this->processes[$key]->isTerminated()) {
-            throw new LogicException('Process must be terminated before calling');
+            throw new \LogicException('Process must be terminated before calling');
         }
     }
 
@@ -201,9 +201,9 @@ class Processes
     private function moveToCompletedProcesses($key, Process $process)
     {
         $env = $process->getEnv();
-        $suite = str_replace(EnvCommandCreator::ENV_TEST_ARGUMENT.'=', '', $env[3]);
-        $number = str_replace(EnvCommandCreator::ENV_TEST_CHANNEL.'=', '', $env[0]);
-        $numberOnThread = (int) str_replace(EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL.'=', '', $env[5]);
+        $suite = (string)$env[EnvCommandCreator::ENV_TEST_ARGUMENT];
+        $number = (int)$env[EnvCommandCreator::ENV_TEST_CHANNEL];
+        $numberOnThread = (int)$env[EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL];
 
         if (!$process->isSuccessful()) {
             $this->errorCounter++;
