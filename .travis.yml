@@ -1,8 +1,11 @@
 language: php
 
 php:
+  - 5.6
+  - 7.0
   - 7.1
   - 7.2
+  - hhvm
 
 env:
   matrix:
@@ -12,6 +15,24 @@ env:
     - PREFER_LOWEST="" SF_VERSION="~3.0"
     - PREFER_LOWEST="--prefer-lowest" SF_VERSION="~4.0"
     - PREFER_LOWEST="" SF_VERSION="~4.0"
+
+matrix:
+  exclude:
+    - php: 5.6
+      env: PREFER_LOWEST="--prefer-lowest" SF_VERSION="~4.0"
+    - php: 5.6
+      env: PREFER_LOWEST="" SF_VERSION="~4.0"
+    - php: 7.0
+      env: PREFER_LOWEST="--prefer-lowest" SF_VERSION="~4.0"
+    - php: 7.0
+      env: PREFER_LOWEST="" SF_VERSION="~4.0"
+    - php: hhvm
+      env: PREFER_LOWEST="--prefer-lowest" SF_VERSION="~4.0"
+    - php: hhvm
+      env: PREFER_LOWEST="" SF_VERSION="~4.0"
+  allow_failures:
+    - php: hhvm
+  fast_finish: true
     
 cache:
   directories:
@@ -19,9 +40,10 @@ cache:
 
 before_script:
   - composer selfupdate
-  - composer require "symfony/console:${SF_VERSION}" --no-update
-  - composer require "symfony/stopwatch:${SF_VERSION}" --no-update
-  - composer require "symfony/process:${SF_VERSION}" --no-update
+  - if [[ $SF_VERSION ]]; then composer require "symfony/console:${SF_VERSION}" --no-update; fi
+  - if [[ $SF_VERSION ]]; then composer require "symfony/stopwatch:${SF_VERSION}" --no-update; fi
+  - if [[ $SF_VERSION ]]; then composer require "symfony/process:${SF_VERSION}" --no-update; fi
+  - if [[ $TRAVIS_PHP_VERSION == 7.2 ]]; then composer require "phpunit/phpunit:^6.1" --no-update; fi
   - composer update $PREFER_LOWEST
 
 script:
