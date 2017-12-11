@@ -50,10 +50,6 @@ class ProcessFactory
 
     private function createProcess($executeCommand, $arrayEnv)
     {
-        if ('\\' === DIRECTORY_SEPARATOR) {
-            $arrayEnv = array_merge($_SERVER, $arrayEnv);
-        }
-
         $process = new Process($executeCommand, null, $arrayEnv);
 
         $process->setTimeout(null);
