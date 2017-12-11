@@ -201,9 +201,9 @@ class Processes
     private function moveToCompletedProcesses($key, Process $process)
     {
         $env = $process->getEnv();
-        $suite = str_replace(EnvCommandCreator::ENV_TEST_ARGUMENT.'=', '', $env[3]);
-        $number = str_replace(EnvCommandCreator::ENV_TEST_CHANNEL.'=', '', $env[0]);
-        $numberOnThread = (int) str_replace(EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL.'=', '', $env[5]);
+        $suite = $env[EnvCommandCreator::ENV_TEST_ARGUMENT];
+        $number = $env[EnvCommandCreator::ENV_TEST_CHANNEL];
+        $numberOnThread = $env[EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL];
 
         if (!$process->isSuccessful()) {
             $this->errorCounter++;
