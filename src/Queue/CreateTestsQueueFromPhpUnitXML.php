@@ -15,6 +15,10 @@ if (class_exists('\PHPUnit_Util_TestSuiteIterator')) {
     class_alias('\PHPUnit_Util_TestSuiteIterator', '\PHPUnit\Framework\TestSuiteIterator');
 }
 
+if (class_exists('\PHPUnit_Util_Fileloader')) {
+    class_alias('\PHPUnit_Util_Fileloader', '\PHPUnit\Util\Fileloader');
+}
+
 class CreateTestsQueueFromPhpUnitXML
 {
     public static function execute($xmlFile)
@@ -22,6 +26,7 @@ class CreateTestsQueueFromPhpUnitXML
         $configuration = \PHPUnit\Util\Configuration::getInstance($xmlFile);
         $testSuites = new TestsQueue();
 
+        self::handleBootstrap($configuration->getPHPUnitConfiguration());
         self::processTestSuite($testSuites, $configuration->getTestSuiteConfiguration()->getIterator());
 
         return $testSuites;
@@ -45,5 +50,17 @@ class CreateTestsQueueFromPhpUnitXML
             $class = new \ReflectionClass($name);
             $testSuites->add($class->getFileName());
         }
+    }
+
+    /**
+     * Loads a bootstrap file.
+     *
+     * @param array $config The Phpunit config
+     */
+    private static function handleBootstrap(array $config)
+    {
+        $filename = isset($config['bootstrap']) ? $config['bootstrap'] : 'vendor/autoload.php';
+
+        \PHPUnit\Util\Fileloader::checkAndLoad($filename);
     }
 }
