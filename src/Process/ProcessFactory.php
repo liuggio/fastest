@@ -10,6 +10,8 @@ class ProcessFactory
     private $commandToExecuteTemplate;
     private $maxParallelProcessesToExecute;
 
+    private static $cacheBinCmd;
+
     public function __construct($maxParallelProcessesToExecute, $commandToExecuteTemplate = null, EnvCommandCreator $envCommandCreator = null)
     {
         if (null === $envCommandCreator) {
@@ -63,8 +65,41 @@ class ProcessFactory
 
     public static function getDefaultCommandToExecute()
     {
-        return ('\\' === DIRECTORY_SEPARATOR)
-            ? 'bin\phpunit {}'
-            : 'bin/phpunit {}';
+        if (null !== self::$cacheBinCmd) {
+            return self::$cacheBinCmd;
+        }
+
+        return self::$cacheBinCmd = self::isWindows() ? self::getWindowsBinCmd() : self::getUnixBinCmd();
+    }
+
+    private static function isWindows()
+    {
+        return '\\' === DIRECTORY_SEPARATOR;
+    }
+
+    private static function getWindowsBinCmd()
+    {
+        if (file_exists(getcwd().'/bin/phpunit')) {
+            $cmd = 'bin\phpunit {}';
+        } elseif (file_exists(getenv('APPDATA').'\Composer\vendor\bin\phpunit')) {
+            $cmd = '%APPDATA%\Composer\vendor\bin\phpunit {}';
+        } else {
+            $cmd = 'phpunit {}';
+        }
+
+        return $cmd;
+    }
+
+    private static function getUnixBinCmd()
+    {
+        if (file_exists(getcwd().'/bin/phpunit')) {
+            $cmd = 'bin/phpunit {}';
+        } elseif (file_exists(getenv('HOME').'/.composer/vendor/bin/phpunit')) {
+            $cmd = '~/.composer/vendor/bin/phpunit {}';
+        } else {
+            $cmd = 'phpunit {}';
+        }
+
+        return $cmd;
     }
 }

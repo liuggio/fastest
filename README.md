@@ -39,6 +39,7 @@ Our old codebase run in 30 minutes, now in 7 minutes with 4 Processors.
 4. As input you could use a `phpunit.xml.dist` file or use pipe (see below).
 5. Includes a Behat extension to easily pipe scenarios into fastest.
 6. Increase Verbosity with -v option.
+7. Works with a installation in project or global mode
 
 ## How
 
