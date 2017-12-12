@@ -12,7 +12,8 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $factory = new ProcessFactory(10);
         $process = $factory->createAProcess('fileA', 2, 10, true);
-        $serverEnvs = $_SERVER;
+        $serverEnvs = $this->getServerVars();
+
         unset($serverEnvs['argv']);
 
         $this->assertEquals('bin'.DIRECTORY_SEPARATOR.'phpunit fileA', $process->getCommandLine());
@@ -36,7 +37,8 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $factory = new ProcessFactory(11, 'execute');
         $process = $factory->createAProcess('fileA', 2, 12, false);
-        $serverEnvs = $_SERVER;
+        $serverEnvs = $this->getServerVars();
+
         unset($serverEnvs['argv']);
 
         $this->assertEquals('execute', $process->getCommandLine());
@@ -60,7 +62,8 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $factory = new ProcessFactory(12, 'execute {p} {} {n}');
         $process = $factory->createAProcess('fileA', 1, 13, true);
-        $serverEnvs = $_SERVER;
+        $serverEnvs = $this->getServerVars();
+
         unset($serverEnvs['argv']);
 
         $this->assertEquals('execute 1 fileA 13', $process->getCommandLine());
@@ -75,5 +78,15 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
             ], CASE_UPPER),
             $process->getenv()
         );
+    }
+
+    private function getServerVars()
+    {
+        $serverEnvs = $_SERVER;
+        return array_map(function($e) {
+            if (is_array($e)) { return $e; }
+
+            return (string) $e;
+        }, $serverEnvs);
     }
 }
