@@ -12,7 +12,7 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $factory = new ProcessFactory(10);
         $process = $factory->createAProcess('fileA', 2, 10, true);
-        $serverEnvs = $_SERVER;
+        $serverEnvs = EnvCommandCreator::cleanEnvVariables($_SERVER);
         unset($serverEnvs['argv']);
 
         $this->assertEquals('bin'.DIRECTORY_SEPARATOR.'phpunit fileA', $process->getCommandLine());
@@ -32,11 +32,34 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
     /**
      * @test
      */
+    public function shouldCreateACommandUsingParallelTestsWithFilteredVariables()
+    {
+        $factory = new ProcessFactory(10);
+        $process = $factory->createAProcess('fileA', 2, 10, true);
+
+        $this->assertEquals('bin'.DIRECTORY_SEPARATOR.'phpunit fileA', $process->getCommandLine());
+
+        $processEnv = $process->getEnv();
+        $envTestVars = $this->filterEnvTestVariables($processEnv);
+
+        $this->assertEquals([
+            'ENV_TEST_CHANNEL' => 2,
+            'ENV_TEST_CHANNEL_READABLE' => 'test_2',
+            'ENV_TEST_CHANNELS_NUMBER' => 10,
+            'ENV_TEST_ARGUMENT'=> 'fileA',
+            'ENV_TEST_INC_NUMBER' => 10,
+            'ENV_TEST_IS_FIRST_ON_CHANNEL' => 1,
+        ], $envTestVars);
+    }
+
+    /**
+     * @test
+     */
     public function shouldCreateACommandUsingParallelTestsWithOptions()
     {
         $factory = new ProcessFactory(11, 'execute');
         $process = $factory->createAProcess('fileA', 2, 12, false);
-        $serverEnvs = $_SERVER;
+        $serverEnvs = EnvCommandCreator::cleanEnvVariables($_SERVER);
         unset($serverEnvs['argv']);
 
         $this->assertEquals('execute', $process->getCommandLine());
@@ -60,7 +83,7 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $factory = new ProcessFactory(12, 'execute {p} {} {n}');
         $process = $factory->createAProcess('fileA', 1, 13, true);
-        $serverEnvs = $_SERVER;
+        $serverEnvs = EnvCommandCreator::cleanEnvVariables($_SERVER);
         unset($serverEnvs['argv']);
 
         $this->assertEquals('execute 1 fileA 13', $process->getCommandLine());
@@ -94,5 +117,21 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
         }
 
         return $envValues;
+    }
+
+    /**
+     * @param array $processEnv
+     *
+     * @return array
+     */
+    private function filterEnvTestVariables(array $processEnv)
+    {
+        return array_filter(
+            $processEnv,
+            function ($key) {
+                return strpos($key, 'ENV_TEST_') !== false;
+            },
+            ARRAY_FILTER_USE_KEY
+        );
     }
 }
