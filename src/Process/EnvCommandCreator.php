@@ -14,7 +14,7 @@ class EnvCommandCreator
     // create an array of env
     public function execute($i, $maxProcesses, $suite, $currentProcessCounter, $isFirstOnItsThread = false)
     {
-        return array_change_key_case($_SERVER + $_ENV + [
+        return array_change_key_case(static::cleanEnvVariables($_SERVER) + $_ENV + [
             self::ENV_TEST_CHANNEL => (int) $i,
             self::ENV_TEST_CHANNEL_READABLE => 'test_'.$i,
             self::ENV_TEST_CHANNELS_NUMBER => (int) $maxProcesses,
@@ -22,5 +22,21 @@ class EnvCommandCreator
             self::ENV_TEST_INCREMENTAL_NUMBER => (int) $currentProcessCounter,
             self::ENV_TEST_IS_FIRST_ON_CHANNEL => (int) $isFirstOnItsThread,
         ], CASE_UPPER);
+    }
+
+    /**
+     * @param array $variables
+     *
+     * @return array
+     */
+    public static function cleanEnvVariables(array $variables)
+    {
+        return array_filter(
+            $variables,
+            function ($key) {
+                return strpos($key, 'ENV_TEST_') !== 0;
+            },
+            ARRAY_FILTER_USE_KEY
+        );
     }
 }
