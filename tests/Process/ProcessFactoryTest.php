@@ -17,15 +17,15 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals('bin'.DIRECTORY_SEPARATOR.'phpunit fileA', $process->getCommandLine());
         $this->assertEquals(
-            array_change_key_case($serverEnvs + $_ENV + [
+            $this->castValues(array_change_key_case($serverEnvs + $_ENV + [
                 'ENV_TEST_CHANNEL' => 2,
                 'ENV_TEST_CHANNEL_READABLE' => 'test_2',
                 'ENV_TEST_CHANNELS_NUMBER' => 10,
                 'ENV_TEST_ARGUMENT'=> 'fileA',
                 'ENV_TEST_INC_NUMBER' => 10,
                 'ENV_TEST_IS_FIRST_ON_CHANNEL' => 1,
-            ], CASE_UPPER),
-            $process->getenv()
+            ], CASE_UPPER)),
+            $this->castValues($process->getenv())
         );
     }
 
@@ -41,15 +41,15 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals('execute', $process->getCommandLine());
         $this->assertEquals(
-            array_change_key_case($serverEnvs + $_ENV + [
+            $this->castValues(array_change_key_case($serverEnvs + $_ENV + [
                 'ENV_TEST_CHANNEL' => 2,
                 'ENV_TEST_CHANNEL_READABLE' => 'test_2',
                 'ENV_TEST_CHANNELS_NUMBER' => 11,
                 'ENV_TEST_ARGUMENT'=> 'fileA',
                 'ENV_TEST_INC_NUMBER' => 12,
                 'ENV_TEST_IS_FIRST_ON_CHANNEL' => 0,
-            ], CASE_UPPER),
-            $process->getenv()
+            ], CASE_UPPER)),
+            $this->castValues($process->getenv())
         );
     }
 
@@ -65,15 +65,34 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals('execute 1 fileA 13', $process->getCommandLine());
         $this->assertEquals(
-            array_change_key_case($serverEnvs + $_ENV + [
+            $this->castValues(array_change_key_case($serverEnvs + $_ENV + [
                 'ENV_TEST_CHANNEL' => 1,
                 'ENV_TEST_CHANNEL_READABLE' => 'test_1',
                 'ENV_TEST_CHANNELS_NUMBER' => 12,
                 'ENV_TEST_ARGUMENT'=> 'fileA',
                 'ENV_TEST_INC_NUMBER' => 13,
                 'ENV_TEST_IS_FIRST_ON_CHANNEL' => 1,
-            ], CASE_UPPER),
-            $process->getenv()
+            ], CASE_UPPER)),
+            $this->castValues($process->getenv())
         );
+    }
+
+    /**
+     * Force casting of the env variable values to validate the difference of behavior
+     * between the versions Symfony Process '<3.2' and '>=3.2'.
+     *
+     * @param array $values
+     *
+     * @return array
+     */
+    private function castValues(array $values)
+    {
+        $envValues = array();
+
+        foreach ($values as $key => $value) {
+            $envValues[(binary) $key] = (binary) $value;
+        }
+
+        return $envValues;
     }
 }
