@@ -13,6 +13,13 @@ env:
     - PREFER_LOWEST=""
 
 matrix:
+  exclude:
+    - php: 5.6
+      env: PREFER_LOWEST=""
+    - php: 7.0
+      env: PREFER_LOWEST=""
+    - php: hhvm
+      env: PREFER_LOWEST=""
   allow_failures:
     - php: hhvm
   fast_finish: true
@@ -23,11 +30,13 @@ cache:
 
 before_script:
   - composer selfupdate
-  - composer install
+  - if [[ $TRAVIS_PHP_VERSION == 7.2 ]]; then
+      composer require "phpunit/phpunit:^6.1" --no-update;
+    else
+      composer require "phpunit/phpunit:^5.7" --no-update;
+    fi
+  - composer update $PREFER_LOWEST
 
 script:
   - find tests/ -name "*Test.php" | php fastest -v
-  - bin/behat --config=adapters/Behat2/behat.yml
-  - composer require --dev "behat/behat:~3.3" --no-update # update the Behat version.
-  - composer update $PREFER_LOWEST
   - bin/behat --config=adapters/Behat/behat.yml
