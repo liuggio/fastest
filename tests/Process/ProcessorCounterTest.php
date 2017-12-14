@@ -2,8 +2,6 @@
 
 namespace Liuggio\Fastest\Process;
 
-use Liuggio\Fastest\Process\ProcessorCounter;
-
 class ProcessorCounterTest extends \PHPUnit\Framework\TestCase
 {
     /**

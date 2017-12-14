@@ -10,14 +10,13 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 /**
- * List Features Behat extension
- *
+ * List Features Behat extension.
  */
 class Extension implements ExtensionInterface
 {
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function initialize(ExtensionManager $extensionManager)
     {
     }
@@ -32,22 +31,22 @@ class Extension implements ExtensionInterface
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function configure(ArrayNodeDefinition $builder)
     {
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function process(ContainerBuilder $container)
     {
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getConfigKey()
     {
         return 'fastest';

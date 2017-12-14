@@ -40,8 +40,8 @@ class ListFeaturesProcessor implements Controller
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function configure(Command $command)
     {
         $command->addOption(
@@ -59,8 +59,8 @@ class ListFeaturesProcessor implements Controller
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $listFeatures = $input->getOption('list-features');
@@ -70,7 +70,7 @@ class ListFeaturesProcessor implements Controller
             return;
         }
 
-        $results = array();
+        $results = [];
         if ($listFeatures) {
             $results = array_merge($results, $this->getFeatureFiles());
         } else {
@@ -82,11 +82,11 @@ class ListFeaturesProcessor implements Controller
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getScenarios()
     {
-        $scenarios = array();
+        $scenarios = [];
 
         foreach ($this->registry->getSuites() as $suite) {
             foreach ($this->locator->locateSpecifications($suite, '') as $feature) {
@@ -110,11 +110,11 @@ class ListFeaturesProcessor implements Controller
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     private function getFeatureFiles()
     {
-        $featureFiles = array();
+        $featureFiles = [];
         foreach ($this->registry->getSuites() as $suite) {
             foreach ($this->locator->locateSpecifications($suite, '') as $feature) {
                 $featureFiles[] = $feature->getFile();

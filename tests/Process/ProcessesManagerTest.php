@@ -58,12 +58,10 @@ class ProcessesManagerTest extends \PHPUnit\Framework\TestCase
             ->with($this->anything(), $this->equalTo(1), $this->equalTo(1), $this->equalTo(true))
             ->willReturn(new Process('echo ', rand()));
 
-
         $manager = new ProcessesManager($factory, 1);
 
         $this->assertTrue($manager->assertNProcessRunning($queue, $processes));
     }
-
 
     /**
      * @test
@@ -96,15 +94,15 @@ class ProcessesManagerTest extends \PHPUnit\Framework\TestCase
             ->getMock();
 
         $array = [
-            [1,1,true],
-            [2,2,true],
-            [3,3,true],
-            [1,4,false],
-            [2,5,false],
-            [3,6,false]
+            [1, 1, true],
+            [2, 2, true],
+            [3, 3, true],
+            [1, 4, false],
+            [2, 5, false],
+            [3, 6, false],
         ];
 
-        foreach ($array as $at=>$expectation) {
+        foreach ($array as $at => $expectation) {
             $factory->expects($this->at($at))
                 ->method('createAProcess')
                 ->with($this->anything(), $this->equalTo($expectation[0]), $this->equalTo($expectation[1]), $this->equalTo($expectation[2]))

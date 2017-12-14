@@ -8,7 +8,7 @@ class FeatureContext implements Context
     private $lastBehatStdOut;
 
     /**
-     * Runs behat command with provided parameters
+     * Runs behat command with provided parameters.
      *
      * Taken from Behat's features/bootstrap/Hooks/FeatureContext::iRunBehat() with some modifications
      * Copyright (c) 2011-2013 Konstantin Kudryashov <ever.zet@gmail.com>
@@ -19,7 +19,7 @@ class FeatureContext implements Context
      */
     public function iRunBehat($argumentsString = '')
     {
-        $argumentsString = strtr($argumentsString, array('\'' => '"'));
+        $argumentsString = strtr($argumentsString, ['\'' => '"']);
 
         if ('/' === DIRECTORY_SEPARATOR) {
             $argumentsString .= ' 2>&1';
@@ -31,7 +31,7 @@ class FeatureContext implements Context
             $argumentsString
         ), $output, $return);
 
-        $this->lastBehatStdOut  = trim(implode("\n", $output));
+        $this->lastBehatStdOut = trim(implode("\n", $output));
     }
 
     /**
@@ -63,7 +63,7 @@ class FeatureContext implements Context
      */
     public function theBehatSFeaturelistextensionIsEnabled()
     {
-        copy(__DIR__."/../testResources/behat.yml.resource", 'behat.yml');
+        copy(__DIR__.'/../testResources/behat.yml.resource', 'behat.yml');
     }
 
     /**
@@ -71,11 +71,11 @@ class FeatureContext implements Context
      */
     public function iHaveSomeBehatFeatureFiles()
     {
-        $files = array(
+        $files = [
             'features/bootstrap/FeatureContext.php',
             'features/firstfeature.feature',
             'features/secondfeature.feature',
-        );
+        ];
 
         foreach ($files as $file) {
             copy(__DIR__."/../testResources/$file.resource", $file);

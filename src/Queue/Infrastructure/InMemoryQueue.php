@@ -23,7 +23,7 @@ class InMemoryQueue implements QueueInterface
     {
         $this->queue = array_merge($this->queue, $testSuite->toArray());
 
-        return (count($this->queue)>0);
+        return count($this->queue) > 0;
     }
 
     public function getNumberOfPushedMessage()
@@ -47,6 +47,6 @@ class InMemoryQueue implements QueueInterface
 
     public function isEmpty()
     {
-        return ($this->count() == 0);
+        return 0 == $this->count();
     }
 }

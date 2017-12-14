@@ -66,7 +66,7 @@ class ListFeaturesProcessor extends BaseProcessor
             return;
         }
 
-        $results = array();
+        $results = [];
         $featurePaths = $this->container->get('behat.console.command')->getFeaturesPaths();
         foreach ($featurePaths as $featurePath) {
             if ($listFeatures) {
@@ -81,7 +81,9 @@ class ListFeaturesProcessor extends BaseProcessor
     }
 
     /**
-     * Returns an array of absolute feature file paths and scenarios line numbers in the format:
+     * Returns an array of absolute feature file paths and scenarios line numbers.
+     *
+     * The format of the file path:
      *
      *  /absolute/path/somefile.feature:XX
      *
@@ -91,7 +93,7 @@ class ListFeaturesProcessor extends BaseProcessor
      */
     private function _getScenarios($featurePath)
     {
-        $scenarios = array();
+        $scenarios = [];
         /* @var $featureNodes \Behat\Gherkin\Node\FeatureNode[] */
         $featureNodes = $this->container->get('gherkin')->load($featurePath);
         foreach ($featureNodes as $featureNode) {
@@ -115,7 +117,7 @@ class ListFeaturesProcessor extends BaseProcessor
     }
 
     /**
-     * Returns an array with the absolute paths of the feature files expanded from the $featurePath
+     * Returns an array with the absolute paths of the feature files expanded from the $featurePath.
      *
      * @param string $featurePath
      *
@@ -123,7 +125,7 @@ class ListFeaturesProcessor extends BaseProcessor
      */
     private function _getFeatureFiles($featurePath)
     {
-        $featureFiles = array();
+        $featureFiles = [];
         /* @var $featureNodes \Behat\Gherkin\Node\FeatureNode[] */
         $featureNodes = $this->container->get('gherkin')->load($featurePath);
         foreach ($featureNodes as $featureNode) {

@@ -19,7 +19,7 @@ class ProgressBarRenderer implements RendererInterface
 
     /**
      * @param $messageInTheQueue
-     * @param bool $errorsSummary Whether to display errors summary in the footer
+     * @param bool            $errorsSummary Whether to display errors summary in the footer
      * @param OutputInterface $output
      * @param $helper
      */
@@ -64,11 +64,11 @@ class ProgressBarRenderer implements RendererInterface
 
         if ($errorCount > 0) {
             $this->bar->setBarCharacter('<error>=</error>');
-            $this->writeMessage(sprintf("<error>%d</error> failures.", $errorCount), 'number');
+            $this->writeMessage(sprintf('<error>%d</error> failures.', $errorCount), 'number');
         }
 
         if ($this->last != $now) {
-            $this->bar->advance($this->last-$now);
+            $this->bar->advance($this->last - $now);
         }
 
         $this->last = $now;
@@ -85,9 +85,9 @@ class ProgressBarRenderer implements RendererInterface
             $this->output->writeln($processes->getErrorOutput());
         }
 
-        $out = "    <info>✔</info> You are great!";
+        $out = '    <info>✔</info> You are great!';
         if (!$processes->isSuccessful()) {
-            $out = "    <error>✘ ehm broken tests...</error>";
+            $out = '    <error>✘ ehm broken tests...</error>';
         }
 
         $this->output->writeln(PHP_EOL.$out);

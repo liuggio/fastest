@@ -34,7 +34,7 @@ class EnvCommandCreator
         return array_filter(
             $variables,
             function ($key) {
-                return strpos($key, 'ENV_TEST_') !== 0;
+                return 0 !== strpos($key, 'ENV_TEST_');
             },
             ARRAY_FILTER_USE_KEY
         );

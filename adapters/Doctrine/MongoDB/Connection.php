@@ -27,7 +27,7 @@ class Connection extends BaseConnection
     {
         $dbName = $this->getDbNameEnvValue();
 
-        return (!empty($dbName));
+        return !empty($dbName);
     }
 
     private function getDbNameEnvValue()

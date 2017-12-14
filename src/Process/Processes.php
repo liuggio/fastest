@@ -15,7 +15,7 @@ class Processes
      * @var float[] Unix timestamp with float part of processes start times
      */
     private $startTimes;
-    
+
     /**
      * @var Report[]
      */
@@ -74,6 +74,7 @@ class Processes
     {
         if (null !== $key) {
             $this->startProcess($key);
+
             return true;
         }
 
@@ -82,6 +83,7 @@ class Processes
                 $this->startProcess($key);
             }
         }
+
         return true;
     }
 
@@ -105,7 +107,7 @@ class Processes
 
     /**
      * @param callable $terminationCallback A callback to be called after one of the processes is terminated
-     * @param bool $addToCompletedQueue     A flag that indicates if this process needs to be added to completedQueue
+     * @param bool     $addToCompletedQueue A flag that indicates if this process needs to be added to completedQueue
      *
      * @return bool
      */
@@ -117,12 +119,13 @@ class Processes
             if ($lastProcessesRunningCount !== $currentRunningProcessesCount) {
                 $lastProcessesRunningCount = $currentRunningProcessesCount;
                 $this->cleanUP($addToCompletedQueue);
-                if ($terminationCallback !== null) {
+                if (null !== $terminationCallback) {
                     call_user_func($terminationCallback);
                 }
             }
             usleep(1000);
         }
+
         return true;
     }
 
@@ -145,7 +148,7 @@ class Processes
 
         foreach ($this->processes as $process) {
             if (null !== $process && !$process->isTerminated()) {
-                $count++;
+                ++$count;
             }
         }
 
@@ -153,7 +156,7 @@ class Processes
     }
 
     /**
-     * Return the number of tests failing, 0 if none :)
+     * Return the number of tests failing, 0 if none :).
      *
      * @return int
      */
@@ -206,8 +209,8 @@ class Processes
         $numberOnThread = $env[EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL];
 
         if (!$process->isSuccessful()) {
-            $this->errorCounter++;
-            $this->errorBuffer[$suite] = sprintf("[%s] %s", $number, $suite);
+            ++$this->errorCounter;
+            $this->errorBuffer[$suite] = sprintf('[%s] %s', $number, $suite);
             $this->errorBuffer[$suite] .= $process->getOutput();
             $this->errorBuffer[$suite] .= $process->getErrorOutput();
         }

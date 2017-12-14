@@ -58,7 +58,7 @@ class Hooks implements Context
      */
     public static function cleanTestFolders()
     {
-        $channel  = self::getFastestChannel();
+        $channel = self::getFastestChannel();
 
         $underFastest = (bool) $channel;
         $firstFastestTest = getenv(EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL);

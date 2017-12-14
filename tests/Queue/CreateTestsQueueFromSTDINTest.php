@@ -4,7 +4,6 @@ namespace Liuggio\Fastest\Queue;
 
 class CreateTestsQueueFromSTDINTest extends \PHPUnit\Framework\TestCase
 {
-
     /**
      * @test
      *
@@ -16,10 +15,10 @@ class CreateTestsQueueFromSTDINTest extends \PHPUnit\Framework\TestCase
      */
     public function shouldReadTestQueueFromDelayedStdin()
     {
-        $bootstrapFile = realpath(__DIR__ . "/../../vendor/autoload.php");
+        $bootstrapFile = realpath(__DIR__.'/../../vendor/autoload.php');
 
         $code = '
-            require "' . $bootstrapFile . '";
+            require "'.$bootstrapFile.'";
             $queue = new \Liuggio\Fastest\Queue\CreateTestsQueueFromSTDIN();
             $tests = $queue->execute();
 
@@ -29,11 +28,11 @@ class CreateTestsQueueFromSTDINTest extends \PHPUnit\Framework\TestCase
         ';
 
         $code = escapeshellarg($code);
-        $command = 'php -r' . $code;
+        $command = 'php -r'.$code;
 
         $stdinLines = [
-           "Line 1" . PHP_EOL,
-           "Line 2" . PHP_EOL
+           'Line 1'.PHP_EOL,
+           'Line 2'.PHP_EOL,
         ];
 
         $expectedStdout = implode('', $stdinLines);
@@ -43,13 +42,12 @@ class CreateTestsQueueFromSTDINTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedStdout, $stdOut);
     }
 
-
     private function executeCommandWithDelayedStdin($command, $stdinLines, $delayMicroseconds = 1000000)
     {
         $descriptors = [
-            0 => ["pipe", "r"],  // stdin is a pipe that the child will read from
-            1 => ["pipe", "w"],  // stdout is a pipe that the child will write to
-            2 => ["pipe", "w"] // stderr is a pipe that the child will write to
+            0 => ['pipe', 'r'],  // stdin is a pipe that the child will read from
+            1 => ['pipe', 'w'],  // stdout is a pipe that the child will write to
+            2 => ['pipe', 'w'], // stderr is a pipe that the child will write to
         ];
 
         $pipes = [];

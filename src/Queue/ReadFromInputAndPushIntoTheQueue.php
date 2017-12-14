@@ -1,4 +1,5 @@
 <?php
+
 namespace Liuggio\Fastest\Queue;
 
 class ReadFromInputAndPushIntoTheQueue

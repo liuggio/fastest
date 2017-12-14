@@ -15,7 +15,7 @@ class VerboseRenderer implements RendererInterface
 
     /**
      * @param $messageInTheQueue
-     * @param bool $errorsSummary Whether to display errors summary in the footer
+     * @param bool            $errorsSummary Whether to display errors summary in the footer
      * @param OutputInterface $output
      */
     public function __construct($messageInTheQueue, $errorsSummary, OutputInterface $output)
@@ -38,9 +38,9 @@ class VerboseRenderer implements RendererInterface
             $this->output->writeln($processes->getErrorOutput());
         }
 
-        $out = "    <info>✔</info> You are great!";
+        $out = '    <info>✔</info> You are great!';
         if (!$processes->isSuccessful()) {
-            $out = "    <error>✘ ehm broken tests...</error>";
+            $out = '    <error>✘ ehm broken tests...</error>';
         }
 
         $this->output->writeln(PHP_EOL.$out);
@@ -55,20 +55,20 @@ class VerboseRenderer implements RendererInterface
         $tests = array_slice($log, $this->lastIndex, $count, 1);
 
         foreach ($tests as $report) {
-            $this->lastIndex++;
-            $processorN = "";
+            ++$this->lastIndex;
+            $processorN = '';
             if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $this->output->getVerbosity()) {
                 $str = '%d';
                 if ($report->isFirstOnThread()) {
-                    $str = "<info>%d</info>";
+                    $str = '<info>%d</info>';
                 }
                 $processorN = sprintf($str."\t", $report->getProcessorNumber());
             }
 
-            $flag = "<info>✔</info>";
+            $flag = '<info>✔</info>';
             $err = '';
             if (!$report->isSuccessful()) {
-                $flag = "<error>✘</error>";
+                $flag = '<error>✘</error>';
                 if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $this->output->getVerbosity()) {
                     $err = $report->getErrorBuffer();
                 }
@@ -102,17 +102,17 @@ class VerboseRenderer implements RendererInterface
         $seconds = floor($milliseconds / 1000);
         $milliseconds -= ($seconds * 1000);
 
-        $values = array(
+        $values = [
             'min' => $minutes,
-            's'   => $seconds,
-            'ms'  => $milliseconds,
-        );
+            's' => $seconds,
+            'ms' => $milliseconds,
+        ];
 
-        $parts = array();
+        $parts = [];
 
         foreach ($values as $text => $value) {
             if ($value > 0) {
-                $parts[] = $value . ' ' . $text;
+                $parts[] = $value.' '.$text;
             }
         }
 
