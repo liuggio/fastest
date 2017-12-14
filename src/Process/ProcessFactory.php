@@ -79,27 +79,35 @@ class ProcessFactory
 
     private static function getWindowsBinCmd()
     {
-        if (file_exists(getcwd().'/bin/phpunit')) {
-            $cmd = 'bin\phpunit {}';
-        } elseif (file_exists(getenv('APPDATA').'\Composer\vendor\bin\phpunit')) {
-            $cmd = '%APPDATA%\Composer\vendor\bin\phpunit {}';
-        } else {
-            $cmd = 'phpunit {}';
+        if (file_exists(getcwd().'/vendor/bin/phpunit')) {
+            return 'vendor\bin\phpunit {}';
         }
 
-        return $cmd;
+        if (file_exists(getcwd().'/bin/phpunit')) {
+            return 'bin\phpunit {}';
+        }
+
+        if (file_exists(getenv('APPDATA').'\Composer\vendor\bin\phpunit')) {
+            return '%APPDATA%\Composer\vendor\bin\phpunit {}';
+        }
+
+        return 'phpunit {}';
     }
 
     private static function getUnixBinCmd()
     {
-        if (file_exists(getcwd().'/bin/phpunit')) {
-            $cmd = 'bin/phpunit {}';
-        } elseif (file_exists(getenv('HOME').'/.composer/vendor/bin/phpunit')) {
-            $cmd = '~/.composer/vendor/bin/phpunit {}';
-        } else {
-            $cmd = 'phpunit {}';
+        if (file_exists(getcwd().'/vendor/bin/phpunit')) {
+            return 'vendor/bin/phpunit {}';
         }
 
-        return $cmd;
+        if (file_exists(getcwd().'/bin/phpunit')) {
+            return 'bin/phpunit {}';
+        }
+
+        if (file_exists(getenv('HOME').'/.composer/vendor/bin/phpunit')) {
+            return '~/.composer/vendor/bin/phpunit {}';
+        }
+
+        return 'phpunit {}';
     }
 }
