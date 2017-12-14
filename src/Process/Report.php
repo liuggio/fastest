@@ -11,12 +11,12 @@ class Report
     private $isFirstOnThread;
 
     /**
-     * @param string $suite
-     * @param boolean $isSuccess
-     * @param int $time
-     * @param int $processorNumber
+     * @param string      $suite
+     * @param bool        $isSuccess
+     * @param int         $time
+     * @param int         $processorNumber
      * @param string|null $errorBuffer
-     * @param boolean $isFirstOnThread
+     * @param bool        $isFirstOnThread
      */
     public function __construct(
         $suite,
@@ -35,7 +35,7 @@ class Report
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isSuccessful()
     {
@@ -51,7 +51,7 @@ class Report
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isFirstOnThread()
     {

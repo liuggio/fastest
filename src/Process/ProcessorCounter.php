@@ -36,7 +36,7 @@ class ProcessorCounter
         if (PHP_OS === 'Darwin') {
             $processors = system('/usr/sbin/sysctl -n hw.physicalcpu');
 
-            if ($processors !== false && $processors) {
+            if (false !== $processors && $processors) {
                 return $processors;
             }
         } elseif (PHP_OS === 'Linux') {
@@ -44,6 +44,7 @@ class ProcessorCounter
             if (is_file($file) && is_readable($file)) {
                 try {
                     $contents = trim(file_get_contents($file));
+
                     return substr_count($contents, 'processor');
                 } catch (\Exception $e) {
                 }
@@ -52,7 +53,7 @@ class ProcessorCounter
             $process = new Process('for /F "tokens=2 delims==" %C in (\'wmic cpu get NumberOfLogicalProcessors /value ^| findstr NumberOfLogicalProcessors\') do @echo %C');
             $process->run();
 
-            if ($process->isSuccessful() && ($numProc = intval($process->getOutput())) > 0) {
+            if ($process->isSuccessful() && ($numProc = (int) ($process->getOutput())) > 0) {
                 return $numProc;
             }
         }

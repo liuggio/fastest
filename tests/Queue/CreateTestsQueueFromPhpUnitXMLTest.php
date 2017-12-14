@@ -11,13 +11,13 @@ class CreateTestsQueueFromPhpUnitXMLTest extends \PHPUnit\Framework\TestCase
     {
         $output = CreateTestsQueueFromPhpUnitXML::execute(__DIR__.'/Fixture/phpunit.xml.dist');
 
-        $infrastructureDir = __DIR__ . '/Infrastructure/';
+        $infrastructureDir = __DIR__.'/Infrastructure/';
         $infrastructureFiles = [
             'InMemoryQueueFactoryTest.php',
             'InMemoryQueueTest.php',
         ];
 
-        $processesDir = str_replace('/Queue', '', __DIR__) . '/Process/';
+        $processesDir = str_replace('/Queue', '', __DIR__).'/Process/';
         $processesFiles = [
             'ProcessFactoryTest.php',
             'ProcessesManagerTest.php',
@@ -28,11 +28,11 @@ class CreateTestsQueueFromPhpUnitXMLTest extends \PHPUnit\Framework\TestCase
         $queue = new TestsQueue();
 
         foreach ($infrastructureFiles as $file) {
-            $queue->add($infrastructureDir . $file);
+            $queue->add($infrastructureDir.$file);
         }
 
         foreach ($processesFiles as $file) {
-            $queue->add($processesDir . $file);
+            $queue->add($processesDir.$file);
         }
 
         $this->assertEquals($queue, $output);

@@ -84,7 +84,7 @@ class ParallelCommand extends Command
 
         $maxNumberOfParallelProc = $this->getMaxNumberOfProcess($input->getOption('process'));
         $processFactory = new ProcessFactory($maxNumberOfParallelProc, $input->getArgument('execute'));
-        $processManager =  new ProcessesManager($processFactory, $maxNumberOfParallelProc, $input->getOption('before'));
+        $processManager = new ProcessesManager($processFactory, $maxNumberOfParallelProc, $input->getOption('before'));
 
         // header
         $shuffled = $input->getOption('preserve-order') ? '' : 'shuffled ';
@@ -95,7 +95,7 @@ class ParallelCommand extends Command
         $processes = $this->doExecute($input, $output, $queue, $processManager);
 
         $event = $stopWatch->stop('execute');
-        $output->writeln(sprintf("    Time: %s, Memory: %s", $this->formatDuration($event->getDuration()), $this->formatMemory($event->getMemory())));
+        $output->writeln(sprintf('    Time: %s, Memory: %s', $this->formatDuration($event->getDuration()), $this->formatMemory($event->getMemory())));
 
         if ($input->getOption('rerun-failed')) {
             $processes = $this->executeBeforeCommand($queue, $processes, $input, $output, $processManager);
@@ -116,10 +116,11 @@ class ParallelCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @param QueueInterface $queue
+     * @param InputInterface   $input
+     * @param OutputInterface  $output
+     * @param QueueInterface   $queue
      * @param ProcessesManager $processManager
+     *
      * @return array
      */
     private function doExecute(
@@ -142,7 +143,7 @@ class ParallelCommand extends Command
             $progressBar->renderBody($queue, $processes);
         }
 
-        /**
+        /*
          * @var Processes $processes
          */
         $processes->cleanUP(); //it is not getting called with -p1 after the last process otherwise
@@ -165,6 +166,7 @@ class ParallelCommand extends Command
 
     /**
      * @param InputInterface $input
+     *
      * @return bool Whether user wanted to see error summary
      */
     private function hasErrorSummary(InputInterface $input)
@@ -176,7 +178,7 @@ class ParallelCommand extends Command
     {
         if (!$processes->isSuccessful()) {
             $array = $processes->getErrorOutput();
-            $output->writeln(sprintf("Re-Running [%d] elements", count($array)));
+            $output->writeln(sprintf('Re-Running [%d] elements', count($array)));
             $queue->push(new TestsQueue(array_keys($array)));
             $processes = $this->doExecute($input, $output, $queue, $processManager);
         }
@@ -202,18 +204,18 @@ class ParallelCommand extends Command
         $seconds = floor($milliseconds / 1000);
         $milliseconds -= ($seconds * 1000);
 
-        $values = array(
-            'hour'          => $hours,
-            'minute'        => $minutes,
-            'second'        => $seconds,
-            'millisecond'   => $milliseconds,
-        );
+        $values = [
+            'hour' => $hours,
+            'minute' => $minutes,
+            'second' => $seconds,
+            'millisecond' => $milliseconds,
+        ];
 
-        $parts = array();
+        $parts = [];
 
         foreach ($values as $text => $value) {
             if ($value > 0) {
-                $parts[] = $value . ' ' . $text . ($value > 1 ? 's' : '');
+                $parts[] = $value.' '.$text.($value > 1 ? 's' : '');
             }
         }
 
@@ -229,9 +231,9 @@ class ParallelCommand extends Command
      */
     private function formatMemory($bytes)
     {
-        $units = array('B', 'KiB', 'MiB', 'GiB');
-        $mod   = 1024;
-        $power = ($bytes > 0) ? (int)floor(log($bytes, $mod)) : 0;
+        $units = ['B', 'KiB', 'MiB', 'GiB'];
+        $mod = 1024;
+        $power = ($bytes > 0) ? (int) floor(log($bytes, $mod)) : 0;
 
         return sprintf('%01.2f %s', $bytes / pow($mod, $power), $units[$power]);
     }

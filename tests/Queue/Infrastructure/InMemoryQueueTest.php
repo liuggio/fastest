@@ -3,7 +3,6 @@
 namespace Liuggio\Fastest\Queue\Infrastructure;
 
 use Liuggio\Fastest\Queue\TestsQueue;
-use Liuggio\Fastest\Queue\TestSuite;
 
 class InMemoryQueueTest extends \PHPUnit\Framework\TestCase
 {
@@ -13,7 +12,7 @@ class InMemoryQueueTest extends \PHPUnit\Framework\TestCase
     public function shouldPopAndPushASuite()
     {
         $queue = new InMemoryQueue();
-        $tests =  new TestsQueue(['a','b']);
+        $tests = new TestsQueue(['a', 'b']);
         $queue->push($tests);
         $this->assertEquals('b', $queue->pop());
         $this->assertEquals('a', $queue->pop());

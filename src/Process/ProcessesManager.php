@@ -27,11 +27,11 @@ class ProcessesManager
 
     public function assertNProcessRunning(QueueInterface &$queue, Processes &$processes = null)
     {
-        $parallelProcesses =  max(1, min($queue->count(), $this->maxNumberOfParallelProcesses));
+        $parallelProcesses = max(1, min($queue->count(), $this->maxNumberOfParallelProcesses));
 
         if (null === $processes) {
             $channelsEmpty = range(1, $parallelProcesses);
-            $processes =  new Processes([]);
+            $processes = new Processes([]);
 
             if (false !== $this->beforeCommand && null !== $this->beforeCommand) {
                 return $this->createProcessesForTheBeforeCommand($channelsEmpty, $processes);
@@ -40,7 +40,7 @@ class ProcessesManager
             $channelsEmpty = $processes->getIndexesOfCompletedChannel();
         }
 
-        if (count($channelsEmpty) == 0) {
+        if (0 == count($channelsEmpty)) {
             usleep(100);
 
             return true;
@@ -91,7 +91,7 @@ class ProcessesManager
     private function incrementForThisChannel($Channel)
     {
         if (isset($this->isFirstForItsChannel[$Channel])) {
-            $this->isFirstForItsChannel[$Channel]++;
+            ++$this->isFirstForItsChannel[$Channel];
 
             return;
         }
@@ -101,6 +101,6 @@ class ProcessesManager
 
     private function isFirstForThisChannel($Channel)
     {
-        return (isset($this->isFirstForItsChannel[$Channel]) && $this->isFirstForItsChannel[$Channel] == 1);
+        return isset($this->isFirstForItsChannel[$Channel]) && 1 == $this->isFirstForItsChannel[$Channel];
     }
 }

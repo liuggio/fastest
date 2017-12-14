@@ -4,9 +4,6 @@ namespace Liuggio\Fastest\Environment;
 
 use Liuggio\Fastest\Process\EnvCommandCreator;
 
-/**
- *
- */
 class FastestEnvironmentTest extends \PHPUnit\Framework\TestCase
 {
     public function setup()
@@ -20,7 +17,7 @@ class FastestEnvironmentTest extends \PHPUnit\Framework\TestCase
      */
     public function shouldSetEnvironmentVariablesFromGet()
     {
-        $envValue = 'myTestDb' . mt_rand();
+        $envValue = 'myTestDb'.mt_rand();
         $envName = EnvCommandCreator::ENV_TEST_CHANNEL_READABLE;
         $_GET[$envName] = $envValue;
         FastestEnvironment::setFromRequest();
@@ -32,7 +29,7 @@ class FastestEnvironmentTest extends \PHPUnit\Framework\TestCase
      */
     public function shouldSetEnvironmentVariablesFromCookie()
     {
-        $envValue = 'myTestDb' . mt_rand();
+        $envValue = 'myTestDb'.mt_rand();
         $envName = EnvCommandCreator::ENV_TEST_CHANNEL_READABLE;
         $_COOKIE[$envName] = $envValue;
         FastestEnvironment::setFromRequest();
@@ -44,13 +41,12 @@ class FastestEnvironmentTest extends \PHPUnit\Framework\TestCase
      */
     public function shouldSetEnvironmentVariablesFromHttpHeader()
     {
-        $envValue = 'myTestDb' . mt_rand();
+        $envValue = 'myTestDb'.mt_rand();
         $envName = EnvCommandCreator::ENV_TEST_CHANNEL_READABLE;
         $_SERVER["HTTP_X_FASTEST_$envName"] = $envValue;
         FastestEnvironment::setFromRequest();
         $this->assertEquals($envValue, getenv($envName), 'Test that environment variable was set from HTTP header');
     }
-
 
     /**
      * @test
@@ -67,7 +63,7 @@ class FastestEnvironmentTest extends \PHPUnit\Framework\TestCase
      */
     public function shouldRaiseExceptionWhenRequestValueIsInvalid()
     {
-        $envValue = 'myTestDb' . "\'()";
+        $envValue = 'myTestDb'."\'()";
         $envName = EnvCommandCreator::ENV_TEST_CHANNEL_READABLE;
         $_GET[$envName] = $envValue;
 

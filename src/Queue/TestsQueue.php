@@ -1,4 +1,5 @@
 <?php
+
 namespace Liuggio\Fastest\Queue;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -36,7 +37,7 @@ class TestsQueue extends ArrayCollection
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function add($value)
     {
@@ -48,7 +49,7 @@ class TestsQueue extends ArrayCollection
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isEmpty()
     {
@@ -56,7 +57,7 @@ class TestsQueue extends ArrayCollection
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function hasBeenRandomized()
     {

@@ -4,7 +4,6 @@ namespace Liuggio\Fastest\Process;
 
 class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
 {
-
     /**
      * @test
      */
@@ -21,7 +20,7 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
                 'ENV_TEST_CHANNEL' => 2,
                 'ENV_TEST_CHANNEL_READABLE' => 'test_2',
                 'ENV_TEST_CHANNELS_NUMBER' => 10,
-                'ENV_TEST_ARGUMENT'=> 'fileA',
+                'ENV_TEST_ARGUMENT' => 'fileA',
                 'ENV_TEST_INC_NUMBER' => 10,
                 'ENV_TEST_IS_FIRST_ON_CHANNEL' => 1,
             ], CASE_UPPER)),
@@ -46,7 +45,7 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
             'ENV_TEST_CHANNEL' => 2,
             'ENV_TEST_CHANNEL_READABLE' => 'test_2',
             'ENV_TEST_CHANNELS_NUMBER' => 10,
-            'ENV_TEST_ARGUMENT'=> 'fileA',
+            'ENV_TEST_ARGUMENT' => 'fileA',
             'ENV_TEST_INC_NUMBER' => 10,
             'ENV_TEST_IS_FIRST_ON_CHANNEL' => 1,
         ], $envTestVars);
@@ -68,7 +67,7 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
                 'ENV_TEST_CHANNEL' => 2,
                 'ENV_TEST_CHANNEL_READABLE' => 'test_2',
                 'ENV_TEST_CHANNELS_NUMBER' => 11,
-                'ENV_TEST_ARGUMENT'=> 'fileA',
+                'ENV_TEST_ARGUMENT' => 'fileA',
                 'ENV_TEST_INC_NUMBER' => 12,
                 'ENV_TEST_IS_FIRST_ON_CHANNEL' => 0,
             ], CASE_UPPER)),
@@ -92,7 +91,7 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
                 'ENV_TEST_CHANNEL' => 1,
                 'ENV_TEST_CHANNEL_READABLE' => 'test_1',
                 'ENV_TEST_CHANNELS_NUMBER' => 12,
-                'ENV_TEST_ARGUMENT'=> 'fileA',
+                'ENV_TEST_ARGUMENT' => 'fileA',
                 'ENV_TEST_INC_NUMBER' => 13,
                 'ENV_TEST_IS_FIRST_ON_CHANNEL' => 1,
             ], CASE_UPPER)),
@@ -110,7 +109,7 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
      */
     private function castValues(array $values)
     {
-        $envValues = array();
+        $envValues = [];
 
         foreach ($values as $key => $value) {
             $envValues[(binary) $key] = (binary) $value;
@@ -129,7 +128,7 @@ class ProcessFactoryTest extends \PHPUnit\Framework\TestCase
         return array_filter(
             $processEnv,
             function ($key) {
-                return strpos($key, 'ENV_TEST_') !== false;
+                return false !== strpos($key, 'ENV_TEST_');
             },
             ARRAY_FILTER_USE_KEY
         );

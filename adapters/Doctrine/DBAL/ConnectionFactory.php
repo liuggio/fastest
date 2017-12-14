@@ -22,7 +22,7 @@ class ConnectionFactory extends BaseConnectionFactory
      *
      * @return \Doctrine\DBAL\Connection
      */
-    public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = array())
+    public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = [])
     {
         if (isset($params['dbname'])) {
             $dbName = $this->getDbNameFromEnv($params['dbname']);
@@ -30,18 +30,18 @@ class ConnectionFactory extends BaseConnectionFactory
             $dbName = $this->getDbNameFromEnv($params['master']['dbname']);
         }
 
-        if ($params['driver'] === 'pdo_sqlite') {
+        if ('pdo_sqlite' === $params['driver']) {
             if (isset($params['path'])) {
-                $params['path'] = str_replace("__DBNAME__", $dbName, $params['path']);
+                $params['path'] = str_replace('__DBNAME__', $dbName, $params['path']);
             }
 
             if (isset($params['master']['path'])) {
-                $params['master']['path'] = str_replace("__DBNAME__", $dbName, $params['master']['path']);
+                $params['master']['path'] = str_replace('__DBNAME__', $dbName, $params['master']['path']);
             }
 
             if (!empty($params['slaves'])) {
                 foreach ($params['slaves'] as &$slave) {
-                    $slave['path'] = str_replace("__DBNAME__", $dbName, $slave['path']);
+                    $slave['path'] = str_replace('__DBNAME__', $dbName, $slave['path']);
                 }
             }
         } else {
@@ -64,7 +64,7 @@ class ConnectionFactory extends BaseConnectionFactory
     {
         $dbName = $this->getDbNameEnvValue();
 
-        return (!empty($dbName));
+        return !empty($dbName);
     }
 
     protected function getDbNameEnvValue()

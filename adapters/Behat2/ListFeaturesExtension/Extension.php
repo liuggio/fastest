@@ -9,8 +9,7 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Behat\Behat\Extension\ExtensionInterface;
 
 /**
- * List Features Behat extension
- *
+ * List Features Behat extension.
  */
 class Extension implements ExtensionInterface
 {
@@ -42,6 +41,6 @@ class Extension implements ExtensionInterface
      */
     public function getCompilerPasses()
     {
-        return array();
+        return [];
     }
 }
