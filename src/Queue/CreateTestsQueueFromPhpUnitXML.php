@@ -16,7 +16,11 @@ if (class_exists('\PHPUnit_Util_TestSuiteIterator')) {
 }
 
 if (class_exists('\PHPUnit_Util_Fileloader')) {
-    class_alias('\PHPUnit_Util_Fileloader', '\PHPUnit\Util\Fileloader');
+    class_alias('\PHPUnit_Util_Fileloader', '\PHPUnit\Util\FileLoader');
+}
+
+if (class_exists('\PHPUnit\Util\Fileloader')) {
+    class_alias('\PHPUnit\Util\Fileloader', '\PHPUnit\Util\FileLoader');
 }
 
 class CreateTestsQueueFromPhpUnitXML
@@ -61,6 +65,6 @@ class CreateTestsQueueFromPhpUnitXML
     {
         $filename = isset($config['bootstrap']) ? $config['bootstrap'] : 'vendor/autoload.php';
 
-        \PHPUnit\Util\Fileloader::checkAndLoad($filename);
+        \PHPUnit\Util\FileLoader::checkAndLoad($filename);
     }
 }
