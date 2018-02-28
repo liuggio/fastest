@@ -31,12 +31,15 @@ cache:
 before_script:
   - composer selfupdate
   - if [[ $TRAVIS_PHP_VERSION == 7.2 ]]; then
-      composer require "phpunit/phpunit:^6.1" --no-update;
+        composer require "phpunit/phpunit:^7.0" --no-update;
+    elif [[ $TRAVIS_PHP_VERSION == 7.1 ]]; then
+        composer require "phpunit/phpunit:^6.1" --no-update;
     else
-      composer require "phpunit/phpunit:^5.7" --no-update;
+        composer require "phpunit/phpunit:^5.7" --no-update;
     fi
   - composer update $PREFER_LOWEST
 
 script:
   - find tests/ -name "*Test.php" | php fastest -v
+  - ./fastest -x phpunit.xml.dist -v "vendor/phpunit/phpunit/phpunit {};"
   - bin/behat --config=adapters/Behat/behat.yml

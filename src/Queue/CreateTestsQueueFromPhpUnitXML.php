@@ -16,11 +16,7 @@ if (class_exists('\PHPUnit_Util_TestSuiteIterator')) {
 }
 
 if (class_exists('\PHPUnit_Util_Fileloader')) {
-    class_alias('\PHPUnit_Util_Fileloader', '\PHPUnit\Util\FileLoader');
-}
-
-if (class_exists('\PHPUnit\Util\Fileloader')) {
-    class_alias('\PHPUnit\Util\Fileloader', '\PHPUnit\Util\FileLoader');
+    class_alias('\PHPUnit_Util_Fileloader', '\PHPUnit\Util\Fileloader');
 }
 
 class CreateTestsQueueFromPhpUnitXML
@@ -36,8 +32,10 @@ class CreateTestsQueueFromPhpUnitXML
         return $testSuites;
     }
 
-    private static function processTestSuite(TestsQueue $testSuites, \PHPUnit\Framework\TestSuiteIterator $testSuiteIterator)
-    {
+    private static function processTestSuite(
+        TestsQueue $testSuites,
+        \PHPUnit\Framework\TestSuiteIterator $testSuiteIterator
+    ) {
         foreach ($testSuiteIterator as $testSuite) {
             self::addTestFile($testSuites, $testSuite);
 
@@ -65,6 +63,10 @@ class CreateTestsQueueFromPhpUnitXML
     {
         $filename = isset($config['bootstrap']) ? $config['bootstrap'] : 'vendor/autoload.php';
 
-        \PHPUnit\Util\FileLoader::checkAndLoad($filename);
+        if (class_exists('\PHPUnit\Util\Fileloader')) {
+            \PHPUnit\Util\Fileloader::checkAndLoad($filename);
+        } elseif (class_exists('\PHPUnit\Util\FileLoader')) {
+            \PHPUnit\Util\FileLoader::checkAndLoad($filename);
+        }
     }
 }
