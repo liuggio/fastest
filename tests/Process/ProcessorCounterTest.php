@@ -9,8 +9,15 @@ class ProcessorCounterTest extends \PHPUnit\Framework\TestCase
      */
     public function shouldCountTheNumberOfProcessorInLinux()
     {
-        $processorCount = new ProcessorCounter(__DIR__.'/Fixture/proc_cpuinfo');
+        $processorCountMock = $this->getMockBuilder(ProcessorCounter::class)
+                                   ->setMethods(['getOS'])
+                                   ->setConstructorArgs([__DIR__.'/Fixture/proc_cpuinfo'])
+                                   ->getMock();
 
-        $this->assertEquals(4, $processorCount->execute());
+        $processorCountMock->expects($this->any())
+                           ->method('getOS')
+                           ->will($this->returnValue('Linux'));
+
+        $this->assertEquals(4, $processorCountMock->execute());
     }
 }

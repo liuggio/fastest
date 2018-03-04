@@ -33,13 +33,13 @@ class ProcessorCounter
 
     private function readFromProcCPUInfo()
     {
-        if (PHP_OS === 'Darwin') {
+        if ($this->getOS() === 'Darwin') {
             $processors = system('/usr/sbin/sysctl -n hw.physicalcpu');
 
             if (false !== $processors && $processors) {
                 return $processors;
             }
-        } elseif (PHP_OS === 'Linux') {
+        } elseif ($this->getOS() === 'Linux') {
             $file = $this->procCPUInfo;
             if (is_file($file) && is_readable($file)) {
                 try {
@@ -59,5 +59,13 @@ class ProcessorCounter
         }
 
         return self::PROC_DEFAULT_NUMBER;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOS()
+    {
+        return PHP_OS;
     }
 }

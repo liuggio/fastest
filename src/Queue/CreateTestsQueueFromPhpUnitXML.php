@@ -19,6 +19,13 @@ if (class_exists('\PHPUnit_Util_Fileloader')) {
     class_alias('\PHPUnit_Util_Fileloader', '\PHPUnit\Util\Fileloader');
 }
 
+/*
+ * Trigger autoload for possible file loader versions.
+ * This fixes the problem with PHP classes being case insensitive versus composer case sensitive autoloader.
+ */
+class_exists('\PHPUnit\Util\Fileloader');
+class_exists('\PHPUnit\Util\FileLoader');
+
 class CreateTestsQueueFromPhpUnitXML
 {
     public static function execute($xmlFile)
@@ -32,8 +39,10 @@ class CreateTestsQueueFromPhpUnitXML
         return $testSuites;
     }
 
-    private static function processTestSuite(TestsQueue $testSuites, \PHPUnit\Framework\TestSuiteIterator $testSuiteIterator)
-    {
+    private static function processTestSuite(
+        TestsQueue $testSuites,
+        \PHPUnit\Framework\TestSuiteIterator $testSuiteIterator
+    ) {
         foreach ($testSuiteIterator as $testSuite) {
             self::addTestFile($testSuites, $testSuite);
 
@@ -61,6 +70,6 @@ class CreateTestsQueueFromPhpUnitXML
     {
         $filename = isset($config['bootstrap']) ? $config['bootstrap'] : 'vendor/autoload.php';
 
-        \PHPUnit\Util\Fileloader::checkAndLoad($filename);
+        \PHPUnit\Util\FileLoader::checkAndLoad($filename);
     }
 }
