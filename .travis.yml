@@ -1,28 +1,14 @@
 language: php
 
 php:
-  - 5.6
-  - 7.0
   - 7.1
   - 7.2
-  - hhvm
+  - 7.3
 
 env:
   matrix:
     - PREFER_LOWEST="--prefer-lowest"
     - PREFER_LOWEST=""
-
-matrix:
-  exclude:
-    - php: 5.6
-      env: PREFER_LOWEST=""
-    - php: 7.0
-      env: PREFER_LOWEST=""
-    - php: hhvm
-      env: PREFER_LOWEST=""
-  allow_failures:
-    - php: hhvm
-  fast_finish: true
 
 cache:
   directories:
@@ -32,10 +18,8 @@ before_script:
   - composer selfupdate
   - if [[ $TRAVIS_PHP_VERSION == 7.2 ]]; then
         composer require "phpunit/phpunit:^7.0" --no-update;
-    elif [[ $TRAVIS_PHP_VERSION == 7.1 ]]; then
-        composer require "phpunit/phpunit:^6.1" --no-update;
     else
-        composer require "phpunit/phpunit:^5.7" --no-update;
+        composer require "phpunit/phpunit:^6.1" --no-update;
     fi
   - composer update $PREFER_LOWEST
 
