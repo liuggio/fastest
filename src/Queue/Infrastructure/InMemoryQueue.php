@@ -19,6 +19,11 @@ class InMemoryQueue implements QueueInterface
         return array_pop($this->queue);
     }
 
+    public function shift()
+    {
+        return array_shift($this->queue);
+    }
+
     public function push(TestsQueue $testSuite)
     {
         $this->queue = array_merge($this->queue, $testSuite->toArray());

@@ -53,7 +53,7 @@ class ProcessesManager
 
             $currentProcessNumber = $this->getCurrentProcessCounter();
             $this->incrementForThisChannel($currentChannel);
-            $process = $this->processFactory->createAProcess($queue->pop(), $currentChannel, $currentProcessNumber, $this->isFirstForThisChannel($currentChannel));
+            $process = $this->processFactory->createAProcess($queue->shift(), $currentChannel, $currentProcessNumber, $this->isFirstForThisChannel($currentChannel));
             $processes->add($currentChannel, $process);
             $processes->start($currentChannel);
         }

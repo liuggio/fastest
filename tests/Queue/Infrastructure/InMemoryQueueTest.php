@@ -18,4 +18,17 @@ class InMemoryQueueTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('a', $queue->pop());
         $this->assertTrue($queue->isEmpty());
     }
+
+    /**
+     * @test
+     */
+    public function shouldPopAndShiftASuite()
+    {
+        $queue = new InMemoryQueue();
+        $tests = new TestsQueue(['a', 'b']);
+        $queue->push($tests);
+        $this->assertEquals('a', $queue->shift());
+        $this->assertEquals('b', $queue->shift());
+        $this->assertTrue($queue->isEmpty());
+    }
 }

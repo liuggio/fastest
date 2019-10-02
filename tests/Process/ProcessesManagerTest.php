@@ -39,7 +39,7 @@ class ProcessesManagerTest extends \PHPUnit\Framework\TestCase
             ->method('isEmpty')
             ->willReturn(false);
         $queue->expects($this->once())
-            ->method('pop')
+            ->method('shift')
             ->willReturn(new TestSuite('path'));
 
         $processes = $this->getMockBuilder('Liuggio\Fastest\Process\Processes')
@@ -73,7 +73,7 @@ class ProcessesManagerTest extends \PHPUnit\Framework\TestCase
             ->method('isEmpty')
             ->willReturn(false);
         $queue->expects($this->exactly(6))
-            ->method('pop')
+            ->method('shift')
             ->willReturn(new TestSuite('path'));
 
         $processes = $this->getMockBuilder('Liuggio\Fastest\Process\Processes')
