@@ -3,6 +3,7 @@ language: php
 php:
   - 7.2
   - 7.3
+  - 7.4snapshot
 
 env:
   matrix:
@@ -15,11 +16,7 @@ cache:
 
 before_script:
   - composer selfupdate
-  - if [[ $TRAVIS_PHP_VERSION == 7.2 ]]; then
-        composer require "phpunit/phpunit:^7.0" --no-update;
-    else
-        composer require "phpunit/phpunit:^6.1" --no-update;
-    fi
+  - composer require "phpunit/phpunit:^8.2" --no-update;
   - composer update $PREFER_LOWEST
 
 script:
