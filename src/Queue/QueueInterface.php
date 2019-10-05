@@ -6,8 +6,15 @@ interface QueueInterface
 {
     /**
      * @return TestSuite
+     *
+     * @deprecated Will be removed in v2
      */
     public function pop();
+
+    /**
+     * @return TestSuite
+     */
+    public function shift();
 
     /**
      * Push a collections of tests.
