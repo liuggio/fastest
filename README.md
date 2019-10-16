@@ -137,7 +137,7 @@ Code coverage will be available in the `cov/merge/fastest/` directory.
 
 ## Storage adapters
 
-If you want to parallel functional tests, and if you have a machine with 4 CPUs, the best think you could do is create a db foreach parallel process,
+If you want to parallel functional tests, and if you have a machine with 4 CPUs, the best thing you could do is create a db foreach parallel process,
 `fastest` gives you the opportunity to work easily with Symfony.
 
 Modifying the `config_test.yml` config file in Symfony, each functional test will look for a database called `<database_name>_test_x` automatically (x is from 1 to CPUs number).
