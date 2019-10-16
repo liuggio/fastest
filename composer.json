@@ -10,9 +10,9 @@
     ],
     "require": {
         "php": "^7.2",
-        "symfony/console": "^3.4|^4.2",
-        "symfony/stopwatch": "^3.4|^4.2",
-        "symfony/process": "^3.4|^4.2",
+        "symfony/console": "^3.4 || ^4.2 || ^5.0",
+        "symfony/stopwatch": "^3.4 || ^4.2 || ^5.0",
+        "symfony/process": "^3.4 || ^4.2 || ^5.0",
         "doctrine/collections": "^1.2"
     },
     "require-dev": {
