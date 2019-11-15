@@ -20,6 +20,11 @@ class ReadFromInputAndPushIntoTheQueueTest extends \PHPUnit\Framework\TestCase
             'ProcessorCounterTest.php',
         ];
 
+        $dummyDir = __DIR__.'/Fixture/tests/';
+        $dummyFiles = [
+            'DummyIncludedTest.php',
+        ];
+
         $assertion = new TestsQueue();
 
         foreach ($files as $file) {
@@ -28,6 +33,10 @@ class ReadFromInputAndPushIntoTheQueueTest extends \PHPUnit\Framework\TestCase
 
         foreach ($processesFiles as $file) {
             $assertion->add($processesDir.$file);
+        }
+
+        foreach ($dummyFiles as $file) {
+            $assertion->add($dummyDir.$file);
         }
 
         $queue = $this->createMock('\Liuggio\Fastest\Queue\QueueInterface');

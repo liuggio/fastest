@@ -8,5 +8,18 @@
         <testsuite name="Processes Test Suite">
             <directory>../../Process/</directory>
         </testsuite>
+        <testsuite name="Dummy Test Suite">
+            <directory>./tests/</directory>
+        </testsuite>
     </testsuites>
+
+    <groups>
+        <include>
+            <group>default</group>
+            <group>dummy-included</group>
+        </include>
+        <exclude>
+            <group>dummy-excluded</group>
+        </exclude>
+    </groups>
 </phpunit>

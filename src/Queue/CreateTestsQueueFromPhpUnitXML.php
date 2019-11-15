@@ -19,6 +19,18 @@ if (class_exists('\PHPUnit_Util_Fileloader')) {
     class_alias('\PHPUnit_Util_Fileloader', '\PHPUnit\Util\Fileloader');
 }
 
+if (class_exists('\PHPUnit_Runner_Filter_Factory')) {
+    class_alias('\PHPUnit_Runner_Filter_Factory', '\PHPUnit\Runner\Filter\Factory');
+}
+
+if (class_exists('\PHPUnit_Runner_Filter_ExcludeGroupFilterIterator')) {
+    class_alias('\PHPUnit_Runner_Filter_ExcludeGroupFilterIterator', '\PHPUnit\Runner\Filter\ExcludeGroupFilterIterator');
+}
+
+if (class_exists('\PHPUnit_Runner_Filter_IncludeGroupFilterIterator')) {
+    class_alias('\PHPUnit_Runner_Filter_IncludeGroupFilterIterator', '\PHPUnit\Runner\Filter\IncludeGroupFilterIterator');
+}
+
 /*
  * Trigger autoload for possible file loader versions.
  * This fixes the problem with PHP classes being case insensitive versus composer case sensitive autoloader.
@@ -34,16 +46,52 @@ class CreateTestsQueueFromPhpUnitXML
         $testSuites = new TestsQueue();
 
         self::handleBootstrap($configuration->getPHPUnitConfiguration());
-        self::processTestSuite($testSuites, $configuration->getTestSuiteConfiguration()->getIterator());
+        $testSuite = static::filterTestSuite($configuration);
+        self::processTestSuite($testSuites, $testSuite->getIterator());
 
         return $testSuites;
     }
 
+    private static function filterTestSuite(
+        \PHPUnit\Util\Configuration $configuration
+    ) {
+        $testSuite = $configuration->getTestSuiteConfiguration();
+        $groupConfiguration = $configuration->getGroupConfiguration();
+
+        if (empty($groupConfiguration['exclude']) && empty($groupConfiguration['include'])) {
+            return $testSuite;
+        }
+
+        $filterFactory = new \PHPUnit\Runner\Filter\Factory();
+
+        if (!empty($groupConfiguration['exclude'])) {
+            $filterFactory->addFilter(
+                new \ReflectionClass(\PHPUnit\Runner\Filter\ExcludeGroupFilterIterator::class),
+                $groupConfiguration['exclude']
+            );
+        }
+
+        if (!empty($groupConfiguration['include'])) {
+            $filterFactory->addFilter(
+                new \ReflectionClass(\PHPUnit\Runner\Filter\IncludeGroupFilterIterator::class),
+                $groupConfiguration['include']
+            );
+        }
+
+        $testSuite->injectFilter($filterFactory);
+
+        return $testSuite;
+    }
+
     private static function processTestSuite(
         TestsQueue $testSuites,
-        \PHPUnit\Framework\TestSuiteIterator $testSuiteIterator
+        \RecursiveIterator $testSuiteIterator
     ) {
         foreach ($testSuiteIterator as $testSuite) {
+            if (0 === $testSuite->count()) {
+                continue;
+            }
+
             self::addTestFile($testSuites, $testSuite);
 
             if ($testSuite instanceof \PHPUnit\Framework\TestSuite) {

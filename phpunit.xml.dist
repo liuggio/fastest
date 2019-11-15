@@ -6,6 +6,7 @@
             <directory>tests/Queue/</directory>
             <directory>tests/Process/</directory>
             <directory>tests/Environment/</directory>
+            <exclude>tests/Queue/Fixture/</exclude>
         </testsuite>
     </testsuites>
 
