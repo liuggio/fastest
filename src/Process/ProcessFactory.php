@@ -52,7 +52,7 @@ class ProcessFactory
 
     private function createProcess($executeCommand, $arrayEnv)
     {
-        $process = new Process($executeCommand, null, $arrayEnv);
+        $process = new Process((array)$executeCommand, null, $arrayEnv);
 
         $process->setTimeout(null);
         // compatibility to SF 2.2
