@@ -53,7 +53,7 @@ class ProcessesTest extends \PHPUnit\Framework\TestCase
     /**
      * @test
      */
-    public function shouldNotAddTerminatedProcessToReportBufferOnCleanUp()
+    public function shouldNotAddTerminatedProcessToReportOnCleanUp()
     {
         $process = $this->createMock(Process::class);
         $process
@@ -68,13 +68,13 @@ class ProcessesTest extends \PHPUnit\Framework\TestCase
 
         $processes->cleanUP(false);
 
-        $this->assertAttributeEmpty('totalBuffer', $processes);
+        $this->assertEmpty($processes->getReport());
     }
 
     /**
      * @test
      */
-    public function shouldAddTerminatedProcessToReportBufferOnCleanUp()
+    public function shouldAddTerminatedProcessToReportOnCleanUp()
     {
         $process = $this->createMock(Process::class);
         $process
@@ -83,19 +83,26 @@ class ProcessesTest extends \PHPUnit\Framework\TestCase
         $process
             ->method('isSuccessful')
             ->willReturn(true);
+        $process
+            ->method('getEnv')
+            ->willReturn([
+                EnvCommandCreator::ENV_TEST_ARGUMENT => 'testArg',
+                EnvCommandCreator::ENV_TEST_CHANNEL => 1,
+                EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL => true
+            ]);
 
         $processes = new Processes([$process]);
         $processes->start(0);
 
         $processes->cleanUP();
 
-        $this->assertAttributeCount(1, 'totalBuffer', $processes);
+        $this->assertCount(1, $processes->getReport());
     }
 
     /**
      * @test
      */
-    public function shouldNotAddTerminatedProcessToReportBufferAfterWaitFinish()
+    public function shouldNotAddTerminatedProcessToReportAfterWaitFinish()
     {
         $process = $this->createMock(Process::class);
         $process
@@ -119,13 +126,13 @@ class ProcessesTest extends \PHPUnit\Framework\TestCase
 
         $processes->wait(null, false);
 
-        $this->assertAttributeEmpty('totalBuffer', $processes);
+        $this->assertEmpty($processes->getReport());
     }
 
     /**
      * @test
      */
-    public function shouldAddTerminatedProcessToReportBufferAfterWaitFinish()
+    public function shouldAddTerminatedProcessToReportAfterWaitFinish()
     {
         $process = $this->createMock(Process::class);
         $process
@@ -135,6 +142,14 @@ class ProcessesTest extends \PHPUnit\Framework\TestCase
             ->method('isSuccessful')
             ->willReturn(true);
 
+        $process
+            ->method('getEnv')
+            ->willReturn([
+                EnvCommandCreator::ENV_TEST_ARGUMENT => 'testArg',
+                EnvCommandCreator::ENV_TEST_CHANNEL => 1,
+                EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL => true
+            ]);
+
         $process2 = $this->createMock(Process::class);
         $process2
             ->method('isTerminated')
@@ -143,13 +158,21 @@ class ProcessesTest extends \PHPUnit\Framework\TestCase
             ->method('isSuccessful')
             ->willReturnOnConsecutiveCalls(false, true);
 
+        $process2
+            ->method('getEnv')
+            ->willReturn([
+                EnvCommandCreator::ENV_TEST_ARGUMENT => 'testArgProcess2',
+                EnvCommandCreator::ENV_TEST_CHANNEL => 2,
+                EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL => false
+            ]);
+
         $processes = new Processes([$process, $process2]);
         $processes->start(0);
         $processes->start(1);
 
         $processes->wait();
 
-        $this->assertAttributeCount(1, 'totalBuffer', $processes);
+        $this->assertCount(1, $processes->getReport());
     }
 
     protected function mockProcessWithExpectation($method)
