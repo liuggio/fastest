@@ -3,8 +3,9 @@
 namespace Liuggio\Fastest\Process;
 
 use Symfony\Component\Process\Process;
+use PHPUnit\Framework\TestCase;
 
-class ProcessesTest extends \PHPUnit\Framework\TestCase
+class ProcessesTest extends TestCase
 {
     /**
      * @test

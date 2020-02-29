@@ -3,10 +3,11 @@
 namespace Liuggio\Fastest\Environment;
 
 use Liuggio\Fastest\Process\EnvCommandCreator;
+use PHPUnit\Framework\TestCase;
 
-class FastestEnvironmentTest extends \PHPUnit\Framework\TestCase
+class FastestEnvironmentTest extends TestCase
 {
-    public function setup(): void
+    protected function setUp(): void
     {
         $envName = EnvCommandCreator::ENV_TEST_CHANNEL_READABLE;
         putenv("$envName=");

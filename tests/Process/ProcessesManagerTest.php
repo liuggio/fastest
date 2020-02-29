@@ -4,8 +4,9 @@ namespace Liuggio\Fastest\Process;
 
 use Liuggio\Fastest\Queue\TestSuite;
 use Symfony\Component\Process\Process;
+use PHPUnit\Framework\TestCase;
 
-class ProcessesManagerTest extends \PHPUnit\Framework\TestCase
+class ProcessesManagerTest extends TestCase
 {
     /**
      * @test
