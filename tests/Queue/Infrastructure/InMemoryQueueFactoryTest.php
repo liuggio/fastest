@@ -2,7 +2,10 @@
 
 namespace Liuggio\Fastest\Queue\Infrastructure;
 
-class InMemoryQueueFactoryTest extends \PHPUnit\Framework\TestCase
+use Liuggio\Fastest\Queue\Infrastructure\InMemoryQueue;
+use PHPUnit\Framework\TestCase;
+
+class InMemoryQueueFactoryTest extends TestCase
 {
     /**
      * @test
@@ -13,6 +16,6 @@ class InMemoryQueueFactoryTest extends \PHPUnit\Framework\TestCase
 
         $queue = $msqQueueFactory->create();
 
-        $this->assertInstanceOf('\Liuggio\Fastest\Queue\Infrastructure\InMemoryQueue', $queue);
+        $this->assertInstanceOf(InMemoryQueue::class, $queue);
     }
 }

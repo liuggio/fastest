@@ -2,7 +2,9 @@
 
 namespace Liuggio\Fastest\Process;
 
-class ProcessorCounterTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class ProcessorCounterTest extends TestCase
 {
     /**
      * @test

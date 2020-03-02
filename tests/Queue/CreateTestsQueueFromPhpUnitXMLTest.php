@@ -2,7 +2,9 @@
 
 namespace Liuggio\Fastest\Queue;
 
-class CreateTestsQueueFromPhpUnitXMLTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class CreateTestsQueueFromPhpUnitXMLTest extends TestCase
 {
     /**
      * @test
