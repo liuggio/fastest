@@ -52,7 +52,12 @@ class ProcessFactory
 
     private function createProcess($executeCommand, $arrayEnv)
     {
-        $process = new Process($executeCommand, null, $arrayEnv);
+        // compatibility to SF 4 & 5
+        if (method_exists(Process::class, 'fromShellCommandline')) {
+            $process = Process::fromShellCommandline($executeCommand, null, $arrayEnv);
+        } else {
+            $process = new Process($executeCommand, null, $arrayEnv);
+        }
 
         $process->setTimeout(null);
         // compatibility to SF 2.2
