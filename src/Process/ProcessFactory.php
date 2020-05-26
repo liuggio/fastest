@@ -47,7 +47,9 @@ class ProcessFactory
         $commandToExecute = str_replace('{p}', $processNumber, $commandToExecute);
         $commandToExecute = str_replace('{n}', $currentProcessCounter, $commandToExecute);
 
-        return $commandToExecute;
+        preg_match_all('#(?<!\\\\)("|\')(?:[^\\\\]|\\\\.)*?\1|\S+#s', $commandToExecute, $parsedCommand);
+
+        return $parsedCommand[0];
     }
 
     private function createProcess($executeCommand, $arrayEnv)
@@ -55,10 +57,7 @@ class ProcessFactory
         $process = new Process($executeCommand, null, $arrayEnv);
 
         $process->setTimeout(null);
-        // compatibility to SF 2.2
-        if (method_exists($process, 'setIdleTimeout')) {
-            $process->setIdleTimeout(null);
-        }
+        $process->setIdleTimeout(null);
 
         return $process;
     }

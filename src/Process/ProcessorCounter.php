@@ -50,7 +50,18 @@ class ProcessorCounter
                 }
             }
         } elseif ('\\' === DIRECTORY_SEPARATOR) {
-            $process = new Process('for /F "tokens=2 delims==" %C in (\'wmic cpu get NumberOfLogicalProcessors /value ^| findstr NumberOfLogicalProcessors\') do @echo %C');
+            $command = [
+                'for',
+                '/F',
+                '"tokens=2 delims=="',
+                '%C',
+                'in',
+                "('wmic cpu get NumberOfLogicalProcessors /value ^| findstr NumberOfLogicalProcessors')",
+                'do',
+                '@echo',
+                '%C'
+            ];
+            $process = new Process($command);
             $process->run();
 
             if ($process->isSuccessful() && ($numProc = (int) ($process->getOutput())) > 0) {
