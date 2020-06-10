@@ -22,7 +22,7 @@ class ProcessesManagerTest extends TestCase
         $factory->expects($this->once())
             ->method('createAProcessForACustomCommand')
             ->with($this->anything(), $this->equalTo(1), $this->equalTo(1), $this->equalTo(true))
-            ->willReturn(new Process('echo '.rand(), sys_get_temp_dir()));
+            ->willReturn(new Process(['echo ', rand()], sys_get_temp_dir()));
 
         $manager = new ProcessesManager($factory, 1, 'echo "ciao"');
 
@@ -57,7 +57,7 @@ class ProcessesManagerTest extends TestCase
         $factory->expects($this->exactly(1))
             ->method('createAProcess')
             ->with($this->anything(), $this->equalTo(1), $this->equalTo(1), $this->equalTo(true))
-            ->willReturn(new Process('echo ', rand()));
+            ->willReturn(new Process(['echo '], rand()));
 
         $manager = new ProcessesManager($factory, 1);
 
@@ -107,7 +107,7 @@ class ProcessesManagerTest extends TestCase
             $factory->expects($this->at($at))
                 ->method('createAProcess')
                 ->with($this->anything(), $this->equalTo($expectation[0]), $this->equalTo($expectation[1]), $this->equalTo($expectation[2]))
-                ->willReturn(new Process('echo ', rand()));
+                ->willReturn(new Process(['echo '], rand()));
         }
 
         $manager = new ProcessesManager($factory, 1);

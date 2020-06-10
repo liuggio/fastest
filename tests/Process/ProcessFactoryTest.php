@@ -16,7 +16,7 @@ class ProcessFactoryTest extends TestCase
         $serverEnvs = EnvCommandCreator::cleanEnvVariables($_SERVER);
         unset($serverEnvs['argv']);
 
-        $this->assertEquals('bin'.DIRECTORY_SEPARATOR.'phpunit fileA', $process->getCommandLine());
+        $this->assertEquals("'bin".DIRECTORY_SEPARATOR."phpunit' 'fileA'", $process->getCommandLine());
         $this->assertEquals(
             $this->castValues(array_change_key_case($serverEnvs + $_ENV + [
                 'ENV_TEST_CHANNEL' => 2,
@@ -38,7 +38,7 @@ class ProcessFactoryTest extends TestCase
         $factory = new ProcessFactory(10);
         $process = $factory->createAProcess('fileA', 2, 10, true);
 
-        $this->assertEquals('bin'.DIRECTORY_SEPARATOR.'phpunit fileA', $process->getCommandLine());
+        $this->assertEquals("'bin".DIRECTORY_SEPARATOR."phpunit' 'fileA'", $process->getCommandLine());
 
         $processEnv = $process->getEnv();
         $envTestVars = $this->filterEnvTestVariables($processEnv);
@@ -63,7 +63,7 @@ class ProcessFactoryTest extends TestCase
         $serverEnvs = EnvCommandCreator::cleanEnvVariables($_SERVER);
         unset($serverEnvs['argv']);
 
-        $this->assertEquals('execute', $process->getCommandLine());
+        $this->assertEquals("'execute'", $process->getCommandLine());
         $this->assertEquals(
             $this->castValues(array_change_key_case($serverEnvs + $_ENV + [
                 'ENV_TEST_CHANNEL' => 2,
@@ -87,7 +87,7 @@ class ProcessFactoryTest extends TestCase
         $serverEnvs = EnvCommandCreator::cleanEnvVariables($_SERVER);
         unset($serverEnvs['argv']);
 
-        $this->assertEquals('execute 1 fileA 13', $process->getCommandLine());
+        $this->assertEquals("'execute' '1' 'fileA' '13'", $process->getCommandLine());
         $this->assertEquals(
             $this->castValues(array_change_key_case($serverEnvs + $_ENV + [
                 'ENV_TEST_CHANNEL' => 1,
