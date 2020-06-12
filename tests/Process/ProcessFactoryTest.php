@@ -16,16 +16,16 @@ class ProcessFactoryTest extends TestCase
         $serverEnvs = EnvCommandCreator::cleanEnvVariables($_SERVER);
         unset($serverEnvs['argv']);
 
-        $this->assertEquals("'bin".DIRECTORY_SEPARATOR."phpunit' 'fileA'", $process->getCommandLine());
+        $this->assertEquals('bin'.DIRECTORY_SEPARATOR.'phpunit fileA', $process->getCommandLine());
         $this->assertEquals(
             $this->castValues(array_change_key_case($serverEnvs + $_ENV + [
-                'ENV_TEST_CHANNEL' => 2,
-                'ENV_TEST_CHANNEL_READABLE' => 'test_2',
-                'ENV_TEST_CHANNELS_NUMBER' => 10,
-                'ENV_TEST_ARGUMENT' => 'fileA',
-                'ENV_TEST_INC_NUMBER' => 10,
-                'ENV_TEST_IS_FIRST_ON_CHANNEL' => 1,
-            ], CASE_UPPER)),
+                    'ENV_TEST_CHANNEL' => 2,
+                    'ENV_TEST_CHANNEL_READABLE' => 'test_2',
+                    'ENV_TEST_CHANNELS_NUMBER' => 10,
+                    'ENV_TEST_ARGUMENT' => 'fileA',
+                    'ENV_TEST_INC_NUMBER' => 10,
+                    'ENV_TEST_IS_FIRST_ON_CHANNEL' => 1,
+                ], CASE_UPPER)),
             $this->castValues($process->getenv())
         );
     }
@@ -38,7 +38,7 @@ class ProcessFactoryTest extends TestCase
         $factory = new ProcessFactory(10);
         $process = $factory->createAProcess('fileA', 2, 10, true);
 
-        $this->assertEquals("'bin".DIRECTORY_SEPARATOR."phpunit' 'fileA'", $process->getCommandLine());
+        $this->assertEquals('bin'.DIRECTORY_SEPARATOR.'phpunit fileA', $process->getCommandLine());
 
         $processEnv = $process->getEnv();
         $envTestVars = $this->filterEnvTestVariables($processEnv);
@@ -63,16 +63,16 @@ class ProcessFactoryTest extends TestCase
         $serverEnvs = EnvCommandCreator::cleanEnvVariables($_SERVER);
         unset($serverEnvs['argv']);
 
-        $this->assertEquals("'execute'", $process->getCommandLine());
+        $this->assertEquals('execute', $process->getCommandLine());
         $this->assertEquals(
             $this->castValues(array_change_key_case($serverEnvs + $_ENV + [
-                'ENV_TEST_CHANNEL' => 2,
-                'ENV_TEST_CHANNEL_READABLE' => 'test_2',
-                'ENV_TEST_CHANNELS_NUMBER' => 11,
-                'ENV_TEST_ARGUMENT' => 'fileA',
-                'ENV_TEST_INC_NUMBER' => 12,
-                'ENV_TEST_IS_FIRST_ON_CHANNEL' => 0,
-            ], CASE_UPPER)),
+                    'ENV_TEST_CHANNEL' => 2,
+                    'ENV_TEST_CHANNEL_READABLE' => 'test_2',
+                    'ENV_TEST_CHANNELS_NUMBER' => 11,
+                    'ENV_TEST_ARGUMENT' => 'fileA',
+                    'ENV_TEST_INC_NUMBER' => 12,
+                    'ENV_TEST_IS_FIRST_ON_CHANNEL' => 0,
+                ], CASE_UPPER)),
             $this->castValues($process->getenv())
         );
     }
@@ -87,16 +87,16 @@ class ProcessFactoryTest extends TestCase
         $serverEnvs = EnvCommandCreator::cleanEnvVariables($_SERVER);
         unset($serverEnvs['argv']);
 
-        $this->assertEquals("'execute' '1' 'fileA' '13'", $process->getCommandLine());
+        $this->assertEquals('execute 1 fileA 13', $process->getCommandLine());
         $this->assertEquals(
             $this->castValues(array_change_key_case($serverEnvs + $_ENV + [
-                'ENV_TEST_CHANNEL' => 1,
-                'ENV_TEST_CHANNEL_READABLE' => 'test_1',
-                'ENV_TEST_CHANNELS_NUMBER' => 12,
-                'ENV_TEST_ARGUMENT' => 'fileA',
-                'ENV_TEST_INC_NUMBER' => 13,
-                'ENV_TEST_IS_FIRST_ON_CHANNEL' => 1,
-            ], CASE_UPPER)),
+                    'ENV_TEST_CHANNEL' => 1,
+                    'ENV_TEST_CHANNEL_READABLE' => 'test_1',
+                    'ENV_TEST_CHANNELS_NUMBER' => 12,
+                    'ENV_TEST_ARGUMENT' => 'fileA',
+                    'ENV_TEST_INC_NUMBER' => 13,
+                    'ENV_TEST_IS_FIRST_ON_CHANNEL' => 1,
+                ], CASE_UPPER)),
             $this->castValues($process->getenv())
         );
     }

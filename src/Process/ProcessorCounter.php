@@ -50,18 +50,13 @@ class ProcessorCounter
                 }
             }
         } elseif ('\\' === DIRECTORY_SEPARATOR) {
-            $command = [
-                'for',
-                '/F',
-                '"tokens=2 delims=="',
-                '%C',
-                'in',
-                "('wmic cpu get NumberOfLogicalProcessors /value ^| findstr NumberOfLogicalProcessors')",
-                'do',
-                '@echo',
-                '%C'
-            ];
-            $process = new Process($command);
+            $executeCommand = 'for /F "tokens=2 delims==" %C in (\'wmic cpu get NumberOfLogicalProcessors /value ^| findstr NumberOfLogicalProcessors\') do @echo %C';
+            if (method_exists(Process::class, 'fromShellCommandline')) {
+                $process = Process::fromShellCommandline($executeCommand);
+            } else {
+                // Drop when sf 3.4 supports ends
+                $process = new Process($executeCommand);
+            }
             $process->run();
 
             if ($process->isSuccessful() && ($numProc = (int) ($process->getOutput())) > 0) {

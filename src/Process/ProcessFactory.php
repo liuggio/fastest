@@ -47,14 +47,17 @@ class ProcessFactory
         $commandToExecute = str_replace('{p}', $processNumber, $commandToExecute);
         $commandToExecute = str_replace('{n}', $currentProcessCounter, $commandToExecute);
 
-        preg_match_all('#(?<!\\\\)("|\')(?:[^\\\\]|\\\\.)*?\1|\S+#s', $commandToExecute, $parsedCommand);
-
-        return $parsedCommand[0];
+        return $commandToExecute;
     }
 
     private function createProcess($executeCommand, $arrayEnv)
     {
-        $process = new Process($executeCommand, null, $arrayEnv);
+        if (method_exists(Process::class, 'fromShellCommandline')) {
+            $process = Process::fromShellCommandline($executeCommand, null, $arrayEnv);
+        } else {
+            // Drop when sf 3.4 supports ends
+            $process = new Process($executeCommand, null, $arrayEnv);
+        }
 
         $process->setTimeout(null);
         $process->setIdleTimeout(null);
