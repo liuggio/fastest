@@ -27,6 +27,11 @@ class CreateTestsQueueFromPhpUnitXMLTest extends TestCase
             'ProcessorCounterTest.php',
         ];
 
+        $dummyDir = __DIR__.'/Fixture/tests/';
+        $dummyFiles = [
+            'DummyIncludedTest.php',
+        ];
+
         $queue = new TestsQueue();
 
         foreach ($infrastructureFiles as $file) {
@@ -35,6 +40,10 @@ class CreateTestsQueueFromPhpUnitXMLTest extends TestCase
 
         foreach ($processesFiles as $file) {
             $queue->add($processesDir.$file);
+        }
+
+        foreach ($dummyFiles as $file) {
+            $queue->add($dummyDir.$file);
         }
 
         $this->assertEquals($queue, $output);
