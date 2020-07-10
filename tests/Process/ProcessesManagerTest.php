@@ -84,8 +84,7 @@ class ProcessesManagerTest extends TestCase
             ->method('getIndexesOfCompletedChannel')
             ->willReturn(range(1, 3));
         $processes->expects($this->any())
-            ->method('add')
-            ->willReturn(true);
+            ->method('add');
         $processes->expects($this->any())
         ->method('start')
         ->willReturn(true);

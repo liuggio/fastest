@@ -66,7 +66,7 @@ class FeatureContext extends BehatContext
      */
     public function theConsoleOutputShouldContain($string)
     {
-        \PHPUnit\Framework\Assert::assertContains($string, $this->lastBehatStdOut);
+        \PHPUnit\Framework\Assert::assertStringContainsString($string, $this->lastBehatStdOut);
     }
 
     /**
