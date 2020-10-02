@@ -20,6 +20,7 @@ before_script:
   - composer update $PREFER_LOWEST
 
 script:
+  - bin/phpstan.phar analyze src tests
   - find tests/ -name "*Test.php" | php fastest -v
   - ./fastest -x phpunit.xml.dist -v "bin/phpunit {}"
   - bin/behat --config=adapters/Behat/behat.yml

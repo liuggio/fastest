@@ -8,6 +8,7 @@ class Report
     private $isSuccess;
     private $processorNumber;
     private $time;
+    private $errorBuffer;
     private $isFirstOnThread;
 
     /**

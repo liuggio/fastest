@@ -188,12 +188,12 @@ class Processes
     }
 
     /**
-     * @throws LogicException
+     * @throws \LogicException
      */
     private function assertTerminated($key)
     {
         if (!$this->processes[$key]->isTerminated()) {
-            throw new LogicException('Process must be terminated before calling');
+            throw new \LogicException('Process must be terminated before calling');
         }
     }
 
