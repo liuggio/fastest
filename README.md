@@ -2,7 +2,8 @@ Fastest - simple parallel testing execution
 ===========================================
 
 [![Build Status](https://secure.travis-ci.org/liuggio/fastest.png?branch=master)](http://travis-ci.org/liuggio/fastest)
-[![Latest Stable Version](https://poser.pugx.org/liuggio/fastest/v/stable.svg)](https://packagist.org/packages/liuggio/fastest) [![Latest Unstable Version](https://poser.pugx.org/liuggio/fastest/v/unstable.svg)](https://packagist.org/packages/liuggio/fastest)
+[![codecov](https://codecov.io/gh/DonCallisto/fastest/branch/master/graph/badge.svg?token=GBKJTC18GB)](undefined)
+[![Latest Stable Version](https://poser.pugx.org/liuggio/fastest/v/stable.svg)](https://packagist.org/packages/liuggio/fastest) 
 
 ## Only one thing
 

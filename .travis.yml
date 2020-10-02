@@ -21,5 +21,9 @@ before_script:
 
 script:
   - find tests/ -name "*Test.php" | php fastest -v
-  - ./fastest -x phpunit.xml.dist -v "bin/phpunit {}"
+  - ./fastest -x phpunit.xml.dist -v "bin/phpunit {} --coverage-clover coverage.xml"
+  - bin/phpunit --coverage-clover coverage.xml
   - bin/behat --config=adapters/Behat/behat.yml
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
