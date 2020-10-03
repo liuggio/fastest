@@ -44,8 +44,5 @@ interface QueueInterface
      */
     public function isEmpty();
 
-    /**
-     * @return bool
-     */
     public function close();
 }

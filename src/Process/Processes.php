@@ -88,7 +88,7 @@ class Processes
     }
 
     /**
-     * @param $key
+     * @param int $key
      */
     private function startProcess($key)
     {
@@ -198,7 +198,7 @@ class Processes
     }
 
     /**
-     * @param $key
+     * @param int $key
      * @param Process $process
      */
     private function moveToCompletedProcesses($key, Process $process)
