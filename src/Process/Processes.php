@@ -7,12 +7,12 @@ use Symfony\Component\Process\Process;
 class Processes
 {
     /**
-     * @var Process[]
+     * @var ?Process[]
      */
     private $processes;
 
     /**
-     * @var float[] Unix timestamp with float part of processes start times
+     * @var ?float[] Unix timestamp with float part of processes start times
      */
     private $startTimes;
 
