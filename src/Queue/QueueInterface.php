@@ -20,8 +20,6 @@ interface QueueInterface
      * Push a collections of tests.
      *
      * @param TestsQueue $tests
-     *
-     * @return int the number of message sent with this push
      */
     public function push(TestsQueue $tests);
 
