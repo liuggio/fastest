@@ -26,7 +26,7 @@ class TestsQueue extends ArrayCollection
     /**
      * Create another instance with randomized items.
      *
-     * @return Tests
+     * @return TestsQueue
      */
     public function randomize()
     {
