@@ -12,24 +12,21 @@ class ProgressBarRenderer implements RendererInterface
 {
     private $bar;
     private $last;
-    private $helper;
     private $degrade;
     private $output;
     private $messagesInTheQueue;
     private $errorsSummary;
 
     /**
-     * @param $messageInTheQueue
+     * @param int $messageInTheQueue
      * @param bool            $errorsSummary Whether to display errors summary in the footer
      * @param OutputInterface $output
-     * @param $helper
      */
-    public function __construct($messageInTheQueue, $errorsSummary, OutputInterface $output, $helper)
+    public function __construct($messageInTheQueue, $errorsSummary, OutputInterface $output)
     {
         $this->messagesInTheQueue = $messageInTheQueue;
         $this->errorsSummary = $errorsSummary;
         $this->output = $output;
-        $this->helper = $helper;
         $this->degrade = true;
     }
 

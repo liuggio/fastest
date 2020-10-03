@@ -14,7 +14,7 @@ class VerboseRenderer implements RendererInterface
     private $errorsSummary;
 
     /**
-     * @param $messageInTheQueue
+     * @param int $messageInTheQueue
      * @param bool            $errorsSummary Whether to display errors summary in the footer
      * @param OutputInterface $output
      */
