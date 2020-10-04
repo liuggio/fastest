@@ -14,7 +14,7 @@ class Report
     /**
      * @param string      $suite
      * @param bool        $isSuccess
-     * @param int         $time
+     * @param float       $time
      * @param int         $processorNumber
      * @param string|null $errorBuffer
      * @param bool        $isFirstOnThread
@@ -68,7 +68,7 @@ class Report
     }
 
     /**
-     * @return int Time in microseconds
+     * @return float Time in microseconds
      */
     public function getTime()
     {

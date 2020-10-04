@@ -55,6 +55,7 @@ class ProcessorCounter
                 $process = Process::fromShellCommandline($executeCommand);
             } else {
                 // Drop when sf 3.4 supports ends
+                /** @phpstan-ignore-next-line */ // @todo remove when sf 3.4 support ends
                 $process = new Process($executeCommand);
             }
             $process->run();

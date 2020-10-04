@@ -30,7 +30,7 @@ class ProcessesManagerTest extends TestCase
         $this->assertTrue($manager->assertNProcessRunning($queue, $processes));
     }
 
-    /**
+    /**src/UI/VerboseRenderer.php
      * @test
      */
     public function shouldCreateProcessesWithoutBeforeProcessExecutingFactoryWithTheCorrectArguments()
@@ -57,7 +57,7 @@ class ProcessesManagerTest extends TestCase
         $factory->expects($this->exactly(1))
             ->method('createAProcess')
             ->with($this->anything(), $this->equalTo(1), $this->equalTo(1), $this->equalTo(true))
-            ->willReturn(new Process(['echo '], rand()));
+            ->willReturn(new Process(['echo '], (string) rand()));
 
         $manager = new ProcessesManager($factory, 1);
 
@@ -107,7 +107,7 @@ class ProcessesManagerTest extends TestCase
             $factory->expects($this->at($at))
                 ->method('createAProcess')
                 ->with($this->anything(), $this->equalTo($expectation[0]), $this->equalTo($expectation[1]), $this->equalTo($expectation[2]))
-                ->willReturn(new Process(['echo '], rand()));
+                ->willReturn(new Process(['echo '], (string) rand()));
         }
 
         $manager = new ProcessesManager($factory, 1);

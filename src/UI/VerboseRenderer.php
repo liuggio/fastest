@@ -52,7 +52,7 @@ class VerboseRenderer implements RendererInterface
 
         $log = $processes->getReport();
         $count = count($log);
-        $tests = array_slice($log, $this->lastIndex, $count, 1);
+        $tests = array_slice($log, $this->lastIndex, $count, true);
 
         foreach ($tests as $report) {
             ++$this->lastIndex;
@@ -90,7 +90,7 @@ class VerboseRenderer implements RendererInterface
     /**
      * Method to format duration to human readable format.
      *
-     * @param int $milliseconds
+     * @param float $milliseconds
      *
      * @return string
      */

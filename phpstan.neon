@@ -2,7 +2,10 @@ includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon 
 
 parameters:
-	level: 3
+	level: 5
 	paths:
 		- src
 		- tests
+	reportUnmatchedIgnoredErrors: false
+	ignoreErrors: #see https://github.com/phpstan/phpstan/issues/1267#issuecomment-552874947 -> @todo remove when sf 3.4 support ends
+	    - "#^Call to an undefined static method #"
