@@ -2,10 +2,19 @@ includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon 
 
 parameters:
-	level: 5
+	level: 6
 	paths:
 		- src
 		- tests
+	stubFiles:
+	    - phpstan-stub/Doctrine/Common/Collections/ArrayCollection.stub #@todo To be removed in v2, when drop support for older deps
+	    - phpstan-stub/Doctrine/Common/Collections/Collection.stub #@todo To be removed in v2, when drop support for older deps
+	    - phpstan-stub/Doctrine/Common/Collections/Selectable.stub #@todo To be removed in v2, when drop support for older deps
+	    - phpstan-stub/Symfony/Component/Process/Process.stub
+	    - phpstan-stub/Symfony/Component/Process/Exception/ExceptionInterface.stub
+	    - phpstan-stub/Symfony/Component/Process/Exception/LogicException.stub
+	excludes_analyse:
+	    - src/Queue/CreateTestsQueueFromPhpUnitXML.php #@todo To be removed in v2, when drop support for older PHPUnit versions
 	reportUnmatchedIgnoredErrors: false
 	ignoreErrors: #see https://github.com/phpstan/phpstan/issues/1267#issuecomment-552874947 -> @todo remove when sf 3.4 support ends
 	    - "#^Call to an undefined static method #"

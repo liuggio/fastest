@@ -16,7 +16,7 @@ class FastestEnvironmentTest extends TestCase
     /**
      * @test
      */
-    public function shouldSetEnvironmentVariablesFromGet()
+    public function shouldSetEnvironmentVariablesFromGet(): void
     {
         $envValue = 'myTestDb'.mt_rand();
         $envName = EnvCommandCreator::ENV_TEST_CHANNEL_READABLE;
@@ -28,7 +28,7 @@ class FastestEnvironmentTest extends TestCase
     /**
      * @test
      */
-    public function shouldSetEnvironmentVariablesFromCookie()
+    public function shouldSetEnvironmentVariablesFromCookie(): void
     {
         $envValue = 'myTestDb'.mt_rand();
         $envName = EnvCommandCreator::ENV_TEST_CHANNEL_READABLE;
@@ -40,7 +40,7 @@ class FastestEnvironmentTest extends TestCase
     /**
      * @test
      */
-    public function shouldSetEnvironmentVariablesFromHttpHeader()
+    public function shouldSetEnvironmentVariablesFromHttpHeader(): void
     {
         $envValue = 'myTestDb'.mt_rand();
         $envName = EnvCommandCreator::ENV_TEST_CHANNEL_READABLE;
@@ -52,7 +52,7 @@ class FastestEnvironmentTest extends TestCase
     /**
      * @test
      */
-    public function shouldNotSetEnvironmentVariablesIfWhenNotPresentInRequest()
+    public function shouldNotSetEnvironmentVariablesIfWhenNotPresentInRequest(): void
     {
         $envName = EnvCommandCreator::ENV_TEST_CHANNEL_READABLE;
         FastestEnvironment::setFromRequest();
@@ -62,7 +62,7 @@ class FastestEnvironmentTest extends TestCase
     /**
      * @test
      */
-    public function shouldRaiseExceptionWhenRequestValueIsInvalid()
+    public function shouldRaiseExceptionWhenRequestValueIsInvalid(): void
     {
         $envValue = 'myTestDb'."\'()";
         $envName = EnvCommandCreator::ENV_TEST_CHANNEL_READABLE;

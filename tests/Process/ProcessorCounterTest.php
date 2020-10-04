@@ -9,7 +9,7 @@ class ProcessorCounterTest extends TestCase
     /**
      * @test
      */
-    public function shouldCountTheNumberOfProcessorInLinux()
+    public function shouldCountTheNumberOfProcessorInLinux(): void
     {
         $processorCountMock = $this->getMockBuilder(ProcessorCounter::class)
                                    ->setMethods(['getOS'])

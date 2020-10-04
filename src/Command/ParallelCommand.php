@@ -22,7 +22,7 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class ParallelCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('fastest')
@@ -82,9 +82,9 @@ class ParallelCommand extends Command
         $queue = $readFromInputAndPushIntoTheQueue
             ->execute($input->getOption('xml'), $input->getOption('preserve-order'));
 
-        $maxNumberOfParallelProc = $this->getMaxNumberOfProcess($input->getOption('process'));
+        $maxNumberOfParallelProc = $this->getMaxNumberOfProcess((int) $input->getOption('process'));
         $processFactory = new ProcessFactory($maxNumberOfParallelProc, $input->getArgument('execute'));
-        $processManager = new ProcessesManager($processFactory, $maxNumberOfParallelProc, $input->getOption('before'));
+        $processManager = new ProcessesManager($maxNumberOfParallelProc, $processFactory, $input->getOption('before'));
 
         // header
         $shuffled = $input->getOption('preserve-order') ? '' : 'shuffled ';
@@ -104,9 +104,9 @@ class ParallelCommand extends Command
         return $processes->getExitCode();
     }
 
-    private function getMaxNumberOfProcess($maxNumberOfParallelProc)
+    private function getMaxNumberOfProcess(int $maxNumberOfParallelProc): int
     {
-        if (null !== $maxNumberOfParallelProc && (int) $maxNumberOfParallelProc > 0) {
+        if ($maxNumberOfParallelProc > 0) {
             return $maxNumberOfParallelProc;
         }
 
@@ -115,20 +115,12 @@ class ParallelCommand extends Command
         return $processorCounter->execute();
     }
 
-    /**
-     * @param InputInterface   $input
-     * @param OutputInterface  $output
-     * @param QueueInterface   $queue
-     * @param ProcessesManager $processManager
-     *
-     * @return array
-     */
     private function doExecute(
         InputInterface $input,
         OutputInterface $output,
         QueueInterface $queue,
         ProcessesManager $processManager
-    ) {
+    ): Processes {
         $processes = null;
 
         if ($this->isVerbose($output)) {
@@ -155,13 +147,9 @@ class ParallelCommand extends Command
         return $processes;
     }
 
-    private function isVerbose($output)
+    private function isVerbose(OutputInterface $output): bool
     {
-        if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
-            return true;
-        }
-
-        return false;
+        return OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity();
     }
 
     /**
@@ -174,8 +162,13 @@ class ParallelCommand extends Command
         return !$input->getOption('no-errors-summary');
     }
 
-    private function executeBeforeCommand($queue, $processes, $input, $output, $processManager)
-    {
+    private function executeBeforeCommand(
+        QueueInterface $queue,
+        Processes $processes,
+        InputInterface $input,
+        OutputInterface $output,
+        ProcessesManager $processManager
+    ): Processes {
         if (!$processes->isSuccessful()) {
             $array = $processes->getErrorOutput();
             $output->writeln(sprintf('Re-Running [%d] elements', count($array)));

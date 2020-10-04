@@ -9,7 +9,7 @@ class InMemoryQueueTest extends \PHPUnit\Framework\TestCase
     /**
      * @test
      */
-    public function shouldPopAndPushASuite()
+    public function shouldPopAndPushASuite(): void
     {
         $queue = new InMemoryQueue();
         $tests = new TestsQueue(['a', 'b']);
@@ -22,7 +22,7 @@ class InMemoryQueueTest extends \PHPUnit\Framework\TestCase
     /**
      * @test
      */
-    public function shouldPopAndShiftASuite()
+    public function shouldPopAndShiftASuite(): void
     {
         $queue = new InMemoryQueue();
         $tests = new TestsQueue(['a', 'b']);

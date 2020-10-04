@@ -10,7 +10,7 @@ class InMemoryQueueFactoryTest extends TestCase
     /**
      * @test
      */
-    public function shouldCreateAQueue()
+    public function shouldCreateAQueue(): void
     {
         $msqQueueFactory = new InMemoryQueueFactory();
 

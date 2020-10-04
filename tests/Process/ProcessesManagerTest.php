@@ -11,7 +11,7 @@ class ProcessesManagerTest extends TestCase
     /**
      * @test
      */
-    public function shouldCreateBeforeProcessesExecutingFactoryWithTheCorrectArguments()
+    public function shouldCreateBeforeProcessesExecutingFactoryWithTheCorrectArguments(): void
     {
         $queue = $this->createMock('Liuggio\Fastest\Queue\QueueInterface');
 
@@ -24,7 +24,7 @@ class ProcessesManagerTest extends TestCase
             ->with($this->anything(), $this->equalTo(1), $this->equalTo(1), $this->equalTo(true))
             ->willReturn(new Process(['echo ', rand()], sys_get_temp_dir()));
 
-        $manager = new ProcessesManager($factory, 1, 'echo "ciao"');
+        $manager = new ProcessesManager(1, $factory, 'echo "ciao"');
 
         $processes = null;
         $this->assertTrue($manager->assertNProcessRunning($queue, $processes));
@@ -33,7 +33,7 @@ class ProcessesManagerTest extends TestCase
     /**src/UI/VerboseRenderer.php
      * @test
      */
-    public function shouldCreateProcessesWithoutBeforeProcessExecutingFactoryWithTheCorrectArguments()
+    public function shouldCreateProcessesWithoutBeforeProcessExecutingFactoryWithTheCorrectArguments(): void
     {
         $queue = $this->createMock('Liuggio\Fastest\Queue\QueueInterface');
         $queue->expects($this->once())
@@ -59,7 +59,7 @@ class ProcessesManagerTest extends TestCase
             ->with($this->anything(), $this->equalTo(1), $this->equalTo(1), $this->equalTo(true))
             ->willReturn(new Process(['echo '], (string) rand()));
 
-        $manager = new ProcessesManager($factory, 1);
+        $manager = new ProcessesManager(1, $factory);
 
         $this->assertTrue($manager->assertNProcessRunning($queue, $processes));
     }
@@ -67,7 +67,7 @@ class ProcessesManagerTest extends TestCase
     /**
      * @test
      */
-    public function shouldCreate6ProcessesGivingThemTheCorrectEnvParameters()
+    public function shouldCreate6ProcessesGivingThemTheCorrectEnvParameters(): void
     {
         $queue = $this->createMock('Liuggio\Fastest\Queue\QueueInterface');
         $queue->expects($this->exactly(6))
@@ -110,7 +110,7 @@ class ProcessesManagerTest extends TestCase
                 ->willReturn(new Process(['echo '], (string) rand()));
         }
 
-        $manager = new ProcessesManager($factory, 1);
+        $manager = new ProcessesManager(1, $factory);
 
         $this->assertTrue($manager->assertNProcessRunning($queue, $processes));
         $this->assertTrue($manager->assertNProcessRunning($queue, $processes));

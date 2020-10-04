@@ -12,16 +12,22 @@ class ProcessorCounter
     const PROC_DEFAULT_NUMBER = 4;
     const PROC_CPUINFO = '/proc/cpuinfo';
 
+    /**
+     * @var int|null
+     */
     private static $count = null;
 
+    /**
+     * @var string
+     */
     private $procCPUInfo;
 
-    public function __construct($procCPUInfo = self::PROC_CPUINFO)
+    public function __construct(string $procCPUInfo = self::PROC_CPUINFO)
     {
         $this->procCPUInfo = $procCPUInfo;
     }
 
-    public function execute()
+    public function execute(): int
     {
         if (null !== self::$count) {
             return self::$count;
@@ -31,13 +37,13 @@ class ProcessorCounter
         return self::$count;
     }
 
-    private function readFromProcCPUInfo()
+    private function readFromProcCPUInfo(): int
     {
         if ($this->getOS() === 'Darwin') {
             $processors = system('/usr/sbin/sysctl -n hw.physicalcpu');
 
             if (false !== $processors && $processors) {
-                return $processors;
+                return (int) $processors;
             }
         } elseif ($this->getOS() === 'Linux') {
             $file = $this->procCPUInfo;
@@ -45,7 +51,7 @@ class ProcessorCounter
                 try {
                     $contents = trim(file_get_contents($file));
 
-                    return substr_count($contents, 'processor');
+                    return (int) substr_count($contents, 'processor');
                 } catch (\Exception $e) {
                 }
             }
@@ -68,10 +74,7 @@ class ProcessorCounter
         return self::PROC_DEFAULT_NUMBER;
     }
 
-    /**
-     * @return string
-     */
-    public function getOS()
+    public function getOS(): string
     {
         return PHP_OS;
     }

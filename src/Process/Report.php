@@ -4,28 +4,43 @@ namespace Liuggio\Fastest\Process;
 
 class Report
 {
+    /**
+     * @var string
+     */
     private $suite;
-    private $isSuccess;
-    private $processorNumber;
-    private $time;
-    private $errorBuffer;
-    private $isFirstOnThread;
 
     /**
-     * @param string      $suite
-     * @param bool        $isSuccess
-     * @param float       $time
-     * @param int         $processorNumber
-     * @param string|null $errorBuffer
-     * @param bool        $isFirstOnThread
+     * @var bool
      */
+    private $isSuccess;
+
+    /**
+     * @var int
+     */
+    private $processorNumber;
+
+    /**
+     * @var float
+     */
+    private $time;
+
+    /**
+     * @var string|null
+     */
+    private $errorBuffer;
+
+    /**
+     * @var bool
+     */
+    private $isFirstOnThread;
+
     public function __construct(
-        $suite,
-        $isSuccess,
-        $time,
-        $processorNumber,
-        $errorBuffer,
-        $isFirstOnThread
+        string $suite,
+        bool $isSuccess,
+        float $time,
+        int $processorNumber,
+        ?string $errorBuffer,
+        bool $isFirstOnThread
     ) {
         $this->isSuccess = $isSuccess;
         $this->processorNumber = $processorNumber;
@@ -35,50 +50,32 @@ class Report
         $this->time = $time;
     }
 
-    /**
-     * @return bool
-     */
-    public function isSuccessful()
+    public function isSuccessful(): bool
     {
         return $this->isSuccess;
     }
 
-    /**
-     * @return int
-     */
-    public function getProcessorNumber()
+    public function getProcessorNumber(): int
     {
         return $this->processorNumber;
     }
 
-    /**
-     * @return bool
-     */
-    public function isFirstOnThread()
+    public function isFirstOnThread(): bool
     {
         return $this->isFirstOnThread;
     }
 
-    /**
-     * @return string
-     */
-    public function getSuite()
+    public function getSuite(): string
     {
         return $this->suite;
     }
 
-    /**
-     * @return float Time in microseconds
-     */
-    public function getTime()
+    public function getTime(): float
     {
         return $this->time;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getErrorBuffer()
+    public function getErrorBuffer(): ?string
     {
         return $this->errorBuffer;
     }

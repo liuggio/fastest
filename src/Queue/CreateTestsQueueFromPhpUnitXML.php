@@ -4,7 +4,7 @@ namespace Liuggio\Fastest\Queue;
 
 // BC
 if (class_exists('\PHPUnit_Util_Configuration')) {
-    class_alias('\PHPUnit_Util_Configuration', '\PHPUnit\Util\Configuration');
+    class_alias('\PHPUnit_Util_Configuration', '\PHPHPUnit_Util_ConfigurationPUnit\Util\Configuration');
 }
 
 if (class_exists('\PHPUnit_Framework_TestSuite')) {
@@ -28,7 +28,7 @@ class_exists('\PHPUnit\Util\FileLoader');
 
 class CreateTestsQueueFromPhpUnitXML
 {
-    public static function execute($xmlFile)
+    public static function execute(string $xmlFile): TestsQueue
     {
         $configuration = \PHPUnit\Util\Configuration::getInstance($xmlFile);
         $testSuites = new TestsQueue();
@@ -42,7 +42,7 @@ class CreateTestsQueueFromPhpUnitXML
     private static function processTestSuite(
         TestsQueue $testSuites,
         \Iterator $testSuiteIterator
-    ) {
+    ): void {
         foreach ($testSuiteIterator as $testSuite) {
             self::addTestFile($testSuites, $testSuite);
 
@@ -52,7 +52,7 @@ class CreateTestsQueueFromPhpUnitXML
         }
     }
 
-    private static function addTestFile(TestsQueue $testSuites, $testSuite)
+    private static function addTestFile(TestsQueue $testSuites, $testSuite): void
     {
         $name = $testSuite->getName();
         if (class_exists($name)) {

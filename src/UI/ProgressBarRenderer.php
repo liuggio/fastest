@@ -5,39 +5,61 @@ namespace Liuggio\Fastest\UI;
 use Liuggio\Fastest\Process\Processes;
 use Liuggio\Fastest\Queue\QueueInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Helper\ProgressHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ProgressBarRenderer implements RendererInterface
 {
+    /**
+     * @var ProgressBar
+     */
     private $bar;
+
+    /**
+     * @var int
+     */
     private $last;
+
+    /**
+     * @var bool
+     */
     private $degrade;
+
+    /**
+     * @var OutputInterface
+     */
     private $output;
+
+    /**
+     * @var int
+     */
     private $messagesInTheQueue;
+
+    /**
+     * @var bool
+     */
     private $errorsSummary;
 
     /**
      * @param int $messageInTheQueue
-     * @param bool            $errorsSummary Whether to display errors summary in the footer
+     * @param bool $errorsSummary Whether to display errors summary in the footer
      * @param OutputInterface $output
      */
-    public function __construct($messageInTheQueue, $errorsSummary, OutputInterface $output)
+    public function __construct(int $messageInTheQueue, bool $errorsSummary, OutputInterface $output)
     {
         $this->messagesInTheQueue = $messageInTheQueue;
         $this->errorsSummary = $errorsSummary;
         $this->output = $output;
         $this->degrade = true;
+        $this->bar = new ProgressBar($this->output, $this->messagesInTheQueue);
     }
 
-    public function renderHeader(QueueInterface $queue)
+    public function renderHeader(QueueInterface $queue): void
     {
         $this->output->writeln('');
         $this->output->writeln('');
         $this->output->writeln('');
         $this->output->writeln('');
 
-        $this->bar = new ProgressBar($this->output, $this->messagesInTheQueue);
         $this->bar->setFormat('very_verbose');
         $this->bar->setFormat("%current%/%max% <fg=white;bg=blue>[%bar%]</> %percent:3s%% %elapsed:6s% %memory:6s% \n\n     %number%");
         $this->bar->start();
@@ -47,7 +69,7 @@ class ProgressBarRenderer implements RendererInterface
         $this->last = $this->messagesInTheQueue;
     }
 
-    public function renderBody(QueueInterface $queue, Processes $processes)
+    public function renderBody(QueueInterface $queue, Processes $processes): int
     {
         $now = $queue->count();
         $errorCount = $processes->countErrors();
@@ -66,7 +88,7 @@ class ProgressBarRenderer implements RendererInterface
         return $errorCount;
     }
 
-    public function renderFooter(QueueInterface $queue, Processes $processes)
+    public function renderFooter(QueueInterface $queue, Processes $processes): void
     {
         $this->renderBody($queue, $processes);
         $this->bar->finish();
@@ -83,12 +105,12 @@ class ProgressBarRenderer implements RendererInterface
         $this->output->writeln(PHP_EOL.$out);
     }
 
-    private function writeMessage($what, $message)
+    private function writeMessage(string $what, string $message): void
     {
-        if (!$this->degrade) {
-            $this->bar->setMessage($what, $message);
-
-            return true;
+        if ($this->degrade) {
+            return;
         }
+
+        $this->bar->setMessage($what, $message);
     }
 }

@@ -11,25 +11,38 @@ class EnvCommandCreator
     const ENV_TEST_INCREMENTAL_NUMBER = 'ENV_TEST_INC_NUMBER';
     const ENV_TEST_IS_FIRST_ON_CHANNEL = 'ENV_TEST_IS_FIRST_ON_CHANNEL';
 
-    // create an array of env
-    public function execute($i, $maxProcesses, $suite, $currentProcessCounter, $isFirstOnItsThread = false)
-    {
+    /**
+     * @param int $i
+     * @param int $maxProcesses
+     * @param string $test
+     * @param int $currentProcessCounter
+     * @param bool $isFirstOnItsThread
+     *
+     * @return array<string, mixed>
+     */
+    public function execute(
+        int $i,
+        int $maxProcesses,
+        string $test,
+        int $currentProcessCounter,
+        bool $isFirstOnItsThread = false
+    ): array {
         return array_change_key_case(static::cleanEnvVariables($_SERVER) + $_ENV + [
-            self::ENV_TEST_CHANNEL => (int) $i,
+            self::ENV_TEST_CHANNEL => $i,
             self::ENV_TEST_CHANNEL_READABLE => 'test_'.$i,
-            self::ENV_TEST_CHANNELS_NUMBER => (int) $maxProcesses,
-            self::ENV_TEST_ARGUMENT => (string) $suite,
-            self::ENV_TEST_INCREMENTAL_NUMBER => (int) $currentProcessCounter,
-            self::ENV_TEST_IS_FIRST_ON_CHANNEL => (int) $isFirstOnItsThread,
+            self::ENV_TEST_CHANNELS_NUMBER => $maxProcesses,
+            self::ENV_TEST_ARGUMENT => $test,
+            self::ENV_TEST_INCREMENTAL_NUMBER => $currentProcessCounter,
+            self::ENV_TEST_IS_FIRST_ON_CHANNEL => (int) $isFirstOnItsThread, // @todo should this be bool?
         ], CASE_UPPER);
     }
 
     /**
-     * @param array $variables
+     * @param array<string, mixed> $variables
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public static function cleanEnvVariables(array $variables)
+    public static function cleanEnvVariables(array $variables): array
     {
         return array_filter(
             $variables,

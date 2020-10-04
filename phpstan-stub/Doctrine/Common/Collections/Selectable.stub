@@ -1,0 +1,12 @@
+<?php
+
+namespace Doctrine\Common\Collections;
+
+/**
+ * @phpstan-template TKey
+ * @psalm-template TKey as array-key
+ * @psalm-template T
+ */
+interface Selectable
+{
+}

@@ -9,7 +9,7 @@ class ReadFromInputAndPushIntoTheQueueTest extends TestCase
     /**
      * @test
      */
-    public function shouldPushIntoTheQueueTheXMLFile()
+    public function shouldPushIntoTheQueueTheXMLFile(): void
     {
         $directory = __DIR__.'/Infrastructure/';
         $files = ['InMemoryQueueFactoryTest.php', 'InMemoryQueueTest.php'];

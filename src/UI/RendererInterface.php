@@ -7,9 +7,9 @@ use Liuggio\Fastest\Queue\QueueInterface;
 
 interface RendererInterface
 {
-    public function renderHeader(QueueInterface $queue);
+    public function renderHeader(QueueInterface $queue): void;
 
-    public function renderBody(QueueInterface $queue, Processes $processes);
+    public function renderBody(QueueInterface $queue, Processes $processes): int;
 
-    public function renderFooter(QueueInterface $queue, Processes $processes);
+    public function renderFooter(QueueInterface $queue, Processes $processes): void;
 }
