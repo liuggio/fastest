@@ -22,36 +22,42 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class ParallelCommand extends Command
 {
+    private const EXECUTE_OPTION = 'execute';
+    private const PROCESS_OPTION = 'process';
+    private const BEFORE_OPTION = 'before';
+    private const XML_OPTION = 'xml';
+    private const PRESERVE_ORDER_OPTION = 'preserve-order';
+
     protected function configure(): void
     {
         $this
             ->setName('fastest')
             ->setDescription('Consume the element parallel.')
             ->addArgument(
-                'execute',
+                self::EXECUTE_OPTION,
                 InputArgument::OPTIONAL,
                 'Optional command to execute.'
             )
             ->addOption(
-                'process',
+                self::PROCESS_OPTION,
                 'p',
                 InputOption::VALUE_REQUIRED,
                 'Number of parallel processes, default: available CPUs.'
             )
             ->addOption(
-                'before',
+                self::BEFORE_OPTION,
                 'b',
                 InputOption::VALUE_REQUIRED,
                 'Execute a process before consuming the queue, it executes this command once per process, useful for init schema and load fixtures.'
             )
             ->addOption(
-                'xml',
+                self::XML_OPTION,
                 'x',
                 InputOption::VALUE_REQUIRED,
                 'Read input from a phpunit xml file from the \'<testsuites>\' collection. Note: it is not used for consuming.'
             )
             ->addOption(
-                'preserve-order',
+                self::PRESERVE_ORDER_OPTION,
                 'o',
                 InputOption::VALUE_NONE,
                 'Queue is randomized by default, with this option the queue is read preserving the order.'
@@ -79,15 +85,42 @@ class ParallelCommand extends Command
         $queueFactory = new InMemoryQueueFactory();
         $readFromInputAndPushIntoTheQueue = new ReadFromInputAndPushIntoTheQueue($queueFactory);
 
-        $queue = $readFromInputAndPushIntoTheQueue
-            ->execute($input->getOption('xml'), $input->getOption('preserve-order'));
+        $xmlOption = $input->getOption(self::XML_OPTION);
+        if (!is_string($xmlOption) && null !== $xmlOption) {
+            throw new \Exception(sprintf('%s should have a scalar (string) or null value', self::XML_OPTION));
+        }
 
-        $maxNumberOfParallelProc = $this->getMaxNumberOfProcess((int) $input->getOption('process'));
-        $processFactory = new ProcessFactory($maxNumberOfParallelProc, $input->getArgument('execute'));
-        $processManager = new ProcessesManager($maxNumberOfParallelProc, $processFactory, $input->getOption('before'));
+        $preserveOrderOption = $input->getOption(self::PRESERVE_ORDER_OPTION);
+        if (!is_bool($preserveOrderOption) && null !== $preserveOrderOption) {
+            throw new \Exception(sprintf('%s should not have any value', self::PRESERVE_ORDER_OPTION));
+        }
+        $preserveOrderOption = (bool) $preserveOrderOption;
+
+        $queue = $readFromInputAndPushIntoTheQueue->execute($xmlOption, $preserveOrderOption);
+
+        $processOption = $input->getOption(self::PROCESS_OPTION);
+        if ((!is_numeric($processOption) || !is_int((int) $processOption)) && null !== $processOption) {
+            throw new \Exception(sprintf('%s should have an integer value', self::PROCESS_OPTION));
+        }
+        $processOption = (int) $processOption;
+
+        $maxNumberOfParallelProc = $this->getMaxNumberOfProcess($processOption);
+        $executeOption = $input->getArgument(self::EXECUTE_OPTION);
+        if (!is_string($executeOption) && null !== $executeOption) {
+            throw new \Exception(sprintf('%s should have a scalar (string) or null value', self::EXECUTE_OPTION));
+        }
+
+        $processFactory = new ProcessFactory($maxNumberOfParallelProc, $executeOption);
+
+        $beforeOption = $input->getOption(self::BEFORE_OPTION);
+        if (!is_string($beforeOption) && null !== $beforeOption) {
+            throw new \Exception(sprintf('%s should have a scalar (string) or null value', self::BEFORE_OPTION));
+        }
+
+        $processManager = new ProcessesManager($maxNumberOfParallelProc, $processFactory, $beforeOption);
 
         // header
-        $shuffled = $input->getOption('preserve-order') ? '' : 'shuffled ';
+        $shuffled = $input->getOption(self::PRESERVE_ORDER_OPTION) ? '' : 'shuffled ';
         $output->writeln('- <fg=white;bg=blue>'.$queue->count().'</> '.$shuffled.'test classes into the queue.');
         $output->writeln('- Will be consumed by <fg=white;bg=blue>'.$maxNumberOfParallelProc.'</> parallel Processes.');
 
@@ -95,7 +128,11 @@ class ParallelCommand extends Command
         $processes = $this->doExecute($input, $output, $queue, $processManager);
 
         $event = $stopWatch->stop('execute');
-        $output->writeln(sprintf('    Time: %s, Memory: %s', $this->formatDuration($event->getDuration()), $this->formatMemory($event->getMemory())));
+        $output->writeln(sprintf(
+            '    Time: %s, Memory: %s',
+            $this->formatDuration((int) $event->getDuration()),
+            $this->formatMemory($event->getMemory())
+        ));
 
         if ($input->getOption('rerun-failed')) {
             $processes = $this->executeBeforeCommand($queue, $processes, $input, $output, $processManager);
@@ -181,12 +218,8 @@ class ParallelCommand extends Command
 
     /**
      * Method to format duration to human readable format.
-     *
-     * @param int $milliseconds
-     *
-     * @return string
      */
-    private function formatDuration($milliseconds)
+    private function formatDuration(int $milliseconds): string
     {
         $hours = floor($milliseconds / 1000 / 3600);
         $milliseconds -= ($hours * 3600 * 1000);

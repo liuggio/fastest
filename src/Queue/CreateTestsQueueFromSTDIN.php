@@ -22,18 +22,24 @@ class CreateTestsQueueFromSTDIN
 
     public function execute(): TestsQueue
     {
-        $this->fstin = fopen($this->stdin, 'r');
+        $fstin = fopen($this->stdin, 'r');
+        if (!$fstin) {
+            throw new \Exception(sprintf('Cannot read from STDIN: %s', $this->stdin));
+        }
+
         $testSuites = new TestsQueue();
-        while (false !== ($line = fgets($this->fstin))) {
+        while (false !== ($line = fgets($fstin))) {
             $this->addLineIfNotEmpty($testSuites, $line);
         }
+
+        $this->fstin = $fstin;
 
         return $testSuites;
     }
 
     public function __destruct()
     {
-        if (null !== $this->fstin) {
+        if ($this->fstin) {
             fclose($this->fstin);
         }
     }
