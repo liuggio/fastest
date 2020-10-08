@@ -5,42 +5,30 @@ namespace Liuggio\Fastest\Queue;
 interface QueueInterface
 {
     /**
-     * @return TestSuite
-     *
      * @deprecated Will be removed in v2
      */
-    public function pop();
+    public function pop(): TestSuite;
 
-    /**
-     * @return TestSuite
-     */
-    public function shift();
+    public function shift(): TestSuite;
 
     /**
      * Push a collections of tests.
      *
-     * @param TestsQueue $tests
+     * @phpstan-ignore-next-line // @todo remove in v2 and include return type
      */
     public function push(TestsQueue $tests);
 
     /**
      * Get the number of the message sent.
-     *
-     * @return int
      */
-    public function getNumberOfPushedMessage();
+    public function getNumberOfPushedMessage(): int;
 
     /**
      * Get the number of messages..
-     *
-     * @return int
      */
-    public function count();
+    public function count(): int;
 
-    /**
-     * @return bool
-     */
-    public function isEmpty();
+    public function isEmpty(): bool;
 
-    public function close();
+    public function close(): void;
 }

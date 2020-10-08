@@ -21,9 +21,19 @@ class Processes
      */
     private $totalBuffer;
 
+    /**
+     * @var array<string, string>
+     */
     private $errorBuffer;
+
+    /**
+     * @var int
+     */
     private $errorCounter;
 
+    /**
+     * @param Process[] $processes
+     */
     public function __construct(array $processes)
     {
         $this->processes = $processes;
@@ -33,7 +43,7 @@ class Processes
         $this->errorCounter = 0;
     }
 
-    public function cleanUP($addToCompletedQueue = true)
+    public function cleanUP(bool $addToCompletedQueue = true): void
     {
         foreach ($this->processes as $key => $process) {
             if (null !== $process && $process->isTerminated()) {
@@ -46,7 +56,10 @@ class Processes
         }
     }
 
-    public function getIndexesOfCompletedChannel()
+    /**
+     * @return int[]
+     */
+    public function getIndexesOfCompletedChannel(): array
     {
         $indexes = [];
         foreach ($this->processes as $index => $process) {
@@ -58,7 +71,11 @@ class Processes
         return $indexes;
     }
 
-    public function add($key, Process $process)
+    /**
+     * @param int $key
+     * @param Process $process
+     */
+    public function add(int $key, Process $process): void
     {
         $this->cleanUP();
         if (isset($this->processes[$key]) && null !== $this->processes[$key]) {
@@ -70,7 +87,7 @@ class Processes
         $this->processes[$key] = $process;
     }
 
-    public function start($key = null)
+    public function start(int $key = null): bool
     {
         if (null !== $key) {
             $this->startProcess($key);
@@ -87,16 +104,13 @@ class Processes
         return true;
     }
 
-    /**
-     * @param int $key
-     */
-    private function startProcess($key)
+    private function startProcess(int $key): void
     {
         $this->startTimes[$key] = microtime(true);
         $this->processes[$key]->start();
     }
 
-    public function stop()
+    public function stop(): bool
     {
         return array_walk($this->processes, function (Process $item = null) {
             if (null !== $item) {
@@ -129,12 +143,17 @@ class Processes
         return true;
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->processes);
     }
 
-    public function get($index)
+    /**
+     * @param int $index
+     *
+     * @return Process|null
+     */
+    public function get(int $index): ?Process
     {
         return $this->processes[$index];
     }
@@ -177,31 +196,32 @@ class Processes
         return 0 === $this->getExitCode();
     }
 
-    public function countErrors()
+    public function countErrors(): int
     {
         return $this->errorCounter;
     }
 
-    public function getErrorOutput()
+    /**
+     * @return array<string, string>
+     */
+    public function getErrorOutput(): array
     {
         return $this->errorBuffer;
     }
 
     /**
+     * @param int $key
+     *
      * @throws \LogicException
      */
-    private function assertTerminated($key)
+    private function assertTerminated(int $key): void
     {
         if (!$this->processes[$key]->isTerminated()) {
             throw new \LogicException('Process must be terminated before calling');
         }
     }
 
-    /**
-     * @param int $key
-     * @param Process $process
-     */
-    private function moveToCompletedProcesses($key, Process $process)
+    private function moveToCompletedProcesses(int $key, Process $process): void
     {
         $env = $process->getEnv();
         $suite = $env[EnvCommandCreator::ENV_TEST_ARGUMENT];
@@ -221,7 +241,7 @@ class Processes
             microtime(true) - $this->startTimes[$key],
             $number,
             isset($this->errorBuffer[$suite]) ? $this->errorBuffer[$suite] : null,
-            $numberOnThread
+            (bool) $numberOnThread // @todo if EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL bool, remove this
         );
     }
 

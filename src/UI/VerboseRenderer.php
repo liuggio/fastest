@@ -8,17 +8,32 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class VerboseRenderer implements RendererInterface
 {
+    /**
+     * @var int
+     */
     private $messageInTheQueue;
+
+    /**
+     * @var int
+     */
     private $lastIndex;
+
+    /**
+     * @var OutputInterface
+     */
     private $output;
+
+    /**
+     * @var bool
+     */
     private $errorsSummary;
 
     /**
      * @param int $messageInTheQueue
-     * @param bool            $errorsSummary Whether to display errors summary in the footer
+     * @param bool $errorsSummary Whether to display errors summary in the footer
      * @param OutputInterface $output
      */
-    public function __construct($messageInTheQueue, $errorsSummary, OutputInterface $output)
+    public function __construct(int $messageInTheQueue, bool $errorsSummary, OutputInterface $output)
     {
         $this->messageInTheQueue = $messageInTheQueue;
         $this->errorsSummary = $errorsSummary;
@@ -26,11 +41,11 @@ class VerboseRenderer implements RendererInterface
         $this->lastIndex = 0;
     }
 
-    public function renderHeader(QueueInterface $queue)
+    public function renderHeader(QueueInterface $queue): void
     {
     }
 
-    public function renderFooter(QueueInterface $queue, Processes $processes)
+    public function renderFooter(QueueInterface $queue, Processes $processes): void
     {
         $this->renderBody($queue, $processes);
         $this->output->writeln('');
@@ -46,7 +61,7 @@ class VerboseRenderer implements RendererInterface
         $this->output->writeln(PHP_EOL.$out);
     }
 
-    public function renderBody(QueueInterface $queue, Processes $processes)
+    public function renderBody(QueueInterface $queue, Processes $processes): int
     {
         $errorCount = $processes->countErrors();
 
@@ -94,7 +109,7 @@ class VerboseRenderer implements RendererInterface
      *
      * @return string
      */
-    private function formatDuration($milliseconds)
+    private function formatDuration(float $milliseconds): string
     {
         $minutes = floor($milliseconds / 1000 / 60);
         $milliseconds -= ($minutes * 60 * 1000);

@@ -4,16 +4,23 @@ namespace Liuggio\Fastest\Queue;
 
 class CreateTestsQueueFromSTDIN
 {
+    /**
+     * @var string
+     */
     private $stdin;
+
+    /**
+     * @var resource|false|null
+     */
     private $fstin;
 
-    public function __construct($stdin = 'php://stdin')
+    public function __construct(string $stdin = 'php://stdin')
     {
         $this->stdin = $stdin;
         $this->fstin = null;
     }
 
-    public function execute()
+    public function execute(): TestsQueue
     {
         $this->fstin = fopen($this->stdin, 'r');
         $testSuites = new TestsQueue();
@@ -31,7 +38,7 @@ class CreateTestsQueueFromSTDIN
         }
     }
 
-    private function addLineIfNotEmpty(TestsQueue &$testSuites, $line)
+    private function addLineIfNotEmpty(TestsQueue &$testSuites, ?string $line): void
     {
         $line = trim($line);
         if (!empty($line)) {

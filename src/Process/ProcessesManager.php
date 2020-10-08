@@ -6,14 +6,36 @@ use Liuggio\Fastest\Queue\QueueInterface;
 
 class ProcessesManager
 {
+    /**
+     * @var ProcessFactory
+     */
     private $processFactory;
+
+    /**
+     * @var int
+     */
     private $maxNumberOfParallelProcesses;
+
+    /**
+     * @var string|null
+     */
     private $beforeCommand;
+
+    /**
+     * @var int
+     */
     private $processCounter;
+
+    /**
+     * @var int[]
+     */
     private $isFirstForItsChannel;
 
-    public function __construct(ProcessFactory $processFactory = null, $maxNumberOfParallelProcesses, $beforeCommand = null)
-    {
+    public function __construct(
+        int $maxNumberOfParallelProcesses,
+        ProcessFactory $processFactory = null,
+        string $beforeCommand = null
+    ) {
         if (null === $processFactory) {
             $processFactory = new ProcessFactory($maxNumberOfParallelProcesses);
         }
@@ -25,7 +47,7 @@ class ProcessesManager
         $this->isFirstForItsChannel = [];
     }
 
-    public function assertNProcessRunning(QueueInterface &$queue, Processes &$processes = null)
+    public function assertNProcessRunning(QueueInterface &$queue, Processes &$processes = null): bool
     {
         $parallelProcesses = max(1, min($queue->count(), $this->maxNumberOfParallelProcesses));
 
@@ -53,7 +75,12 @@ class ProcessesManager
 
             $currentProcessNumber = $this->getCurrentProcessCounter();
             $this->incrementForThisChannel($currentChannel);
-            $process = $this->processFactory->createAProcess($queue->shift(), $currentChannel, $currentProcessNumber, $this->isFirstForThisChannel($currentChannel));
+            $process = $this->processFactory->createAProcess(
+                $queue->shift()->getTestPath(),
+                $currentChannel,
+                $currentProcessNumber,
+                $this->isFirstForThisChannel($currentChannel)
+            );
             $processes->add($currentChannel, $process);
             $processes->start($currentChannel);
         }
@@ -61,7 +88,13 @@ class ProcessesManager
         return true;
     }
 
-    private function createProcessesForTheBeforeCommand($range, Processes &$processes = null)
+    /**
+     * @param int[] $range
+     * @param Processes|null $processes
+     *
+     * @return bool
+     */
+    private function createProcessesForTheBeforeCommand(array $range, Processes &$processes = null): bool
     {
         foreach ($range as $currentChannel) {
             $currentProcessNumber = $this->getCurrentProcessCounter();
@@ -83,24 +116,24 @@ class ProcessesManager
         return true;
     }
 
-    private function getCurrentProcessCounter()
+    private function getCurrentProcessCounter(): int
     {
         return ++$this->processCounter;
     }
 
-    private function incrementForThisChannel($Channel)
+    private function incrementForThisChannel(int $channel): void
     {
-        if (isset($this->isFirstForItsChannel[$Channel])) {
-            ++$this->isFirstForItsChannel[$Channel];
+        if (isset($this->isFirstForItsChannel[$channel])) {
+            ++$this->isFirstForItsChannel[$channel];
 
             return;
         }
 
-        $this->isFirstForItsChannel[$Channel] = 1;
+        $this->isFirstForItsChannel[$channel] = 1;
     }
 
-    private function isFirstForThisChannel($Channel)
+    private function isFirstForThisChannel(int $channel): bool
     {
-        return isset($this->isFirstForItsChannel[$Channel]) && 1 == $this->isFirstForItsChannel[$Channel];
+        return isset($this->isFirstForItsChannel[$channel]) && 1 == $this->isFirstForItsChannel[$channel];
     }
 }

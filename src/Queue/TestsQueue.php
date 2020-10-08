@@ -4,17 +4,23 @@ namespace Liuggio\Fastest\Queue;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
+/**
+ * @extends ArrayCollection<int, TestSuite>
+ */
 class TestsQueue extends ArrayCollection
 {
+    /**
+     * @var bool
+     */
     private $hasBeenRandomized;
 
     /**
      * Initializes a new ArrayCollection.
      *
-     * @param array $elements
+     * @param array<int, string> $elements
      * @param bool  $hasBeenRandomized
      */
-    public function __construct(array $elements = [], $hasBeenRandomized = false)
+    public function __construct(array $elements = [], bool $hasBeenRandomized = false)
     {
         parent::__construct();
         foreach ($elements as $element) {
@@ -37,11 +43,13 @@ class TestsQueue extends ArrayCollection
     }
 
     /**
-     * {@inheritdoc}
+     * @param string|TestSuite $value
+     *
+     * @return bool
      */
-    public function add($value)
+    public function add($value): bool
     {
-        if (!($value instanceof TestSuite)) {
+        if (!$value instanceof TestSuite) {
             $value = new TestSuite($value);
         }
 
@@ -56,10 +64,8 @@ class TestsQueue extends ArrayCollection
         return parent::isEmpty();
     }
 
-    /**
-     * @return bool
-     */
-    public function hasBeenRandomized()
+
+    public function hasBeenRandomized(): bool
     {
         return $this->hasBeenRandomized;
     }

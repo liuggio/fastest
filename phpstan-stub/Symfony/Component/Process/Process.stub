@@ -1,0 +1,25 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Symfony\Component\Process;
+
+use Symfony\Component\Process\Exception\LogicException;
+
+class Process
+{
+    /**
+     * Returns an iterator to the output of the process, with the output type as keys (Process::OUT/ERR).
+     *
+     * @param int $flags A bit field of Process::ITER_* flags
+     *
+     * @throws LogicException in case the output has been disabled
+     * @throws LogicException In case the process is not started
+     *
+     * @return \Generator<string, string>
+     */
+    public function getIterator(int $flags = 0)
+    {
+
+    }
+}

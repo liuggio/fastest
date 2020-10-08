@@ -9,7 +9,7 @@ class CreateTestsQueueFromPhpUnitXMLTest extends TestCase
     /**
      * @test
      */
-    public function shouldCreateAnArrayOfTestSuitesFromXML()
+    public function shouldCreateAnArrayOfTestSuitesFromXML(): void
     {
         $output = CreateTestsQueueFromPhpUnitXML::execute(__DIR__.'/Fixture/phpunit.xml.dist');
 

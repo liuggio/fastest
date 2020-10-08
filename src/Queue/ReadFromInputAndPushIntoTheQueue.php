@@ -4,7 +4,14 @@ namespace Liuggio\Fastest\Queue;
 
 class ReadFromInputAndPushIntoTheQueue
 {
+    /**
+     * @var QueueFactoryInterface
+     */
     protected $queueFactory;
+
+    /**
+     * @var null
+     */
     protected $queuePort;
 
     public function __construct(QueueFactoryInterface $queueFactory)
@@ -12,7 +19,7 @@ class ReadFromInputAndPushIntoTheQueue
         $this->queueFactory = $queueFactory;
     }
 
-    public function execute($xmlFile = null, $preserveOrder = false)
+    public function execute(string $xmlFile = null, bool $preserveOrder = false): QueueInterface
     {
         if (null !== $xmlFile) {
             $testsQueue = CreateTestsQueueFromPhpUnitXML::execute($xmlFile);
@@ -34,7 +41,7 @@ class ReadFromInputAndPushIntoTheQueue
         return $queue;
     }
 
-    private function assertTestsQueueIsNotEmpty(TestsQueue $testsQueue)
+    private function assertTestsQueueIsNotEmpty(TestsQueue $testsQueue): void
     {
         if ($testsQueue->isEmpty()) {
             throw new \Exception('Empty input try piping some files.');

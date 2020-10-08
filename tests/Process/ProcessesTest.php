@@ -2,6 +2,7 @@
 
 namespace Liuggio\Fastest\Process;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Process\Process;
 use PHPUnit\Framework\TestCase;
 
@@ -10,7 +11,7 @@ class ProcessesTest extends TestCase
     /**
      * @test
      */
-    public function shouldStartAllTheItems()
+    public function shouldStartAllTheItems(): void
     {
         $process = $this->mockProcessWithExpectation('start');
 
@@ -22,7 +23,7 @@ class ProcessesTest extends TestCase
     /**
      * @test
      */
-    public function shouldStopAllTheItems()
+    public function shouldStopAllTheItems(): void
     {
         $process = $this->mockProcessWithExpectation('stop');
 
@@ -34,7 +35,7 @@ class ProcessesTest extends TestCase
     /**
      * @test
      */
-    public function shouldWaitAllTheItems()
+    public function shouldWaitAllTheItems(): void
     {
         $process = $this->getMockBuilder(Process::class)
             ->disableOriginalConstructor()
@@ -54,7 +55,7 @@ class ProcessesTest extends TestCase
     /**
      * @test
      */
-    public function shouldNotAddTerminatedProcessToReportOnCleanUp()
+    public function shouldNotAddTerminatedProcessToReportOnCleanUp(): void
     {
         $process = $this->createMock(Process::class);
         $process
@@ -75,7 +76,7 @@ class ProcessesTest extends TestCase
     /**
      * @test
      */
-    public function shouldAddTerminatedProcessToReportOnCleanUp()
+    public function shouldAddTerminatedProcessToReportOnCleanUp(): void
     {
         $process = $this->createMock(Process::class);
         $process
@@ -103,7 +104,7 @@ class ProcessesTest extends TestCase
     /**
      * @test
      */
-    public function shouldNotAddTerminatedProcessToReportAfterWaitFinish()
+    public function shouldNotAddTerminatedProcessToReportAfterWaitFinish(): void
     {
         $process = $this->createMock(Process::class);
         $process
@@ -133,7 +134,7 @@ class ProcessesTest extends TestCase
     /**
      * @test
      */
-    public function shouldAddTerminatedProcessToReportAfterWaitFinish()
+    public function shouldAddTerminatedProcessToReportAfterWaitFinish(): void
     {
         $process = $this->createMock(Process::class);
         $process
@@ -176,7 +177,12 @@ class ProcessesTest extends TestCase
         $this->assertCount(1, $processes->getReport());
     }
 
-    protected function mockProcessWithExpectation($method)
+    /**
+     * @param string $method
+     *
+     * @return MockObject|Process
+     */
+    protected function mockProcessWithExpectation(string $method): MockObject
     {
         $process = $this->getMockBuilder(Process::class)
             ->disableOriginalConstructor()

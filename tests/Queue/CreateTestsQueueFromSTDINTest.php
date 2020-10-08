@@ -15,7 +15,7 @@ class CreateTestsQueueFromSTDINTest extends TestCase
      * and stdin was read as an empty string from certain programs (i.e. behat --list-scenarios)
      * See issue https://github.com/liuggio/fastest/issues/10.
      */
-    public function shouldReadTestQueueFromDelayedStdin()
+    public function shouldReadTestQueueFromDelayedStdin(): void
     {
         $bootstrapFile = realpath(__DIR__.'/../../vendor/autoload.php');
 
@@ -44,7 +44,13 @@ class CreateTestsQueueFromSTDINTest extends TestCase
         $this->assertEquals($expectedStdout, $stdOut);
     }
 
-    private function executeCommandWithDelayedStdin($command, $stdinLines, $delayMicroseconds = 1000000)
+    /**
+     * @param string $command
+     * @param array<string> $stdinLines
+     *
+     * @return string
+     */
+    private function executeCommandWithDelayedStdin(string $command, array $stdinLines): string
     {
         $descriptors = [
             0 => ['pipe', 'r'],  // stdin is a pipe that the child will read from
@@ -65,7 +71,7 @@ class CreateTestsQueueFromSTDINTest extends TestCase
         // 2 => readable handle connected to child stderr
 
         foreach ($stdinLines as $stdinLine) {
-            usleep($delayMicroseconds);
+            usleep(1000000);
             fwrite($pipes[0], $stdinLine);
         }
         fclose($pipes[0]);

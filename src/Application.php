@@ -2,7 +2,10 @@
 
 namespace Liuggio\Fastest;
 
+use Liuggio\Fastest\Command\ParallelCommand;
 use Symfony\Component\Console\Application as BaseApp;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 
 class Application extends BaseApp
@@ -14,31 +17,22 @@ class Application extends BaseApp
         parent::__construct('fastest', self::VERSION);
     }
 
-    /**
-     * Gets the name of the command based on input.
-     *
-     * @param InputInterface $input The input interface
-     *
-     * @return string The command name
-     */
-    protected function getCommandName(InputInterface $input)
+    protected function getCommandName(InputInterface $input): string
     {
         // This should return the name of your command.
         return 'fastest';
     }
 
     /**
-     * Gets the default commands that should always be available.
-     *
-     * @return array An array of default Command instances
+     * @return array<ParallelCommand|Command>
      */
-    protected function getDefaultCommands()
+    protected function getDefaultCommands(): array
     {
         // Keep the core default commands to have the HelpCommand
         // which is used when using the --help option
         $defaultCommands = parent::getDefaultCommands();
 
-        $defaultCommands[] = new Command\ParallelCommand();
+        $defaultCommands[] = new ParallelCommand();
 
         return $defaultCommands;
     }
@@ -47,7 +41,7 @@ class Application extends BaseApp
      * Overridden so that the application doesn't expect the command
      * name to be the first argument.
      */
-    public function getDefinition()
+    public function getDefinition(): InputDefinition
     {
         $inputDefinition = parent::getDefinition();
         // clear out the normal first argument, which is the command name

@@ -6,14 +6,31 @@ use Symfony\Component\Process\Process;
 
 class ProcessFactory
 {
+    /**
+     * @var EnvCommandCreator
+     */
     private $envCommandCreator;
+
+    /**
+     * @var string
+     */
     private $commandToExecuteTemplate;
+
+    /**
+     * @var int
+     */
     private $maxParallelProcessesToExecute;
 
+    /**
+     * @var string|null
+     */
     private static $cacheBinCmd;
 
-    public function __construct($maxParallelProcessesToExecute, $commandToExecuteTemplate = null, EnvCommandCreator $envCommandCreator = null)
-    {
+    public function __construct(
+        int $maxParallelProcessesToExecute,
+        string $commandToExecuteTemplate = null,
+        EnvCommandCreator $envCommandCreator = null
+    ) {
         if (null === $envCommandCreator) {
             $envCommandCreator = new EnvCommandCreator();
         }
@@ -25,37 +42,64 @@ class ProcessFactory
         $this->commandToExecuteTemplate = $commandToExecuteTemplate;
     }
 
-    public function createAProcess($suite, $currentProcessorNumber, $currentProcessCounter, $isFirstOnThread = false)
-    {
-        $cmd = $this->replaceParameters($this->commandToExecuteTemplate, $suite, $currentProcessorNumber, $currentProcessCounter);
-        $arrayEnv = $this->envCommandCreator->execute($currentProcessorNumber, $this->maxParallelProcessesToExecute, $suite, $currentProcessCounter, $isFirstOnThread);
+    public function createAProcess(
+        string $testPath,
+        int $currentProcessorNumber,
+        int $currentProcessCounter,
+        bool $isFirstOnThread = false
+    ): Process {
+        $cmd = $this->replaceParameters($this->commandToExecuteTemplate, $testPath, $currentProcessorNumber, $currentProcessCounter);
+        $arrayEnv = $this->envCommandCreator->execute(
+            $currentProcessorNumber,
+            $this->maxParallelProcessesToExecute,
+            $testPath,
+            $currentProcessCounter,
+            $isFirstOnThread
+        );
 
         return $this->createProcess($cmd, $arrayEnv);
     }
 
-    public function createAProcessForACustomCommand($execute, $currentProcessorNumber, $currentProcessCounter, $isFirstOnThread = false)
-    {
+    public function createAProcessForACustomCommand(
+        string $execute,
+        int $currentProcessorNumber,
+        int $currentProcessCounter,
+        bool $isFirstOnThread = false
+    ): Process {
         $cmd = $this->replaceParameters($execute, '', $currentProcessorNumber, $currentProcessCounter);
-        $arrayEnv = $this->envCommandCreator->execute($currentProcessorNumber, $this->maxParallelProcessesToExecute, $execute, $currentProcessCounter, $isFirstOnThread);
+        $arrayEnv = $this->envCommandCreator->execute(
+            $currentProcessorNumber,
+            $this->maxParallelProcessesToExecute,
+            $execute,
+            $currentProcessCounter,
+            $isFirstOnThread
+        );
 
         return $this->createProcess($cmd, $arrayEnv);
     }
 
-    private function replaceParameters($cmd, $suite, $processNumber, $currentProcessCounter)
+    private function replaceParameters(string $cmd, string $suite, int $processNumber, int $currentProcessCounter): string
     {
         $commandToExecute = str_replace('{}', $suite, $cmd);
-        $commandToExecute = str_replace('{p}', $processNumber, $commandToExecute);
-        $commandToExecute = str_replace('{n}', $currentProcessCounter, $commandToExecute);
+        $commandToExecute = str_replace('{p}', (string) $processNumber, $commandToExecute);
+        $commandToExecute = str_replace('{n}', (string) $currentProcessCounter, $commandToExecute);
 
         return $commandToExecute;
     }
 
-    private function createProcess($executeCommand, $arrayEnv)
+    /**
+     * @param string $executeCommand
+     * @param array<string, mixed> $arrayEnv
+     *
+     * @return Process
+     */
+    private function createProcess(string $executeCommand, array $arrayEnv): Process
     {
         if (method_exists(Process::class, 'fromShellCommandline')) {
             $process = Process::fromShellCommandline($executeCommand, null, $arrayEnv);
         } else {
             // Drop when sf 3.4 supports ends
+            /** @phpstan-ignore-next-line */ // @todo remove when sf 3.4 support ends
             $process = new Process($executeCommand, null, $arrayEnv);
         }
 
@@ -65,7 +109,7 @@ class ProcessFactory
         return $process;
     }
 
-    public static function getDefaultCommandToExecute()
+    public static function getDefaultCommandToExecute(): string
     {
         if (null !== self::$cacheBinCmd) {
             return self::$cacheBinCmd;
@@ -74,12 +118,12 @@ class ProcessFactory
         return self::$cacheBinCmd = self::isWindows() ? self::getWindowsBinCmd() : self::getUnixBinCmd();
     }
 
-    private static function isWindows()
+    private static function isWindows(): bool
     {
         return '\\' === DIRECTORY_SEPARATOR;
     }
 
-    private static function getWindowsBinCmd()
+    private static function getWindowsBinCmd(): string
     {
         if (file_exists(getcwd().'/vendor/bin/phpunit')) {
             return 'vendor\bin\phpunit {}';
@@ -96,7 +140,7 @@ class ProcessFactory
         return 'phpunit {}';
     }
 
-    private static function getUnixBinCmd()
+    private static function getUnixBinCmd(): string
     {
         if (file_exists(getcwd().'/vendor/bin/phpunit')) {
             return 'vendor/bin/phpunit {}';
