@@ -77,6 +77,10 @@ class CreateTestsQueueFromSTDINTest extends TestCase
         fclose($pipes[0]);
 
         $stdOut = stream_get_contents($pipes[1]);
+        if (!$stdOut) {
+            throw new \RuntimeException("Can't read from stdout");
+        }
+
         fclose($pipes[1]);
 
         $stdErr = stream_get_contents($pipes[2]);

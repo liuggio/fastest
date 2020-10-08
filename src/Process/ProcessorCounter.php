@@ -49,9 +49,10 @@ class ProcessorCounter
             $file = $this->procCPUInfo;
             if (is_file($file) && is_readable($file)) {
                 try {
-                    $contents = trim(file_get_contents($file));
-
-                    return (int) substr_count($contents, 'processor');
+                    $fileContent = file_get_contents($file);
+                    if (false !== $fileContent) {
+                        return (int) substr_count(trim($fileContent), 'processor');
+                    }
                 } catch (\Exception $e) {
                 }
             }
