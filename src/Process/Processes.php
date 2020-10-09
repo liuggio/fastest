@@ -7,12 +7,12 @@ use Symfony\Component\Process\Process;
 class Processes
 {
     /**
-     * @var ?Process[]
+     * @var array<int, Process|null>
      */
     private $processes;
 
     /**
-     * @var ?float[] Unix timestamp with float part of processes start times
+     * @var array<int, float|null> Unix timestamp with float part of processes start times
      */
     private $startTimes;
 
@@ -78,9 +78,9 @@ class Processes
     public function add(int $key, Process $process): void
     {
         $this->cleanUP();
-        if (isset($this->processes[$key]) && null !== $this->processes[$key]) {
+        if (isset($this->processes[$key]) && null !== $completedProcess = $this->processes[$key]) {
             $this->assertTerminated($key);
-            $this->moveToCompletedProcesses($key, $this->processes[$key]);
+            $this->moveToCompletedProcesses($key, $completedProcess);
             $this->processes[$key] = null;
         }
 
@@ -106,6 +106,10 @@ class Processes
 
     private function startProcess(int $key): void
     {
+        if (!isset($this->processes[$key])) {
+            return;
+        }
+
         $this->startTimes[$key] = microtime(true);
         $this->processes[$key]->start();
     }
@@ -216,6 +220,10 @@ class Processes
      */
     private function assertTerminated(int $key): void
     {
+        if (!isset($this->processes[$key])) {
+            return;
+        }
+
         if (!$this->processes[$key]->isTerminated()) {
             throw new \LogicException('Process must be terminated before calling');
         }

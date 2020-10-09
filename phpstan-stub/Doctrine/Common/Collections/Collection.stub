@@ -15,4 +15,10 @@ use IteratorAggregate;
  */
 interface Collection extends Countable, IteratorAggregate, ArrayAccess
 {
+    /**
+     * @return array<TKey, T>
+     *
+     * @psalm-return array<TKey,T>
+     */
+    public function toArray();
 }

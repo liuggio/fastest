@@ -75,8 +75,12 @@ class ProcessesManager
 
             $currentProcessNumber = $this->getCurrentProcessCounter();
             $this->incrementForThisChannel($currentChannel);
+            if (null === $process = $queue->shift()) {
+                continue;
+            }
+
             $process = $this->processFactory->createAProcess(
-                $queue->shift()->getTestPath(),
+                $process->getTestPath(),
                 $currentChannel,
                 $currentProcessNumber,
                 $this->isFirstForThisChannel($currentChannel)
@@ -90,16 +94,25 @@ class ProcessesManager
 
     /**
      * @param int[] $range
-     * @param Processes|null $processes
+     * @param Processes $processes
      *
      * @return bool
      */
-    private function createProcessesForTheBeforeCommand(array $range, Processes &$processes = null): bool
+    private function createProcessesForTheBeforeCommand(array $range, Processes &$processes): bool
     {
+        if (null === $beforeCommand = $this->beforeCommand) {
+            return false;
+        }
+
         foreach ($range as $currentChannel) {
             $currentProcessNumber = $this->getCurrentProcessCounter();
             $this->incrementForThisChannel($currentChannel);
-            $process = $this->processFactory->createAProcessForACustomCommand($this->beforeCommand, $currentChannel, $currentProcessNumber, $this->isFirstForThisChannel($currentChannel));
+            $process = $this->processFactory->createAProcessForACustomCommand(
+                $beforeCommand,
+                $currentChannel,
+                $currentProcessNumber,
+                $this->isFirstForThisChannel($currentChannel)
+            );
             $processes->add($currentChannel, $process);
             $processes->start($currentChannel);
             $processes->wait(function () use ($processes) {
