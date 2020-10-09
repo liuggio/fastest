@@ -9,7 +9,7 @@ use Liuggio\Fastest\Queue\TestSuite;
 class InMemoryQueue implements QueueInterface
 {
     /**
-     * @var array<int, TestSuite>|null
+     * @var array<int, TestSuite>
      */
     private $queue;
 
@@ -18,12 +18,12 @@ class InMemoryQueue implements QueueInterface
         $this->queue = [];
     }
 
-    public function pop(): TestSuite
+    public function pop(): ?TestSuite
     {
         return array_pop($this->queue);
     }
 
-    public function shift(): TestSuite
+    public function shift(): ?TestSuite
     {
         return array_shift($this->queue);
     }
@@ -42,7 +42,7 @@ class InMemoryQueue implements QueueInterface
 
     public function close(): void
     {
-        $this->queue = null;
+        $this->queue = [];
     }
 
     public function count(): int

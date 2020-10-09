@@ -7,9 +7,9 @@ interface QueueInterface
     /**
      * @deprecated Will be removed in v2
      */
-    public function pop(): TestSuite;
+    public function pop(): ?TestSuite;
 
-    public function shift(): TestSuite;
+    public function shift(): ?TestSuite;
 
     /**
      * Push a collections of tests.

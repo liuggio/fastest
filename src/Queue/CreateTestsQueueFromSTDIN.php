@@ -29,7 +29,7 @@ class CreateTestsQueueFromSTDIN
 
         $testSuites = new TestsQueue();
         while (false !== ($line = fgets($fstin))) {
-            $this->addLineIfNotEmpty($testSuites, $line);
+            $this->addLineIfNotEmpty($testSuites, (string) $line);
         }
 
         $this->fstin = $fstin;
@@ -44,7 +44,7 @@ class CreateTestsQueueFromSTDIN
         }
     }
 
-    private function addLineIfNotEmpty(TestsQueue &$testSuites, ?string $line): void
+    private function addLineIfNotEmpty(TestsQueue &$testSuites, string $line): void
     {
         $line = trim($line);
         if (!empty($line)) {
