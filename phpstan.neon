@@ -13,8 +13,6 @@ parameters:
 	    - phpstan-stub/Symfony/Component/Process/Process.stub
 	    - phpstan-stub/Symfony/Component/Process/Exception/ExceptionInterface.stub
 	    - phpstan-stub/Symfony/Component/Process/Exception/LogicException.stub
-	excludes_analyse:
-	    - src/Queue/CreateTestsQueueFromPhpUnitXML.php #@todo To be removed in v2, when drop support for older PHPUnit versions
 	reportUnmatchedIgnoredErrors: false
 	ignoreErrors: #see https://github.com/phpstan/phpstan/issues/1267#issuecomment-552874947 -> @todo remove when sf 3.4 support ends
 	    - "#^Call to an undefined static method #"
