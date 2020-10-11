@@ -2,30 +2,6 @@
 
 namespace Liuggio\Fastest\Queue;
 
-// BC
-if (class_exists('\PHPUnit_Util_Configuration')) {
-    class_alias('\PHPUnit_Util_Configuration', '\PHPHPUnit_Util_ConfigurationPUnit\Util\Configuration');
-}
-
-if (class_exists('\PHPUnit_Framework_TestSuite')) {
-    class_alias('\PHPUnit_Framework_TestSuite', '\PHPUnit\Framework\TestSuite');
-}
-
-if (class_exists('\PHPUnit_Util_TestSuiteIterator')) {
-    class_alias('\PHPUnit_Util_TestSuiteIterator', '\PHPUnit\Framework\TestSuiteIterator');
-}
-
-if (class_exists('\PHPUnit_Util_Fileloader')) {
-    class_alias('\PHPUnit_Util_Fileloader', '\PHPUnit\Util\Fileloader');
-}
-
-/*
- * Trigger autoload for possible file loader versions.
- * This fixes the problem with PHP classes being case insensitive versus composer case sensitive autoloader.
- */
-class_exists('\PHPUnit\Util\Fileloader');
-class_exists('\PHPUnit\Util\FileLoader');
-
 class CreateTestsQueueFromPhpUnitXML
 {
     public static function execute(string $xmlFile): TestsQueue
@@ -39,6 +15,12 @@ class CreateTestsQueueFromPhpUnitXML
         return $testSuites;
     }
 
+    /**
+     * @param TestsQueue $testSuites
+     * @param \Iterator<\PHPUnit\Framework\TestSuite|\PHPUnit\Framework\TestCase> $testSuiteIterator
+     *
+     * @throws \ReflectionException
+     */
     private static function processTestSuite(
         TestsQueue $testSuites,
         \Iterator $testSuiteIterator
@@ -52,22 +34,33 @@ class CreateTestsQueueFromPhpUnitXML
         }
     }
 
+    /**
+     * @param TestsQueue $testSuites
+     * @param \PHPUnit\Framework\TestSuite<\PHPUnit\Framework\Test>|\PHPUnit\Framework\TestCase $testSuite
+     *
+     * @throws \ReflectionException
+     */
     private static function addTestFile(TestsQueue $testSuites, $testSuite): void
     {
         $name = $testSuite->getName();
         if (class_exists($name)) {
             $class = new \ReflectionClass($name);
-            $testSuites->add($class->getFileName());
+            if (false === $fileName = $class->getFileName()) {
+                return;
+            }
+
+            $testSuites->add($fileName);
         }
     }
 
     /**
-     * Loads a bootstrap file.
+     * @param array<string, bool|string|int> $config
      *
-     * @param array $config The Phpunit config
+     * @return void
      */
-    private static function handleBootstrap(array $config)
+    private static function handleBootstrap(array $config): void
     {
+        /** @var string $filename */
         $filename = isset($config['bootstrap']) ? $config['bootstrap'] : 'vendor/autoload.php';
 
         \PHPUnit\Util\FileLoader::checkAndLoad($filename);
