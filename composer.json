@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^7.3",
         "symfony/console": "^3.4|^4.2|^5.0",
         "symfony/stopwatch": "^3.4|^4.2|^5.0",
         "symfony/process": "^3.4|^4.2|^5.0",
