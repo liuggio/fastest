@@ -124,12 +124,12 @@ class Processes
     }
 
     /**
-     * @param callable $terminationCallback A callback to be called after one of the processes is terminated
+     * @param callable|null $terminationCallback A callback to be called after one of the processes is terminated
      * @param bool     $addToCompletedQueue A flag that indicates if this process needs to be added to completedQueue
      *
      * @return bool
      */
-    public function wait($terminationCallback = null, $addToCompletedQueue = true)
+    public function wait($terminationCallback = null, $addToCompletedQueue = true): bool
     {
         $lastProcessesRunningCount = $currentRunningProcessesCount = $this->countRunning();
         while ($currentRunningProcessesCount > 0) {
@@ -165,7 +165,7 @@ class Processes
     /**
      * @return int Number of processes still running
      */
-    public function countRunning()
+    public function countRunning(): int
     {
         $count = 0;
 
@@ -183,7 +183,7 @@ class Processes
      *
      * @return int
      */
-    public function getExitCode()
+    public function getExitCode(): int
     {
         return $this->errorCounter;
     }
@@ -195,7 +195,7 @@ class Processes
      *
      * @api
      */
-    public function isSuccessful()
+    public function isSuccessful(): bool
     {
         return 0 === $this->getExitCode();
     }
@@ -256,7 +256,7 @@ class Processes
     /**
      * @return Report[]
      */
-    public function getReport()
+    public function getReport(): array
     {
         return $this->totalBuffer;
     }

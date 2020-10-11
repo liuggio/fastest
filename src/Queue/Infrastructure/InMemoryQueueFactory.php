@@ -3,6 +3,7 @@
 namespace Liuggio\Fastest\Queue\Infrastructure;
 
 use Liuggio\Fastest\Queue\QueueFactoryInterface;
+use Liuggio\Fastest\Queue\QueueInterface;
 
 class InMemoryQueueFactory implements QueueFactoryInterface
 {
@@ -11,7 +12,7 @@ class InMemoryQueueFactory implements QueueFactoryInterface
      */
     private static $queue = null;
 
-    public function create(): InMemoryQueue
+    public function create(): QueueInterface
     {
         if (null === self::$queue) {
             self::$queue = new InMemoryQueue();

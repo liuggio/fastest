@@ -27,6 +27,8 @@ class ParallelCommand extends Command
     private const BEFORE_OPTION = 'before';
     private const XML_OPTION = 'xml';
     private const PRESERVE_ORDER_OPTION = 'preserve-order';
+    private const RERUN_FAILED_OPTION = 'rerun-failed';
+    private const NO_ERRORS_SUMMARY_OPTION = 'no-errors-summary';
 
     protected function configure(): void
     {
@@ -63,13 +65,13 @@ class ParallelCommand extends Command
                 'Queue is randomized by default, with this option the queue is read preserving the order.'
             )
             ->addOption(
-                'rerun-failed',
+                self::RERUN_FAILED_OPTION,
                 'r',
                 InputOption::VALUE_NONE,
                 'Re-run failed test with before command if exists.'
             )
             ->addOption(
-                'no-errors-summary',
+                self::NO_ERRORS_SUMMARY_OPTION,
                 null,
                 InputOption::VALUE_NONE,
                 'Do not display all errors after the test run. Useful with --vv because it already displays errors immediately after they happen.'
@@ -77,7 +79,7 @@ class ParallelCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $stopWatch = new Stopwatch();
         $stopWatch->start('execute');
@@ -134,7 +136,7 @@ class ParallelCommand extends Command
             $this->formatMemory($event->getMemory())
         ));
 
-        if ($input->getOption('rerun-failed')) {
+        if ($input->getOption(self::RERUN_FAILED_OPTION)) {
             $processes = $this->executeBeforeCommand($queue, $processes, $input, $output, $processManager);
         }
 
@@ -189,14 +191,9 @@ class ParallelCommand extends Command
         return OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity();
     }
 
-    /**
-     * @param InputInterface $input
-     *
-     * @return bool Whether user wanted to see error summary
-     */
-    private function hasErrorSummary(InputInterface $input)
+    private function hasErrorSummary(InputInterface $input): bool
     {
-        return !$input->getOption('no-errors-summary');
+        return !$input->getOption(self::NO_ERRORS_SUMMARY_OPTION);
     }
 
     private function executeBeforeCommand(
@@ -255,7 +252,7 @@ class ParallelCommand extends Command
      *
      * @return string
      */
-    private function formatMemory($bytes)
+    private function formatMemory(int $bytes): string
     {
         $units = ['B', 'KiB', 'MiB', 'GiB'];
         $mod = 1024;

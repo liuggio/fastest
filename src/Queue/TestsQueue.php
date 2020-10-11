@@ -34,7 +34,7 @@ class TestsQueue extends ArrayCollection
      *
      * @return TestsQueue
      */
-    public function randomize()
+    public function randomize(): TestsQueue
     {
         $array = $this->toArray();
         shuffle($array);
@@ -59,7 +59,7 @@ class TestsQueue extends ArrayCollection
     /**
      * {@inheritdoc}
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return parent::isEmpty();
     }

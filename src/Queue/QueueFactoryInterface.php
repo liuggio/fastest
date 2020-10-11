@@ -7,5 +7,5 @@ interface QueueFactoryInterface
     /**
      * @return QueueInterface
      */
-    public function create();
+    public function create(): QueueInterface;
 }
