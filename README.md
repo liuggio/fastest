@@ -124,7 +124,7 @@ find tests/ -name "*Test.php" | ./vendor/liuggio/fastest/fastest -b"app/console 
 
 ``` bash
 # Install phpcov in order to merge the code coverage
-composer require --dev "phpunit/phpcov:~3.0"
+composer require --dev phpunit/phpcov
 # Create a directory where the coverage files will be put
 mkdir -p cov/fastest/
 # Generate as many files than tests, since {n} is an unique number for each test
