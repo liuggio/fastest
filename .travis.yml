@@ -6,16 +6,20 @@ php:
 
 env:
   matrix:
-    - PREFER_LOWEST="--prefer-lowest"
-    - PREFER_LOWEST=""
+    - PREFER_LOWEST="--prefer-lowest" PHPUNIT_VERSION="^8.2"
+    - PREFER_LOWEST="" PHPUNIT_VERSION="^8.2"
+    - PREFER_LOWEST="" PHPUNIT_VERSION="~9.0"
+    - PREFER_LOWEST="" PHPUNIT_VERSION="~9.3"
+    - PREFER_LOWEST="" PHPUNIT_VERSION="~9.5"
 
 cache:
   directories:
     - $HOME/.composer/cache
 
 before_script:
+  - phpenv config-rm xdebug.ini
   - composer selfupdate
-  - composer require "phpunit/phpunit:^8.2" --no-update;
+  - composer require "phpunit/phpunit:$PHPUNIT_VERSION" --no-update;
   - composer update $PREFER_LOWEST
 
 script:
