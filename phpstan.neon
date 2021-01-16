@@ -14,8 +14,7 @@ parameters:
 	    - phpstan-stub/Symfony/Component/Process/Exception/ExceptionInterface.stub
 	    - phpstan-stub/Symfony/Component/Process/Exception/LogicException.stub
 	reportUnmatchedIgnoredErrors: false
-	ignoreErrors: #see https://github.com/phpstan/phpstan/issues/1267#issuecomment-552874947 -> @todo remove when sf 3.4 support ends
-	    - "#^Call to an undefined static method #"
+	ignoreErrors:
 	    # @todo remove when phpunit 8.5 support ends
 	    - message: '#^Call to static method getInstance\(\) on an unknown class PHPUnit\\TextUI\\(:?|Xml)Configuration\\Registry.$#'
 	      path: src/Queue/CreateTestsQueueFromPhpUnitXML.php
