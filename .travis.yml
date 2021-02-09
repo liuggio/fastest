@@ -1,13 +1,14 @@
 language: php
+dist: bionic
 
 php:
   - 7.3
   - 7.4
+  - 8.0
 
 env:
   matrix:
-    - PREFER_LOWEST="--prefer-lowest" PHPUNIT_VERSION="^8.2"
-    - PREFER_LOWEST="" PHPUNIT_VERSION="^8.2"
+    - PREFER_LOWEST="" PHPUNIT_VERSION="~8.5"
     - PREFER_LOWEST="" PHPUNIT_VERSION="~9.0"
     - PREFER_LOWEST="" PHPUNIT_VERSION="~9.3"
     - PREFER_LOWEST="" PHPUNIT_VERSION="~9.5"
@@ -20,7 +21,7 @@ before_script:
   - phpenv config-rm xdebug.ini
   - composer selfupdate
   - composer require "phpunit/phpunit:$PHPUNIT_VERSION" --no-update;
-  - composer update $PREFER_LOWEST
+  - composer update $PREFER_LOWEST --prefer-dist --no-interaction --no-progress --ignore-platform-req=php
 
 script:
   - bin/phpstan.phar analyze src tests
