@@ -8,7 +8,7 @@ php:
 
 env:
   matrix:
-    - PREFER_LOWEST="" PHPUNIT_VERSION="~8.5"
+    - PREFER_LOWEST="--prefer-lowest" PHPUNIT_VERSION="~8.5"
     - PREFER_LOWEST="" PHPUNIT_VERSION="~9.0"
     - PREFER_LOWEST="" PHPUNIT_VERSION="~9.3"
     - PREFER_LOWEST="" PHPUNIT_VERSION="~9.5"
