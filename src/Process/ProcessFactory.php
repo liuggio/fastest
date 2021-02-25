@@ -133,7 +133,9 @@ class ProcessFactory
             return 'bin\phpunit {}';
         }
 
-        if (file_exists(getenv('APPDATA').'\Composer\vendor\bin\phpunit')) {
+        /** @var string $appData */
+        $appData = getenv('APPDATA');
+        if (file_exists($appData.'\Composer\vendor\bin\phpunit')) {
             return '%APPDATA%\Composer\vendor\bin\phpunit {}';
         }
 
@@ -150,7 +152,9 @@ class ProcessFactory
             return 'bin/phpunit {}';
         }
 
-        if (file_exists(getenv('HOME').'/.composer/vendor/bin/phpunit')) {
+        /** @var string $home */
+        $home = getenv('HOME');
+        if (file_exists($home.'/.composer/vendor/bin/phpunit')) {
             return '~/.composer/vendor/bin/phpunit {}';
         }
 
