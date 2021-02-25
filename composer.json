@@ -16,7 +16,7 @@
         "doctrine/collections": "^1.2"
     },
     "require-dev": {
-        "behat/behat": "^3.6.1",
+        "behat/behat": "^3.7",
         "phpstan/phpstan": "^0.12.78",
         "phpstan/phpstan-phpunit": "^0.12.17"
     },
