@@ -21,7 +21,7 @@ before_script:
   - phpenv config-rm xdebug.ini
   - composer selfupdate
   - composer require "phpunit/phpunit:$PHPUNIT_VERSION" --no-update;
-  - if [ "$PREFER_LOWEST" != "" and "php" == "8.0" ]; then composer require symfony/dependency-injection:3.4.47 --no-update; fi;
+  - if [ "$PREFER_LOWEST" != "" and ${TRAVIS_PHP_VERSION:0:3} == "8.0" ]; then composer require symfony/dependency-injection:3.4.47 --no-update; fi;
   - composer update $PREFER_LOWEST --prefer-dist --no-interaction --no-progress --ignore-platform-req=php
 
 script:
