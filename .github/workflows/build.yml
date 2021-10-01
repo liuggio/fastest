@@ -1,0 +1,64 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  json-validation:
+    name: Json validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.3
+
+      - name: Validate composer.json
+        run: composer validate
+
+  tests:
+    needs: [ json-validation ]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: [ '7.3', '7.4', '8.0' ]
+        composer-deps: [ 'lowest', 'locked', 'highest' ]
+        php-unit-versions: [ '8.5.10', '9.0', '9.3', '9.5' ]
+        exclude:
+          - composer-deps: 'lowest'
+            php-unit-versions: '9.0'
+          - composer-deps: 'lowest'
+            php-unit-versions: '9.3'
+          - composer-deps: 'lowest'
+            php-unit-versions: '9.5'
+          - composer-deps: 'locked'
+            php-unit-versions: '8.5.10'
+          - composer-deps: 'highest'
+            php-unit-versions: '8.5.10'
+    name: Tests - PHP ${{ matrix.php-versions }} - Deps ${{ matrix.composer-deps }} - PHPUnit ${{ matrix.php-unit-versions }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+
+      - name: Require PHPUnit
+        run: composer require "phpunit/phpunit:~${{ matrix.php-unit-versions }}" --no-update;
+
+      - name: Composer install
+        uses: ramsey/composer-install@v1
+        with:
+          dependency-versions: "${{ matrix.composer-deps }}"
+
+      - name: Static analysis
+        run: bin/phpstan.phar analyze src tests
+
+      - name: Run tests
+        run: |
+          find tests/ -name "*Test.php" | php fastest -v
+          ./fastest -x phpunit.xml.dist -v "bin/phpunit {}"
+          bin/behat --config=adapters/Behat/behat.yml
