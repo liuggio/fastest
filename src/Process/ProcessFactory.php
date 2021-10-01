@@ -95,14 +95,7 @@ class ProcessFactory
      */
     private function createProcess(string $executeCommand, array $arrayEnv): Process
     {
-        if (method_exists(Process::class, 'fromShellCommandline')) {
-            $process = Process::fromShellCommandline($executeCommand, null, $arrayEnv);
-        } else {
-            // Drop when sf 3.4 supports ends
-            /** @phpstan-ignore-next-line */ // @todo remove when sf 3.4 support ends
-            $process = new Process($executeCommand, null, $arrayEnv);
-        }
-
+        $process = Process::fromShellCommandline($executeCommand, null, $arrayEnv);
         $process->setTimeout(null);
         $process->setIdleTimeout(null);
 
