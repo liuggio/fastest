@@ -1,7 +1,7 @@
 Fastest - simple parallel testing execution
 ===========================================
 
-[![Build Status](https://secure.travis-ci.org/liuggio/fastest.png?branch=master)](http://travis-ci.org/liuggio/fastest)
+![example branch parameter](https://github.com/liuggio/fastest/actions/workflows/build.yml/badge.svg?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/liuggio/fastest/v/stable.svg)](https://packagist.org/packages/liuggio/fastest) [![Latest Unstable Version](https://poser.pugx.org/liuggio/fastest/v/unstable.svg)](https://packagist.org/packages/liuggio/fastest)
 
 ## Only one thing
@@ -268,10 +268,6 @@ If you want to use it with phpunit you may want to install phpunit/phpunit as de
 
 ### Run this test with `fastest`
 
-**Easy** see [.travis.yml](.travis.yml#L18) file
-
-## The arguments:
-
 ```
 Usage:
  fastest [-p|--process="..."] [-b|--before="..."] [-x|--xml="..."] [-o|--preserve-order] [--no-errors-summary] [execute]
@@ -294,6 +290,8 @@ Options:
  --no-interaction (-n) Do not ask any interactive question.
 
 ```
+
+e.g. `./fastest -x phpunit.xml.dist -v "bin/phpunit {}"`
 
 ### Known problems
 
