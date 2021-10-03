@@ -280,6 +280,7 @@ Options:
  --before (-b)         Execute a process before consuming the queue, it executes this command once per process, useful for init schema and load fixtures.
  --xml (-x)            Read input from a phpunit xml file from the '<testsuites>' collection. Note: it is not used for consuming.
  --preserve-order (-o) Queue is randomized by default, with this option the queue is read preserving the order.
+ --rerun-failed (-r)   Re-run failed test with before command if exists.
  --no-errors-summary   Do not display all errors after the test run. Useful with --vv because it already displays errors immediately after they happen.
  --help (-h)           Display this help message.
  --quiet (-q)          Do not output any message.
