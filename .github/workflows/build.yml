@@ -25,7 +25,7 @@ jobs:
       fail-fast: false
       matrix:
         php-versions: [ '7.3', '7.4', '8.0' ]
-        composer-deps: [ 'lowest', 'locked', 'highest' ]
+        composer-deps: [ 'lowest', 'highest' ]
         php-unit-versions: [ '8.5.10', '9.0', '9.3', '9.5' ]
         exclude:
           - composer-deps: 'lowest'
@@ -34,8 +34,6 @@ jobs:
             php-unit-versions: '9.3'
           - composer-deps: 'lowest'
             php-unit-versions: '9.5'
-          - composer-deps: 'locked'
-            php-unit-versions: '8.5.10'
           - composer-deps: 'highest'
             php-unit-versions: '8.5.10'
     name: Tests - PHP ${{ matrix.php-versions }} - Deps ${{ matrix.composer-deps }} - PHPUnit ${{ matrix.php-unit-versions }}
