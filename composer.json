@@ -17,8 +17,8 @@
     },
     "require-dev": {
         "behat/behat": "^3.6",
-        "phpstan/phpstan": "^0.12.78",
-        "phpstan/phpstan-phpunit": "^0.12.17"
+        "phpstan/phpstan": "^0.12.99",
+        "phpstan/phpstan-phpunit": "^0.12.22"
     },
     "config": {
         "bin-dir": "bin/"

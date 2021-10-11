@@ -24,9 +24,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: [ '7.3', '7.4', '8.0' ]
+        php-versions: [ '7.3', '7.4', '8.0', '8.1']
         composer-deps: [ 'lowest', 'highest' ]
-        php-unit-versions: [ '8.5.10', '9.0', '9.3', '9.5' ]
+        php-unit-versions: [ '8.5.19', '9.0', '9.3', '9.5' ]
         exclude:
           - composer-deps: 'lowest'
             php-unit-versions: '9.0'
@@ -35,7 +35,7 @@ jobs:
           - composer-deps: 'lowest'
             php-unit-versions: '9.5'
           - composer-deps: 'highest'
-            php-unit-versions: '8.5.10'
+            php-unit-versions: '8.5.19'
     name: Tests - PHP ${{ matrix.php-versions }} - Deps ${{ matrix.composer-deps }} - PHPUnit ${{ matrix.php-unit-versions }}
     steps:
       - uses: actions/checkout@v2
