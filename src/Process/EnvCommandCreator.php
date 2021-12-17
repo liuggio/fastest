@@ -27,29 +27,26 @@ class EnvCommandCreator
         int $currentProcessCounter,
         bool $isFirstOnItsThread = false
     ): array {
-        return array_change_key_case(static::cleanEnvVariables($_SERVER) + $_ENV + [
+        $env = [
             self::ENV_TEST_CHANNEL => $i,
             self::ENV_TEST_CHANNEL_READABLE => 'test_'.$i,
             self::ENV_TEST_CHANNELS_NUMBER => $maxProcesses,
             self::ENV_TEST_ARGUMENT => $test,
             self::ENV_TEST_INCREMENTAL_NUMBER => $currentProcessCounter,
             self::ENV_TEST_IS_FIRST_ON_CHANNEL => (int) $isFirstOnItsThread, // @todo should this be bool?
-        ], CASE_UPPER);
-    }
+        ] + $_SERVER + $_ENV;
 
-    /**
-     * @param array<string, mixed> $variables
-     *
-     * @return array<string, mixed>
-     */
-    public static function cleanEnvVariables(array $variables): array
-    {
-        return array_filter(
-            $variables,
-            function ($key) {
-                return 0 !== strpos($key, 'ENV_TEST_');
-            },
-            ARRAY_FILTER_USE_KEY
-        );
+        $res = [];
+        $mergedArgs = [];
+        foreach ($env as $key => $value) {
+            if (array_key_exists(strtolower($key), $mergedArgs)) {
+                continue;
+            }
+
+            $res[$key] = $value;
+            $mergedArgs[strtolower($key)] = true;
+        }
+
+        return $res;
     }
 }

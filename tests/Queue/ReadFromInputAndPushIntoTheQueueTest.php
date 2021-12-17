@@ -16,6 +16,7 @@ class ReadFromInputAndPushIntoTheQueueTest extends TestCase
 
         $processesDir = str_replace('/Queue', '', __DIR__).'/Process/';
         $processesFiles = [
+            'EnvCommandCreatorTest.php',
             'ProcessFactoryTest.php',
             'ProcessesManagerTest.php',
             'ProcessesTest.php',
