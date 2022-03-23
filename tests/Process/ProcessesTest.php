@@ -44,7 +44,7 @@ class ProcessesTest extends TestCase
             ->expects($this->exactly(5))
             ->method('isTerminated')
             ->willReturn(false)
-            ->willReturnOnConsecutiveCalls(false, false, false, true)
+            ->willReturnOnConsecutiveCalls(false, false, false, true, false)
         ;
 
         $processes = new Processes([$process]);
@@ -109,7 +109,7 @@ class ProcessesTest extends TestCase
         $process = $this->createMock(Process::class);
         $process
             ->method('isTerminated')
-            ->willReturnOnConsecutiveCalls(false, true);
+            ->willReturnOnConsecutiveCalls(false, true, false);
         $process
             ->method('isSuccessful')
             ->willReturn(true);
@@ -139,7 +139,7 @@ class ProcessesTest extends TestCase
         $process = $this->createMock(Process::class);
         $process
             ->method('isTerminated')
-            ->willReturnOnConsecutiveCalls(false, true);
+            ->willReturnOnConsecutiveCalls(false, true, false);
         $process
             ->method('isSuccessful')
             ->willReturn(true);
