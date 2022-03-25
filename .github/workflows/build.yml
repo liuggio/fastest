@@ -13,7 +13,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.3
+          php-version: 7.4
 
       - name: Validate composer.json
         run: composer validate
@@ -24,16 +24,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: [ '7.3', '7.4', '8.0', '8.1']
+        php-versions: [ '7.4', '8.0', '8.1']
         composer-deps: [ 'lowest', 'highest' ]
         php-unit-versions: [ '8.5.19', '9.0', '9.3', '9.5' ]
         exclude:
-          - composer-deps: 'lowest'
-            php-unit-versions: '9.0'
-          - composer-deps: 'lowest'
-            php-unit-versions: '9.3'
-          - composer-deps: 'lowest'
-            php-unit-versions: '9.5'
           - composer-deps: 'highest'
             php-unit-versions: '8.5.19'
     name: Tests - PHP ${{ matrix.php-versions }} - Deps ${{ matrix.composer-deps }} - PHPUnit ${{ matrix.php-unit-versions }}
