@@ -232,7 +232,7 @@ class Processes
     private function moveToCompletedProcesses(int $key, Process $process): void
     {
         $env = $process->getEnv();
-        $suite = $env[EnvCommandCreator::ENV_TEST_ARGUMENT];
+        $suite = (string) $env[EnvCommandCreator::ENV_TEST_ARGUMENT];
         $number = $env[EnvCommandCreator::ENV_TEST_CHANNEL];
         $numberOnThread = $env[EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL];
 

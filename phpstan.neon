@@ -7,31 +7,9 @@ parameters:
 		- src
 		- tests
 	stubFiles:
-	    - phpstan-stub/Doctrine/Common/Collections/ArrayCollection.stub #@todo To be removed in v2, when drop support for older deps
-	    - phpstan-stub/Doctrine/Common/Collections/Collection.stub #@todo To be removed in v2, when drop support for older deps
-	    - phpstan-stub/Doctrine/Common/Collections/Selectable.stub #@todo To be removed in v2, when drop support for older deps
+	    - phpstan-stub/Doctrine/Common/Collections/ArrayCollection.stub #@todo To be removed when drop support for older deps
+	    - phpstan-stub/Doctrine/Common/Collections/Collection.stub #@todo To be removed when drop support for older deps
+	    - phpstan-stub/Doctrine/Common/Collections/Selectable.stub #@todo To be removed when drop support for older deps
 	    - phpstan-stub/Symfony/Component/Process/Process.stub
 	    - phpstan-stub/Symfony/Component/Process/Exception/ExceptionInterface.stub
 	    - phpstan-stub/Symfony/Component/Process/Exception/LogicException.stub
-	reportUnmatchedIgnoredErrors: false
-	ignoreErrors: #see https://github.com/phpstan/phpstan/issues/1267#issuecomment-552874947 -> @todo remove when sf 3.4 support ends
-	    - "#^Call to an undefined static method #"
-	    # @todo remove when phpunit 8.5 support ends
-	    - message: '#^Call to static method getInstance\(\) on an unknown class PHPUnit\\TextUI\\(:?|Xml)Configuration\\Registry.$#'
-	      path: src/Queue/CreateTestsQueueFromPhpUnitXML.php
-	    - message: '#has invalid typehint type PHPUnit\\TextUI\\(:?|Xml)Configuration\\TestSuiteCollection.$#'
-	      path: src/Queue/CreateTestsQueueFromPhpUnitXML.php
-	    - message: '#^Call to method map\(\) on an unknown class PHPUnit\\TextUI\\(:?|Xml)Configuration\\TestSuiteMapper.$#'
-	      path: src/Queue/CreateTestsQueueFromPhpUnitXML.php
-	    - message: '#has invalid typehint type PHPUnit\\TextUI\\(:?|Xml)Configuration\\PHPUnit.$#'
-	      path: src/Queue/CreateTestsQueueFromPhpUnitXML.php
-	    - message: '#on an unknown class PHPUnit\\TextUI\\(:?|Xml)Configuration\\PHPUnit.$#'
-	      path: src/Queue/CreateTestsQueueFromPhpUnitXML.php
-	    - message: '#^Instantiated class PHPUnit\\TextUI\\(:?|Xml)Configuration\\TestSuiteMapper not found.$#'
-	      path: src/Queue/CreateTestsQueueFromPhpUnitXML.php
-	    - message: '#^Call to method load\(\) on an unknown class PHPUnit\\TextUI\\XmlConfiguration\\Loader.$#'
-	      path: src/Queue/CreateTestsQueueFromPhpUnitXML.php
-	    - message: '#^Instantiated class PHPUnit\\TextUI\\XmlConfiguration\\Loader not found.$#'
-	      path: src/Queue/CreateTestsQueueFromPhpUnitXML.php
-	    - message: '#^Call to static method getInstance\(\) on an unknown class PHPUnit\\Util\\Configuration.$#'
-	      path: src/Queue/CreateTestsQueueFromPhpUnitXML.php
