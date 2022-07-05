@@ -7,19 +7,18 @@ use Liuggio\Fastest\Process\EnvCommandCreator;
 
 class ConnectionFactory extends BaseConnectionFactory
 {
-    protected const DATABASE_NAME_PLACEHOLDER = '__DBNAME__';
-    protected const DATABASE_PORT_PLACEHOLDER = '__DBPORT__';
-
     protected const CONNECTION_STRING_PATTERNS = [
-        'sql' => '/(?P<protocol>^(mysql|postgresql))\:\/\/(?P<user>.+)?\:(?P<password>.+)' .
+        'sql' => '/(?P<protocol>^(mysql|postgresql))\:\/\/(?P<user>.+)?\:(?P<password>.+)'.
             '?\@(?P<host>.+)\:(?P<port>\d{4})\/(?P<database>.+)\?(?P<parameters>[a-zA-Z].+=.+&?)/',
-        'sqlite' => '/(?P<protocol>^(sqlite))\:\/\/(\%kernel\..+\%|.+)(?P<database>.*\.db$)/'
+        'sqlite' => '/(?P<protocol>^(sqlite))\:\/\/(\%kernel\..+\%|.+)(?P<database>.*\.db$)/',
     ];
 
-    protected function getDbNameFromEnv($dbName): string
+    protected function getDbNameFromEnv(string $dbName): string
     {
         if ($this->issetDbNameEnvValue()) {
-            return $dbName.'_'.$this->getDbNameEnvValue();
+            return preg_match('/\d$/m', $dbName)
+                ? $dbName.'_test'
+                : $dbName.'_'.$this->getDbNameEnvValue();
         }
 
         return $dbName;
@@ -36,6 +35,6 @@ class ConnectionFactory extends BaseConnectionFactory
     {
         $dbName = getenv(EnvCommandCreator::ENV_TEST_CHANNEL_READABLE);
 
-        return $dbName ?? null;
+        return is_string($dbName) ? $dbName : null;
     }
 }
