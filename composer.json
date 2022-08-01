@@ -18,7 +18,9 @@
     "require-dev": {
         "behat/behat": "^3.6",
         "phpstan/phpstan": "^0.12.99",
-        "phpstan/phpstan-phpunit": "^0.12.22"
+        "phpstan/phpstan-phpunit": "^0.12.22",
+        "phpunit/phpunit": "^9.5",
+        "doctrine/doctrine-bundle": "^2.7"
     },
     "config": {
         "bin-dir": "bin/"
