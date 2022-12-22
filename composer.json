@@ -13,7 +13,7 @@
         "symfony/console": "^4.4|^5.0|^6.0",
         "symfony/stopwatch": "^4.4|^5.0|^6.0",
         "symfony/process": "^4.4.35|^5.0|^6.0",
-        "doctrine/collections": "^1.2"
+        "doctrine/collections": "^1.2|^2.0"
     },
     "require-dev": {
         "behat/behat": "^3.6",
