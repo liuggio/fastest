@@ -53,7 +53,9 @@ class TestsQueue extends ArrayCollection
             $value = new TestSuite($value);
         }
 
-        return parent::add($value);
+        parent::add($value);
+        
+        return true;
     }
 
     /**
