@@ -18,6 +18,7 @@ use Liuggio\Fastest\Process\ProcessFactory;
 use Liuggio\Fastest\Process\ProcessorCounter;
 use Liuggio\Fastest\Queue\Infrastructure\InMemoryQueueFactory;
 use Liuggio\Fastest\Queue\ReadFromInputAndPushIntoTheQueue;
+use Liuggio\Fastest\UI\NoProgressRenderer;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 class ParallelCommand extends Command
@@ -29,6 +30,7 @@ class ParallelCommand extends Command
     private const PRESERVE_ORDER_OPTION = 'preserve-order';
     private const RERUN_FAILED_OPTION = 'rerun-failed';
     private const NO_ERRORS_SUMMARY_OPTION = 'no-errors-summary';
+    private const NO_PROGRESS_OPTION = 'no-progress';
 
     protected function configure(): void
     {
@@ -76,6 +78,12 @@ class ParallelCommand extends Command
                 InputOption::VALUE_NONE,
                 'Do not display all errors after the test run. Useful with --vv because it already displays errors immediately after they happen.'
             )
+            ->addOption(
+                self::NO_PROGRESS_OPTION,
+                null,
+                InputOption::VALUE_NONE,
+                'Do not display progress',
+            )
         ;
     }
 
@@ -119,6 +127,12 @@ class ParallelCommand extends Command
             throw new \Exception(sprintf('%s should have a scalar (string) or null value', self::BEFORE_OPTION));
         }
 
+        $noProgressOption = $input->getOption(self::NO_PROGRESS_OPTION);
+        if (!is_bool($noProgressOption) && null !== $noProgressOption) {
+            throw new \Exception(sprintf('%s should not have any value', self::NO_PROGRESS_OPTION));
+        }
+        $noProgressOption = (bool) $noProgressOption;
+
         $processManager = new ProcessesManager($maxNumberOfParallelProc, $processFactory, $beforeOption);
 
         // header
@@ -127,7 +141,7 @@ class ParallelCommand extends Command
         $output->writeln('- Will be consumed by <fg=white;bg=blue>'.$maxNumberOfParallelProc.'</> parallel Processes.');
 
         // loop
-        $processes = $this->doExecute($input, $output, $queue, $processManager);
+        $processes = $this->doExecute($input, $output, $queue, $processManager, $noProgressOption);
 
         $event = $stopWatch->stop('execute');
         $output->writeln(sprintf(
@@ -137,7 +151,7 @@ class ParallelCommand extends Command
         ));
 
         if ($input->getOption(self::RERUN_FAILED_OPTION)) {
-            $processes = $this->executeBeforeCommand($queue, $processes, $input, $output, $processManager);
+            $processes = $this->executeBeforeCommand($queue, $processes, $input, $output, $processManager, $noProgressOption);
         }
 
         return $processes->getExitCode();
@@ -158,11 +172,14 @@ class ParallelCommand extends Command
         InputInterface $input,
         OutputInterface $output,
         QueueInterface $queue,
-        ProcessesManager $processManager
+        ProcessesManager $processManager,
+        bool $noProgressOption
     ): Processes {
         $processes = null;
 
-        if ($this->isVerbose($output)) {
+        if ($noProgressOption) {
+            $progressBar = new NoProgressRenderer($this->hasErrorSummary($input), $output);
+        } elseif ($this->isVerbose($output)) {
             $progressBar = new VerboseRenderer($queue->count(), $this->hasErrorSummary($input), $output);
         } else {
             $progressBar = new ProgressBarRenderer($queue->count(), $this->hasErrorSummary($input), $output);
@@ -201,13 +218,14 @@ class ParallelCommand extends Command
         Processes $processes,
         InputInterface $input,
         OutputInterface $output,
-        ProcessesManager $processManager
+        ProcessesManager $processManager,
+        bool $noProgressOption
     ): Processes {
         if (!$processes->isSuccessful()) {
             $array = $processes->getErrorOutput();
             $output->writeln(sprintf('Re-Running [%d] elements', count($array)));
             $queue->push(new TestsQueue(array_keys($array)));
-            $processes = $this->doExecute($input, $output, $queue, $processManager);
+            $processes = $this->doExecute($input, $output, $queue, $processManager, $noProgressOption);
         }
 
         return $processes;
