@@ -10,7 +10,7 @@ class InMemoryQueueFactory implements QueueFactoryInterface
     /**
      * @var InMemoryQueue|null
      */
-    private static $queue = null;
+    private static ?InMemoryQueue $queue = null;
 
     public function create(): QueueInterface
     {

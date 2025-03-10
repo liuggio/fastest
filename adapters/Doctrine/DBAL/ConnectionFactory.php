@@ -16,13 +16,13 @@ class ConnectionFactory extends BaseConnectionFactory
      * Create a connection by name.
      *
      * @param array         $params
-     * @param Configuration $config
-     * @param EventManager  $eventManager
+     * @param Configuration|null $config
+     * @param EventManager|null $eventManager
      * @param array         $mappingTypes
      *
      * @return \Doctrine\DBAL\Connection
      */
-    public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = [])
+    public function createConnection(array $params, ?Configuration $config = null, ?EventManager $eventManager = null, array $mappingTypes = [])
     {
         if (isset($params['dbname'])) {
             $dbName = $this->getDbNameFromEnv($params['dbname']);

@@ -15,7 +15,7 @@ class ProcessorCounter
     /**
      * @var int|null
      */
-    private static $count = null;
+    private static ?int $count = null;
 
     /**
      * @var string
