@@ -87,7 +87,7 @@ class Processes
         $this->processes[$key] = $process;
     }
 
-    public function start(int $key = null): bool
+    public function start(?int $key = null): bool
     {
         if (null !== $key) {
             $this->startProcess($key);
@@ -116,7 +116,7 @@ class Processes
 
     public function stop(): bool
     {
-        return array_walk($this->processes, function (Process $item = null) {
+        return array_walk($this->processes, function (?Process $item = null) {
             if (null !== $item) {
                 $item->stop();
             }
@@ -125,11 +125,11 @@ class Processes
 
     /**
      * @param callable|null $terminationCallback A callback to be called after one of the processes is terminated
-     * @param bool     $addToCompletedQueue A flag that indicates if this process needs to be added to completedQueue
+     * @param bool $addToCompletedQueue A flag that indicates if this process needs to be added to completedQueue
      *
      * @return bool
      */
-    public function wait($terminationCallback = null, $addToCompletedQueue = true): bool
+    public function wait(?callable $terminationCallback = null, bool $addToCompletedQueue = true): bool
     {
         $lastProcessesRunningCount = $currentRunningProcessesCount = $this->countRunning();
         while ($currentRunningProcessesCount > 0) {

@@ -33,8 +33,8 @@ class ProcessesManager
 
     public function __construct(
         int $maxNumberOfParallelProcesses,
-        ProcessFactory $processFactory = null,
-        string $beforeCommand = null
+        ?ProcessFactory $processFactory = null,
+        ?string $beforeCommand = null
     ) {
         if (null === $processFactory) {
             $processFactory = new ProcessFactory($maxNumberOfParallelProcesses);
@@ -47,7 +47,7 @@ class ProcessesManager
         $this->isFirstForItsChannel = [];
     }
 
-    public function assertNProcessRunning(QueueInterface &$queue, Processes &$processes = null): bool
+    public function assertNProcessRunning(QueueInterface &$queue, ?Processes &$processes = null): bool
     {
         $parallelProcesses = max(1, min($queue->count(), $this->maxNumberOfParallelProcesses));
 

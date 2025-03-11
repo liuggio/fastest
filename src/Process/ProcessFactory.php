@@ -28,8 +28,8 @@ class ProcessFactory
 
     public function __construct(
         int $maxParallelProcessesToExecute,
-        string $commandToExecuteTemplate = null,
-        EnvCommandCreator $envCommandCreator = null
+        ?string $commandToExecuteTemplate = null,
+        ?EnvCommandCreator $envCommandCreator = null
     ) {
         if (null === $envCommandCreator) {
             $envCommandCreator = new EnvCommandCreator();
