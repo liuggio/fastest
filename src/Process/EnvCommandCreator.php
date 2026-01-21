@@ -43,8 +43,10 @@ class EnvCommandCreator
                 continue;
             }
 
-            $res[$key] = $value;
-            $mergedArgs[strtolower($key)] = true;
+            if (!is_array($value)) {
+                $res[$key] = $value;
+                $mergedArgs[strtolower($key)] = true;
+            }
         }
 
         return $res;
