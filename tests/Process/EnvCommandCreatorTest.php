@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Liuggio\Fastest\Process;
 
+use Liuggio\Fastest\Trait\ServerDataTrait;
 use PHPUnit\Framework\TestCase;
 
 class EnvCommandCreatorTest extends TestCase
 {
+    use ServerDataTrait;
+
     /**
      * @test
      */
@@ -93,8 +96,7 @@ class EnvCommandCreatorTest extends TestCase
 
         $res = $envCommandCreator->execute(1, 5, 'exec_test_command', 4, true);
 
-        unset($_ENV['A_VARIABLE']);
-        unset($_ENV['another_variable']);
+        unset($_ENV['A_VARIABLE'], $_ENV['another_variable']);
 
         $this->assertEquals(
             [
@@ -104,7 +106,7 @@ class EnvCommandCreatorTest extends TestCase
                 EnvCommandCreator::ENV_TEST_ARGUMENT => 'exec_test_command',
                 EnvCommandCreator::ENV_TEST_INCREMENTAL_NUMBER => 4,
                 EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL => 1,
-            ] + $_SERVER + $_ENV,
+            ] + $this->getServerWithoutArgv() + $_ENV,
             $res
         );
     }
