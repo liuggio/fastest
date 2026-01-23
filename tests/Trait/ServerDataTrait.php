@@ -6,6 +6,9 @@ namespace Liuggio\Fastest\Trait;
 
 trait ServerDataTrait
 {
+    /**
+     * @return array<scalar>
+     */
     protected function getServerWithoutArgv(): array
     {
         $server = $_SERVER;
