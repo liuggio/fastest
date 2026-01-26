@@ -106,8 +106,53 @@ class EnvCommandCreatorTest extends TestCase
                 EnvCommandCreator::ENV_TEST_ARGUMENT => 'exec_test_command',
                 EnvCommandCreator::ENV_TEST_INCREMENTAL_NUMBER => 4,
                 EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL => 1,
-            ] + $this->getServerWithoutArgv() + $_ENV,
+            ] + $this->getServerWithDecomposeArgv() + $_ENV,
             $res
         );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldMergeArrayEnvVariables(): void
+    {
+        $_SERVER['my_custom_array'] = [
+            'sub_array' => [
+                'another_array' => 'value_env',
+                'another_array_2' => 'value_env_2',
+            ],
+            'sub_array2' => 'value_env',
+        ];
+
+        $envCommandCreator = new EnvCommandCreator();
+
+        $res = $envCommandCreator->execute(1, 5, 'exec_test_command', 4, true);
+
+        $this->assertArrayHasKey('my_custom_array_sub_array_another_array', $res);
+        $this->assertEquals('value_env', $res['my_custom_array_sub_array_another_array']);
+        $this->assertArrayHasKey('my_custom_array_sub_array_another_array_2', $res);
+        $this->assertEquals('value_env_2', $res['my_custom_array_sub_array_another_array_2']);
+        $this->assertArrayHasKey('my_custom_array_sub_array2', $res);
+        $this->assertEquals('value_env', $res['my_custom_array_sub_array2']);
+        $this->assertArrayNotHasKey('my_custom_array', $res);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldntMergeArrayEnvVariables(): void
+    {
+        $_SERVER['my_custom_array'] = 'my_important_value_env';
+        $_SERVER['my_custom'] = [
+            'array' => 'my_useless_value_env'
+        ];
+
+        $envCommandCreator = new EnvCommandCreator();
+
+        $res = $envCommandCreator->execute(1, 5, 'exec_test_command', 4, true);
+
+        $this->assertArrayHasKey('my_custom_array', $res);
+        $this->assertEquals('my_important_value_env', $res['my_custom_array']);
+        $this->assertArrayNotHasKey('my_custom', $res);
     }
 }
