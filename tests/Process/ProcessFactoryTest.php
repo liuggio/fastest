@@ -2,10 +2,13 @@
 
 namespace Liuggio\Fastest\Process;
 
+use Liuggio\Fastest\Trait\ServerDataTrait;
 use PHPUnit\Framework\TestCase;
 
 class ProcessFactoryTest extends TestCase
 {
+    use ServerDataTrait;
+
     /**
      * @test
      */
@@ -23,7 +26,7 @@ class ProcessFactoryTest extends TestCase
                 'ENV_TEST_ARGUMENT' => 'fileA',
                 'ENV_TEST_INC_NUMBER' => 10,
                 'ENV_TEST_IS_FIRST_ON_CHANNEL' => 1,
-            ] + $_SERVER + $_ENV,
+            ] + $this->getServerWithDecomposeArgv() + $_ENV,
             $process->getenv()
         );
     }
@@ -84,7 +87,7 @@ class ProcessFactoryTest extends TestCase
                 'ENV_TEST_ARGUMENT' => 'fileA',
                 'ENV_TEST_INC_NUMBER' => 12,
                 'ENV_TEST_IS_FIRST_ON_CHANNEL' => 0,
-            ] + $_SERVER + $_ENV,
+            ] + $this->getServerWithDecomposeArgv() + $_ENV,
             $process->getenv()
         );
     }
@@ -106,7 +109,7 @@ class ProcessFactoryTest extends TestCase
                 'ENV_TEST_ARGUMENT' => 'fileA',
                 'ENV_TEST_INC_NUMBER' => 13,
                 'ENV_TEST_IS_FIRST_ON_CHANNEL' => 1,
-            ] + $_SERVER + $_ENV,
+            ] + $this->getServerWithDecomposeArgv() + $_ENV,
             $process->getenv()
         );
     }

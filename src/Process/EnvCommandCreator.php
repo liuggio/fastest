@@ -43,10 +43,51 @@ class EnvCommandCreator
                 continue;
             }
 
-            $res[$key] = $value;
-            $mergedArgs[strtolower($key)] = true;
+            if (!is_array($value)) {
+                $formattedValue = self::formatValueForEnv($value);
+                if (null !== $formattedValue) {
+                    $res[$key] = $value;
+                    $mergedArgs[strtolower($key)] = true;
+                }
+            } else {
+                self::decomposeRecursively($key, $value, $res, $mergedArgs);
+            }
         }
 
         return $res;
+    }
+
+    /**
+     * @param array<mixed> $source
+     * @param array<mixed> $globalArray
+     * @param array<mixed> $mergedArgs
+     */
+    public static function decomposeRecursively(string $mainKey, array $source, array &$globalArray, array &$mergedArgs): void
+    {
+        foreach ($source as $childKey => $value) {
+            $newKey = $mainKey . '_' . $childKey;
+            if (is_array($value)) {
+                self::decomposeRecursively($newKey, $value, $globalArray, $mergedArgs);
+            } elseif (!array_key_exists($newKey, $globalArray)) {
+                $formattedValue = self::formatValueForEnv($value);
+                if (null !== $formattedValue) {
+                    $globalArray[$newKey] = $formattedValue;
+                    $mergedArgs[strtolower($newKey)] = true;
+                }
+            }
+        }
+    }
+
+    public static function formatValueForEnv(mixed $value): ?string
+    {
+        if (is_scalar($value)) {
+            return (string) $value;
+        }
+
+        if (is_object($value) && method_exists($value, '__toString')) {
+            return (string) $value;
+        }
+
+        return null;
     }
 }
