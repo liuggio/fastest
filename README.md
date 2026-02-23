@@ -120,7 +120,7 @@ You can also run a script per process **before** the tests, useful for init sche
 find tests/ -name "*Test.php" | ./vendor/liuggio/fastest/fastest -b"app/console doc:sch:create -e test" "vendor/phpunit/phpunit/phpunit {};";
 ```
 
-### Generate and merge code coverage
+### Generate and merge code coverage (or junit files)
 
 ``` bash
 # Install phpcov in order to merge the code coverage
@@ -134,6 +134,8 @@ phpcov merge cov/fastest/ --html cov/merge/fastest/
 ```
 
 Code coverage will be available in the `cov/merge/fastest/` directory.
+
+This can also be used for junit using an alternative library [phpunit-merger](https://github.com/Nimut/phpunit-merger).
 
 ## Storage adapters
 
@@ -203,8 +205,28 @@ This will let you pipe the output directly into fastest to parallelize its execu
 
     /my/path/behat --list-scenarios | ./vendor/liuggio/fastest/fastest "/my/path/behat {}"
 
-Using `--list-scenarios` is preferred over `--list-features` because it will give a more granular scenario-by-scenario output, allowing fastest to shuffle and balance
-individual tests in a better way.
+While using `--list-scenarios` might be preferred over `--list-features` because it will give a more granular
+scenario-by-scenario output, allowing fastest to shuffle and balance individual tests in a better way...
+this can lead to a problem merging junit output e.g.
+
+```
+  Scenario Outline: my scenario
+    Given some setup
+    When I do <variable>
+    Then I see <variable>
+
+  Examples:
+    | variable |
+    | a        |
+    | b        |
+```
+
+Both of the separate junit xml files detail the testcase as name my `scenario #1` which confuses the merging logic.
+For this reason `--list-features` might be safer.
+
+Take care with using `--tags` in the behat command piping into fastest to then use the same tag list within the second behat call.
+This is because one may have a default tag set within its default profile in the `behat.yml` and this may result in scenarios
+not being found and therefore not being executed.
 
 ### About browser-based tests (Selenium, Mink, etc)
 
@@ -214,7 +236,7 @@ be a way to set this information before connecting to the database (in order to 
 
 One possible way is to implement the following steps:
 
-#### 1. Set a cookie, GET query parameter or HTTP header with the appropiate channel value
+#### 1. Set a cookie, GET query parameter or HTTP header with the appropriate channel value
 
 When your test scenario begins, maybe at the authentication phase, set one of the following to the value of the environment variable `ENV_TEST_CHANNEL_READABLE`:
 
@@ -296,7 +318,8 @@ e.g. `./fastest -x phpunit.xml.dist -v "bin/phpunit {}"`
 
 ### Known problems
 
-If you're faceing problems with unknown command errors, make sure your  [variables-order](http://us.php.net/manual/en/ini.core.php#ini.variables-order) `php.ini` setting contains `E`. If not, your enviroment variables are not set, and commands that are in your `PATH` will not work.
+If you're facing problems with unknown command errors, make sure your  [variables-order](http://us.php.net/manual/en/ini.core.php#ini.variables-order) `php.ini` setting contains `E`.
+If not, your environment variables are not set, and commands that are in your `PATH` will not work.
 
 ### Contribution
 
@@ -306,6 +329,7 @@ Thanks to:
  
 - @giorrrgio for the mongoDB adapter
 - @diegosainz for the Behat2 adapter
+- @barryswaisland-eagleeye for some updated docs
 - you?
 
 
