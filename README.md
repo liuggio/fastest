@@ -304,6 +304,7 @@ Options:
  --preserve-order (-o) Queue is randomized by default, with this option the queue is read preserving the order.
  --rerun-failed (-r)   Re-run failed test with before command if exists.
  --no-errors-summary   Do not display all errors after the test run. Useful with --vv because it already displays errors immediately after they happen.
+ --no-progress         Do not display progress bar when running.
  --help (-h)           Display this help message.
  --quiet (-q)          Do not output any message.
  --verbose (-v|vv|vvv) Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
