@@ -81,6 +81,11 @@ class ProcessFactory
     private function replaceParameters(string $cmd, string $suite, int $processNumber, int $currentProcessCounter): string
     {
         $commandToExecute = str_replace('{}', $suite, $cmd);
+
+        $commandToExecute = str_replace('{filename}', $suite, $commandToExecute);
+        $cleanFilename = trim(preg_replace('/[^a-z0-9_-]/i', '_', $suite));
+        $commandToExecute = str_replace('{clean_filename}', $cleanFilename, $commandToExecute);
+
         $commandToExecute = str_replace('{p}', (string) $processNumber, $commandToExecute);
         $commandToExecute = str_replace('{n}', (string) $currentProcessCounter, $commandToExecute);
 
