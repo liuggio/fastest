@@ -1,0 +1,6 @@
+{
+    "directories": ["src", "vendor"],
+    "main": "fastest",
+    "output": "fastest.phar",
+    "stub": true
+}
