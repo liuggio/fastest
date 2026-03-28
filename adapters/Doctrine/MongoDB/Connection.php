@@ -2,16 +2,16 @@
 
 namespace Liuggio\Fastest\Doctrine\MongoDB;
 
-use Doctrine\MongoDB\Connection as BaseConnection;
+use MongoDB\Client as BaseConnection;
 use Liuggio\Fastest\Process\EnvCommandCreator;
 
 class Connection extends BaseConnection
 {
-    public function selectDatabase($name)
+    public function selectDatabase($databaseName, array $options = [])
     {
-        $name = $this->getDbNameFromEnv($name);
+        $databaseName = $this->getDbNameFromEnv($databaseName);
 
-        return parent::selectDatabase($name);
+        return parent::selectDatabase($databaseName, $options);
     }
 
     private function getDbNameFromEnv($dbName)
