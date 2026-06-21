@@ -247,7 +247,7 @@ class Processes
             $suite,
             $process->isSuccessful(),
             microtime(true) - $this->startTimes[$key],
-            $number,
+            (int) $number,
             isset($this->errorBuffer[$suite]) ? $this->errorBuffer[$suite] : null,
             (bool) $numberOnThread // @todo if EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL bool, remove this
         );
