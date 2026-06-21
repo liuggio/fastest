@@ -5,10 +5,12 @@ namespace Liuggio\Fastest\Command;
 use Liuggio\Fastest\Process\Processes;
 use Liuggio\Fastest\Queue\QueueInterface;
 use Liuggio\Fastest\Queue\TestsQueue;
+use Liuggio\Fastest\UI\DotProgressRenderer;
+use Liuggio\Fastest\UI\NoProgressRenderer;
 use Liuggio\Fastest\UI\ProgressBarRenderer;
+use Liuggio\Fastest\UI\RendererInterface;
 use Liuggio\Fastest\UI\VerboseRenderer;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,7 +20,6 @@ use Liuggio\Fastest\Process\ProcessFactory;
 use Liuggio\Fastest\Process\ProcessorCounter;
 use Liuggio\Fastest\Queue\Infrastructure\InMemoryQueueFactory;
 use Liuggio\Fastest\Queue\ReadFromInputAndPushIntoTheQueue;
-use Liuggio\Fastest\UI\NoProgressRenderer;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 class ParallelCommand extends Command
@@ -29,8 +30,10 @@ class ParallelCommand extends Command
     private const XML_OPTION = 'xml';
     private const PRESERVE_ORDER_OPTION = 'preserve-order';
     private const RERUN_FAILED_OPTION = 'rerun-failed';
+    private const SHOW_RERUN_FAILED_OPTION = 'show-rerun-failed';
     private const NO_ERRORS_SUMMARY_OPTION = 'no-errors-summary';
     private const NO_PROGRESS_OPTION = 'no-progress';
+    private const DOT_PROGRESS_OPTION = 'dot-progress';
 
     protected function configure(): void
     {
@@ -73,6 +76,12 @@ class ParallelCommand extends Command
                 'Re-run failed test with before command if exists.'
             )
             ->addOption(
+                self::SHOW_RERUN_FAILED_OPTION,
+                null,
+                InputOption::VALUE_NONE,
+                'Display the errors summary for the failed test re-run even when --no-errors-summary is used.'
+            )
+            ->addOption(
                 self::NO_ERRORS_SUMMARY_OPTION,
                 null,
                 InputOption::VALUE_NONE,
@@ -83,6 +92,12 @@ class ParallelCommand extends Command
                 null,
                 InputOption::VALUE_NONE,
                 'Do not display progress',
+            )
+            ->addOption(
+                self::DOT_PROGRESS_OPTION,
+                null,
+                InputOption::VALUE_NONE,
+                'Display dot progress instead of the progress bar.',
             )
         ;
     }
@@ -133,6 +148,12 @@ class ParallelCommand extends Command
         }
         $noProgressOption = (bool) $noProgressOption;
 
+        $dotProgressOption = $input->getOption(self::DOT_PROGRESS_OPTION);
+        if (!is_bool($dotProgressOption) && null !== $dotProgressOption) {
+            throw new \Exception(sprintf('%s should not have any value', self::DOT_PROGRESS_OPTION));
+        }
+        $dotProgressOption = (bool) $dotProgressOption;
+
         $processManager = new ProcessesManager($maxNumberOfParallelProc, $processFactory, $beforeOption);
 
         // header
@@ -141,7 +162,7 @@ class ParallelCommand extends Command
         $output->writeln('- Will be consumed by <fg=white;bg=blue>'.$maxNumberOfParallelProc.'</> parallel Processes.');
 
         // loop
-        $processes = $this->doExecute($input, $output, $queue, $processManager, $noProgressOption);
+        $processes = $this->doExecute($input, $output, $queue, $processManager, $noProgressOption, $dotProgressOption);
 
         $event = $stopWatch->stop('execute');
         $output->writeln(sprintf(
@@ -151,7 +172,15 @@ class ParallelCommand extends Command
         ));
 
         if ($input->getOption(self::RERUN_FAILED_OPTION)) {
-            $processes = $this->executeBeforeCommand($queue, $processes, $input, $output, $processManager, $noProgressOption);
+            $processes = $this->executeBeforeCommand(
+                $queue,
+                $processes,
+                $input,
+                $output,
+                $processManager,
+                $noProgressOption,
+                $dotProgressOption
+            );
         }
 
         return $processes->getExitCode();
@@ -173,17 +202,19 @@ class ParallelCommand extends Command
         OutputInterface $output,
         QueueInterface $queue,
         ProcessesManager $processManager,
-        bool $noProgressOption
+        bool $noProgressOption,
+        bool $dotProgressOption,
+        ?bool $errorsSummary = null
     ): Processes {
         $processes = null;
-
-        if ($noProgressOption) {
-            $progressBar = new NoProgressRenderer($this->hasErrorSummary($input), $output);
-        } elseif ($this->isVerbose($output)) {
-            $progressBar = new VerboseRenderer($queue->count(), $this->hasErrorSummary($input), $output);
-        } else {
-            $progressBar = new ProgressBarRenderer($queue->count(), $this->hasErrorSummary($input), $output);
-        }
+        $progressBar = $this->createRenderer(
+            $input,
+            $output,
+            $queue,
+            $noProgressOption,
+            $dotProgressOption,
+            $errorsSummary
+        );
 
         $progressBar->renderHeader($queue);
 
@@ -213,19 +244,58 @@ class ParallelCommand extends Command
         return !$input->getOption(self::NO_ERRORS_SUMMARY_OPTION);
     }
 
+    protected function hasRerunErrorSummary(InputInterface $input): bool
+    {
+        return $this->hasErrorSummary($input) || (bool) $input->getOption(self::SHOW_RERUN_FAILED_OPTION);
+    }
+
+    protected function createRenderer(
+        InputInterface $input,
+        OutputInterface $output,
+        QueueInterface $queue,
+        bool $noProgressOption,
+        bool $dotProgressOption,
+        ?bool $errorsSummary = null
+    ): RendererInterface {
+        $errorsSummary = null === $errorsSummary ? $this->hasErrorSummary($input) : $errorsSummary;
+
+        if ($noProgressOption) {
+            return new NoProgressRenderer($errorsSummary, $output);
+        }
+
+        if ($dotProgressOption) {
+            return new DotProgressRenderer($queue->count(), $errorsSummary, $output);
+        }
+
+        if ($this->isVerbose($output)) {
+            return new VerboseRenderer($queue->count(), $errorsSummary, $output);
+        }
+
+        return new ProgressBarRenderer($queue->count(), $errorsSummary, $output);
+    }
+
     private function executeBeforeCommand(
         QueueInterface $queue,
         Processes $processes,
         InputInterface $input,
         OutputInterface $output,
         ProcessesManager $processManager,
-        bool $noProgressOption
+        bool $noProgressOption,
+        bool $dotProgressOption
     ): Processes {
         if (!$processes->isSuccessful()) {
             $array = $processes->getErrorOutput();
             $output->writeln(sprintf('Re-Running [%d] elements', count($array)));
             $queue->push(new TestsQueue(array_keys($array)));
-            $processes = $this->doExecute($input, $output, $queue, $processManager, $noProgressOption);
+            $processes = $this->doExecute(
+                $input,
+                $output,
+                $queue,
+                $processManager,
+                $noProgressOption,
+                $dotProgressOption,
+                $this->hasRerunErrorSummary($input)
+            );
         }
 
         return $processes;

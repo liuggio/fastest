@@ -178,6 +178,43 @@ class ProcessesTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function shouldPutProcessOutputOnNextLineAfterErrorHeader(): void
+    {
+        $process = $this->createMock(Process::class);
+        $process
+            ->method('isTerminated')
+            ->willReturn(true);
+        $process
+            ->method('isSuccessful')
+            ->willReturn(false);
+        $process
+            ->method('getEnv')
+            ->willReturn([
+                EnvCommandCreator::ENV_TEST_ARGUMENT => 'features/example.feature:123',
+                EnvCommandCreator::ENV_TEST_CHANNEL => 1,
+                EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL => true,
+            ]);
+        $process
+            ->method('getOutput')
+            ->willReturn("Failed step: And I do a thing\n");
+        $process
+            ->method('getErrorOutput')
+            ->willReturn('');
+
+        $processes = new Processes([$process]);
+        $processes->start(0);
+
+        $processes->cleanUP();
+
+        $this->assertSame(
+            "[1] features/example.feature:123\nFailed step: And I do a thing\n",
+            $processes->getErrorOutput()['features/example.feature:123']
+        );
+    }
+
+    /**
      * @param string $method
      *
      * @return MockObject|Process
