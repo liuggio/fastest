@@ -235,10 +235,11 @@ class Processes
         $suite = (string) $env[EnvCommandCreator::ENV_TEST_ARGUMENT];
         $number = $env[EnvCommandCreator::ENV_TEST_CHANNEL];
         $numberOnThread = $env[EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL];
+        $processorNumber = (int) (string) $number;
 
         if (!$process->isSuccessful()) {
             ++$this->errorCounter;
-            $this->errorBuffer[$suite] = sprintf('[%s] %s', $number, $suite).PHP_EOL;
+            $this->errorBuffer[$suite] = sprintf('[%d] %s', $processorNumber, $suite).PHP_EOL;
             $this->errorBuffer[$suite] .= $process->getOutput();
             $this->errorBuffer[$suite] .= $process->getErrorOutput();
         }
@@ -247,7 +248,7 @@ class Processes
             $suite,
             $process->isSuccessful(),
             microtime(true) - $this->startTimes[$key],
-            (int) $number,
+            $processorNumber,
             isset($this->errorBuffer[$suite]) ? $this->errorBuffer[$suite] : null,
             (bool) $numberOnThread // @todo if EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL bool, remove this
         );
