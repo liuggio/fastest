@@ -239,9 +239,7 @@ class Processes
 
         if (!$process->isSuccessful()) {
             ++$this->errorCounter;
-            $this->errorBuffer[$suite] = sprintf('[%d] %s', $processorNumber, $suite).PHP_EOL;
-            $this->errorBuffer[$suite] .= $process->getOutput();
-            $this->errorBuffer[$suite] .= $process->getErrorOutput();
+            $this->errorBuffer[$suite] = $this->buildErrorSummary($processorNumber, $suite, $process);
         }
 
         $this->totalBuffer[] = new Report(
@@ -260,5 +258,88 @@ class Processes
     public function getReport(): array
     {
         return $this->totalBuffer;
+    }
+
+    private function buildErrorSummary(int $processorNumber, string $suite, Process $process): string
+    {
+        $errorOutput = $process->getErrorOutput();
+        $output = '' !== trim($errorOutput) ? $errorOutput : $process->getOutput();
+
+        return sprintf('%d. (%s)', $processorNumber, $suite).PHP_EOL
+            .$this->extractCompactFailureOutput($output);
+    }
+
+    private function extractCompactFailureOutput(string $output): string
+    {
+        $output = str_replace(["\r\n", "\r"], "\n", $output);
+        $parts = [];
+
+        if (preg_match_all('/(?:^|\n)([ \t]*Failed step:.*?)(?=\n[ \t]*Failed step:|\n[ \t]*--- Failed scenarios:|\z)/s', $output, $matches)) {
+            foreach ($matches[1] as $failedStep) {
+                $parts[] = trim($failedStep);
+            }
+        }
+
+        $failedScenarios = $this->extractFailedScenariosSection($output);
+        if (null !== $failedScenarios) {
+            $parts[] = $failedScenarios;
+        }
+
+        if ([] === $parts) {
+            $parts[] = $this->extractOutputTail($output);
+        }
+
+        return rtrim(implode(PHP_EOL.PHP_EOL, $parts)).PHP_EOL;
+    }
+
+    private function extractFailedScenariosSection(string $output): ?string
+    {
+        $lines = explode("\n", $output);
+
+        foreach ($lines as $index => $line) {
+            if ('--- Failed scenarios:' !== trim($line)) {
+                continue;
+            }
+
+            $section = ['--- Failed scenarios:'];
+            $foundScenario = false;
+
+            for ($lineIndex = $index + 1, $lineCount = count($lines); $lineIndex < $lineCount; ++$lineIndex) {
+                $trimmedLine = trim($lines[$lineIndex]);
+
+                if ('' === $trimmedLine) {
+                    if (!$foundScenario) {
+                        $section[] = '';
+                    }
+                    continue;
+                }
+
+                if (1 === preg_match('/:\d+$/', $trimmedLine)) {
+                    $section[] = $trimmedLine;
+                    $foundScenario = true;
+                    continue;
+                }
+
+                if ($foundScenario) {
+                    break;
+                }
+
+                return null;
+            }
+
+            return $foundScenario ? rtrim(implode(PHP_EOL, $section)) : null;
+        }
+
+        return null;
+    }
+
+    private function extractOutputTail(string $output, int $lineCount = 4): string
+    {
+        $lines = array_values(array_filter(
+            array_map('trim', explode("\n", $output)),
+            static fn (string $line): bool => '' !== $line
+        ));
+
+        return implode(PHP_EOL, array_slice($lines, -$lineCount));
     }
 }

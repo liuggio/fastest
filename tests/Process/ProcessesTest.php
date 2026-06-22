@@ -180,7 +180,7 @@ class ProcessesTest extends TestCase
     /**
      * @test
      */
-    public function shouldPutProcessOutputOnNextLineAfterErrorHeader(): void
+    public function shouldUseProcessErrorOutputForErrorSummary(): void
     {
         $process = $this->createMock(Process::class);
         $process
@@ -198,7 +198,63 @@ class ProcessesTest extends TestCase
             ]);
         $process
             ->method('getOutput')
-            ->willReturn("Failed step: And I do a thing\n");
+            ->willReturn("Feature: noisy full feature output\n");
+        $process
+            ->method('getErrorOutput')
+            ->willReturn(
+                "    And I delete the memcached key 'local://example'\n"
+                ."    When I call POST 'hercules://connect/wallet/open'\n"
+                ."    Then the last response should be status 200\n"
+                ."Failed step: And I do a thing\n"
+                ."    The array 'return' count '0' does not match the expected value: '1'\n"
+                ."    Failed asserting that 0 is identical to 1.\n"
+                ."\n"
+                ."--- Failed scenarios:\n"
+                ."\n"
+                ."features/example.feature:123\n"
+                ."\n"
+                ."1 scenario (1 failed)\n"
+            );
+
+        $processes = new Processes([$process]);
+        $processes->start(0);
+
+        $processes->cleanUP();
+
+        $this->assertSame(
+            "1. (features/example.feature:123)\nFailed step: And I do a thing\n"
+            ."    The array 'return' count '0' does not match the expected value: '1'\n"
+            ."    Failed asserting that 0 is identical to 1.\n"
+            ."\n"
+            ."--- Failed scenarios:\n"
+            ."\n"
+            ."features/example.feature:123\n",
+            $processes->getErrorOutput()['features/example.feature:123']
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldUseProcessOutputForErrorSummaryWhenErrorOutputIsEmpty(): void
+    {
+        $process = $this->createMock(Process::class);
+        $process
+            ->method('isTerminated')
+            ->willReturn(true);
+        $process
+            ->method('isSuccessful')
+            ->willReturn(false);
+        $process
+            ->method('getEnv')
+            ->willReturn([
+                EnvCommandCreator::ENV_TEST_ARGUMENT => 'tests/ExampleTest.php',
+                EnvCommandCreator::ENV_TEST_CHANNEL => 2,
+                EnvCommandCreator::ENV_TEST_IS_FIRST_ON_CHANNEL => true,
+            ]);
+        $process
+            ->method('getOutput')
+            ->willReturn("There was 1 failure:\n");
         $process
             ->method('getErrorOutput')
             ->willReturn('');
@@ -209,8 +265,8 @@ class ProcessesTest extends TestCase
         $processes->cleanUP();
 
         $this->assertSame(
-            "[1] features/example.feature:123\nFailed step: And I do a thing\n",
-            $processes->getErrorOutput()['features/example.feature:123']
+            "2. (tests/ExampleTest.php)\nThere was 1 failure:\n",
+            $processes->getErrorOutput()['tests/ExampleTest.php']
         );
     }
 
