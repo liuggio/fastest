@@ -292,7 +292,7 @@ If you want to use it with phpunit you may want to install phpunit/phpunit as de
 
 ```
 Usage:
- fastest [-p|--process="..."] [-b|--before="..."] [-x|--xml="..."] [-o|--preserve-order] [--no-errors-summary] [execute]
+ fastest [-p|--process="..."] [-b|--before="..."] [-x|--xml="..."] [-o|--preserve-order] [--show-rerun-failed] [--no-errors-summary] [--dot-progress] [execute]
 
 Arguments:
  execute               Optional command to execute.
@@ -303,7 +303,9 @@ Options:
  --xml (-x)            Read input from a phpunit xml file from the '<testsuites>' collection. Note: it is not used for consuming.
  --preserve-order (-o) Queue is randomized by default, with this option the queue is read preserving the order.
  --rerun-failed (-r)   Re-run failed test with before command if exists.
+ --show-rerun-failed   Display the errors summary for the failed test re-run even when --no-errors-summary is used.
  --no-errors-summary   Do not display all errors after the test run. Useful with --vv because it already displays errors immediately after they happen.
+ --dot-progress        Display dot progress instead of the progress bar.
  --no-progress         Do not display progress bar when running.
  --help (-h)           Display this help message.
  --quiet (-q)          Do not output any message.
