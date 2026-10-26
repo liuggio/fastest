@@ -1,0 +1,31 @@
+<?php
+
+namespace Liuggio\Fastest\Queue\Fixture;
+
+use Liuggio\Fastest\Queue\TestsQueue;
+use Liuggio\Fastest\Queue\TestSuite;
+
+class LegacyQueue extends TestsQueue
+{
+    /**
+     * @param string|TestSuite $value
+     */
+    public function add($value): bool
+    {
+        return parent::add($value);
+    }
+}
+
+function addPath(TestsQueue $queue): bool
+{
+    return $queue->add('caller.php');
+}
+
+$queue = new LegacyQueue();
+if ([true, true] !== [$queue->add('subclass.php'), addPath($queue)]) {
+    throw new \RuntimeException('The legacy add() return value changed.');
+}
+
+if (2 !== count($queue)) {
+    throw new \RuntimeException('The legacy consumer did not add both test paths.');
+}

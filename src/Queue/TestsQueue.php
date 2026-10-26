@@ -9,6 +9,8 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class TestsQueue extends ArrayCollection
 {
+    use TestsQueueAddTrait;
+
     /**
      * @var bool
      */
@@ -17,7 +19,7 @@ class TestsQueue extends ArrayCollection
     /**
      * Initializes a new ArrayCollection.
      *
-     * @param array<int, string> $elements
+     * @param array<int, string|TestSuite> $elements
      * @param bool  $hasBeenRandomized
      */
     public function __construct(array $elements = [], bool $hasBeenRandomized = false)
@@ -40,28 +42,6 @@ class TestsQueue extends ArrayCollection
         shuffle($array);
 
         return new self($array, true);
-    }
-
-    /**
-     * @param string|TestSuite $value
-     *
-     * @return bool
-     */
-    public function add($value): bool
-    {
-        if (!$value instanceof TestSuite) {
-            $value = new TestSuite($value);
-        }
-
-        parent::add($value);
-
-        trigger_deprecation(
-            'liuggio/fastest', 
-            '1.10', 
-            'The return value of Liuggio\Fastest\Queue\TestsQueue:add will change to void in v2 of the package'
-        );
-        
-        return true;
     }
 
     /**

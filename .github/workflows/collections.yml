@@ -1,0 +1,68 @@
+name: Doctrine Collections compatibility
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php-version }} - Collections ${{ matrix.collections }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php-version: '8.0'
+            collections: '1.2.0'
+            consumer: legacy
+          - php-version: '8.0'
+            collections: '^1.8'
+            consumer: legacy
+          - php-version: '8.1'
+            collections: '2.0.0'
+            consumer: legacy
+          - php-version: '8.4'
+            collections: '^2.6'
+            consumer: legacy
+          - php-version: '8.4'
+            collections: '3.0.0'
+            consumer: void
+          - php-version: '8.5'
+            collections: '^3.1'
+            consumer: void
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+          tools: composer:v2, phpunit:9.6
+
+      - name: Install dependencies
+        run: composer update --with doctrine/collections:"${{ matrix.collections }}" --no-interaction --prefer-dist
+
+      # PHPUnit's Composer dependency on deep-copy conflicts with Collections <1.6.8.
+      - name: Install PHPUnit runner
+        run: install -m 755 "$(command -v phpunit)" bin/phpunit
+
+      - name: Run queue compatibility tests
+        run: bin/phpunit tests/Queue/TestsQueueTest.php
+
+      - name: Validate optimized autoloading
+        run: composer dump-autoload --optimize --classmap-authoritative --strict-ambiguous
+
+      - name: Check caller and subclass compatibility
+        run: |
+          cp tests/Queue/Fixture/${{ matrix.consumer }}-consumer.php.fixture bin/collections-consumer.php
+          php -d auto_prepend_file=vendor/autoload.php bin/collections-consumer.php
+          bin/phpstan.phar analyze bin/collections-consumer.php --no-progress
+
+      - name: Run tests through Fastest
+        run: |
+          find tests/ -name "*Test.php" | php fastest -v
+          php -d auto_prepend_file=bin/phpunit ./fastest -x phpunit.xml.dist -v "bin/phpunit {}"
+          php -d auto_prepend_file=bin/phpunit bin/behat --config=adapters/Behat/behat.yml

@@ -1,0 +1,30 @@
+<?php
+
+namespace Liuggio\Fastest\Queue\Fixture;
+
+use Liuggio\Fastest\Queue\TestsQueue;
+use Liuggio\Fastest\Queue\TestSuite;
+
+class VoidQueue extends TestsQueue
+{
+    /**
+     * @param string|TestSuite $value
+     */
+    public function add(mixed $value): void
+    {
+        parent::add($value);
+    }
+}
+
+function addPath(TestsQueue $queue): void
+{
+    $queue->add('caller.php');
+}
+
+$queue = new VoidQueue();
+$queue->add('subclass.php');
+addPath($queue);
+
+if (2 !== count($queue)) {
+    throw new \RuntimeException('The Collections 3 consumer did not add both test paths.');
+}

@@ -322,6 +322,16 @@ e.g. `./fastest -x phpunit.xml.dist -v "bin/phpunit {}"`
 If you're facing problems with unknown command errors, make sure your  [variables-order](http://us.php.net/manual/en/ini.core.php#ini.variables-order) `php.ini` setting contains `E`.
 If not, your environment variables are not set, and commands that are in your `PATH` will not work.
 
+### Doctrine Collections compatibility
+
+Fastest supports Doctrine Collections 1.x, 2.x and 3.x. Collections 3.x requires PHP 8.4 or later;
+older PHP versions can continue using Collections 1.x or 2.x.
+
+With Collections 1.x or 2.x, `TestsQueue::add()` keeps its deprecated `bool` return value.
+With Collections 3.x, it returns `void` to match `ArrayCollection::add()`. Callers should not use
+the deprecated return value. Subclasses overriding `add()` must use a compatible return type
+for the installed Collections version.
+
 ### Contribution
 
 Please help with code, love, feedback and bug reporting.
